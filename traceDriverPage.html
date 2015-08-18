@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" type="image/ico" href="favicon.ico">
+    <title>Let's Carpool</title>
+    <!-- CSS -->
+    <!-- <link rel="stylesheet" href=""> -->
+    <link rel="stylesheet" href="css/traceSystem.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!-- JavaScript -->
+    <!-- <script src=""></script> -->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="js/traceDriverClient.js"></script>
+</head>
+
+<body>
+    <div id="map-block" class="map-block">
+        <div id="map-canvas"></div>
+    </div>
+    <div id="footer" class="footer">
+        <!--距離乘客王小明的下車點約2分/400公尺-->
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="MsgDialog" tabindex="-1" role="dialog" style="margin-top: 15%">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #232323; color: #fff;">
+                    <h4 class="modal-title" id="ErrorMsgDialogTitle">Title</h4>
+                </div>
+                <div id="ErrorMsgDialogContent" class="modal-body" style="background-color: #4e4e4e; color: #fff;">
+                    Content...
+                </div>
+                <div class="modal-footer" style="background-color: #232323; color: #fff;">
+                    <button type="button" class="btn mybutton" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true" style="margin-right: 10px;"></span>關閉
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dialog" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <center>
+                    <br></br>
+                    <img id="image" src="img/circle.png" alt="..." class="img-circle">
+                    <h2 id="name"></h2>
+                    <h3><div id="message"></div></h3>
+                    <br></br>
+                    <button id="accept" class="btn btn-default" type="button" value="" onclick="confirmCarpool();">接受</button>
+                    <button id="reject" class="btn btn-default" type="button" value="" onclick="cancelCarpool();">拒絕</button>
+                    <br></br>
+                </center>
+            </div>
+        </div>
+    </div>
+    <div id="info" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <center>
+                    <br></br>
+                    <img id="info_image" src="img/circle.png" alt="..." class="img-circle">
+                    <h2 id="info_name"></h2>
+                    <h3><div id="info_message"></div></h3>
+                    <br></br>
+                    <button id="ok" class="btn btn-default" type="button" value="">完成</button>
+                    <br></br>
+                </center>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
