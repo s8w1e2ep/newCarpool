@@ -1,0 +1,410 @@
+$(document).ready(function() {
+    // RESIZE SCREEN HEIGHT
+    resizeScreen();
+
+    // INITIALIZE GOOGLE MAPS
+    InitializeMap();
+
+    InitializeDriver();
+
+    // AddPassenger(270371829840730);
+    // AddPassenger(1046779538684831);
+
+    DetectCurPoint();
+    setInterval(DetectCurPoint, 6000);
+});
+
+//global variables
+var map;
+// var serverDomain = "http://vu6m3lio.ddns.net/";
+var serverDomain = "http://127.0.0.1/";
+var server = serverDomain + "traceSystem/php/";
+var COLOR = ["#176ae6", "#ff0000", "#6a3906", "#800080"];
+
+var url = window.location.toString();
+// driver is
+var did = null;
+// TEST ID 1046779538684826 1046779538684827 1046779538684828
+// var did = "1046779538684826";
+// passengers' id
+var pid = [];
+// TEST ID 270371829840730 1046779538684829 1046779538684830 1046779538684831
+// var pid = ["270371829840730", "1046779538684831"];
+// var pid = [];
+
+// driver variables
+var driver = null;
+var DriverObj = function() {
+    return {
+        'Name': null,
+        'Path': null,
+        'Point': {
+            'Start': null,
+            'End': null,
+            'Current': null
+        },
+        'Marker': {
+            'Path': null,
+            'Start': null,
+            'End': null
+        }
+    }
+};
+
+// passenger list and passenger object
+var passList = [];
+var PassengerObj = function() {
+    return {
+        'Name': null,
+        'CarpoolPath': null,
+        'Point': {
+            'Getin': null,
+            'Getoutoff': null,
+            'Current': null
+        },
+        'Marker': {
+            'CarpoolPath': null,
+            'Getin': null,
+            'Getoutoff': null,
+            'Current': null,
+            'InfoWindow': null
+        }
+    }
+};
+
+function InitializeMap() {
+    //set map options
+    var mapOptions = {
+        zoom: 16,
+        center: new google.maps.LatLng(22.975375, 120.218936)
+    };
+
+    //set mapc
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+}
+
+function InitializeDriver() {
+    var thestr = theurl.substring(url.indexOf("{"), url.length);
+    var thejson = JSON.parse(decodeURIComponent(thestr));
+    did = thejson.id;
+
+    driver = new DriverObj();
+
+    var toServerStr = '{"init": 1,"role": 1, "did":"' + did + '"}';
+
+    var url = server + 'traceDriverServer.php?data=' + toServerStr;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var result = JSON.parse(xmlhttp.responseText);
+            driver.Name = result.driver.Name;
+            driver.Path = ConvertToGoogleLatLng(result.driver.Path);
+            driver.Point.Current = new google.maps.LatLng(result.driver.CurPoint.at, result.driver.CurPoint.ng);
+            driver.Point.Start = driver.Path[0];
+            driver.Point.End = driver.Path.last();
+
+            // set map path marker
+            driver.Marker.Path = new google.maps.Polyline({
+                path: driver.Path,
+                geodesic: true,
+                strokeColor: '#000',
+                strokeOpacity: 0.7,
+                strokeWeight: 8
+            });
+            driver.Marker.Path.setMap(map);
+
+            // set map start point marker
+            driver.Marker.Start = new google.maps.Marker({
+                position: driver.Point.Start,
+                map: map,
+                icon: "img/start_pin.png",
+                title: driver.Point.Start.lat() + ", " + driver.Point.Start.lng()
+            });
+
+            // set map end point marker
+            driver.Marker.End = new google.maps.Marker({
+                position: driver.Point.End,
+                map: map,
+                icon: "img/end_pin.png",
+                title: driver.Point.End.lat() + ", " + driver.Point.End.lng()
+            });
+
+            // set map current point marker
+            driver.Marker.Current = new google.maps.Marker({
+                position: driver.Point.Current,
+                map: map,
+                icon: "img/driver_1.png",
+                title: driver.Point.Current.lat() + ", " + driver.Point.Current.lng(),
+                zIndex: 802
+            });
+
+            // set map center to current point
+            map.setCenter(driver.Point.Current);
+        }
+    }
+    xmlhttp.send();
+}
+
+function AddPassenger(id) {
+    // be sure that id is string
+    if (!isNaN(id)) {
+        id = id.toString();
+    }
+
+    pid.push(id);
+    var thePassIndex = pid.length - 1;
+    passList.push(new PassengerObj());
+
+    // get the passengers info
+    var toServerStr = '{"init": 1, "role": 0, "pid":"' + id + '"}';
+
+    var url = server + 'traceDriverServer.php?data=' + toServerStr;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var result = JSON.parse(xmlhttp.responseText);
+
+            // set info to obj
+            passList[thePassIndex].Name = result.passenger.Name;
+            passList[thePassIndex].CarpoolPath = ConvertToGoogleLatLng(result.passenger.Path);
+            passList[thePassIndex].Point.Current = new google.maps.LatLng(result.passenger.CurPoint.at, result.passenger.CurPoint.ng);
+            passList[thePassIndex].Point.Getin = passList[thePassIndex].CarpoolPath[0];
+            passList[thePassIndex].Point.Getoutoff = passList[thePassIndex].CarpoolPath.last();
+
+            // set map carpoolpath marker
+            passList[thePassIndex].Marker.CarpoolPath = new google.maps.Polyline({
+                path: passList[thePassIndex].CarpoolPath,
+                geodesic: true,
+                strokeColor: COLOR[thePassIndex],
+                strokeOpacity: 0.7,
+                strokeWeight: 8,
+                zIndex: 800
+            });
+            passList[thePassIndex].Marker.CarpoolPath.setMap(map);
+
+            // set map getin point marker
+            passList[thePassIndex].Marker.Getin = new google.maps.Marker({
+                position: passList[thePassIndex].Point.Getin,
+                map: map,
+                icon: "img/pstart" + (thePassIndex + 1) + ".png",
+                title: passList[thePassIndex].Point.Getin.lat() + ", " + passList[thePassIndex].Point.Getin.lng()
+            });
+
+            // set map Getoutoff point marker
+            passList[thePassIndex].Marker.Getoutoff = new google.maps.Marker({
+                position: passList[thePassIndex].Point.Getoutoff,
+                map: map,
+                icon: "img/pend" + (thePassIndex + 1) + ".png",
+                title: passList[thePassIndex].Point.Getoutoff.lat() + ", " + passList[thePassIndex].Point.Getoutoff.lng()
+            });
+
+            // set map current point marker
+            passList[thePassIndex].Marker.Current = new google.maps.Marker({
+                position: passList[thePassIndex].Point.Current,
+                map: map,
+                icon: "img/passenger_1.png",
+                title: passList[thePassIndex].Point.Current.lat() + ", " + passList[thePassIndex].Point.Current.lng(),
+                zIndex: 801
+            });
+
+            // set info window number
+            passList[thePassIndex].Marker.InfoWindow = new google.maps.InfoWindow();
+            passList[thePassIndex].Marker.InfoWindow.setOptions({
+                content: (thePassIndex + 1).toString(),
+                position: passList[thePassIndex].Point.Current,
+                zIndex: 803
+            });
+            passList[thePassIndex].Marker.InfoWindow.open(map, passList[thePassIndex].Marker.Current);
+        }
+    }
+    xmlhttp.send();
+}
+
+function UpdateView(re, pcurpoints) {
+    var reNum = re.length;
+    var pIndex;
+
+    // update page bottom text and tts text
+    var ttsText = '距離';
+    if (re[0].type) {
+        // type 0 is driver end point
+        pIndex = pid.indexOf(re[0].id);
+        ttsText += '乘客' + passList[pIndex].Name + '的';
+
+        if (re[0].type == 1) {
+            ttsText += '上車點約';
+        } else {
+            ttsText += '下車點約';
+        }
+        ttsText += re[0].gdm.time.text + '，' + re[0].gdm.distance.text;
+    } else {
+        pIndex = -1;
+        ttsText += '終點約' + re[0].gdm.time.text + '，' + re[0].gdm.distance.text;
+    }
+    $('#footer').html(ttsText);
+
+    // update driver current point marker
+    if (driver.Marker.Current != null)
+        driver.Marker.Current.setMap(null);
+
+    driver.Marker.Current = new google.maps.Marker({
+        position: driver.Point.Current,
+        map: map,
+        icon: "img/driver_1.png",
+        title: driver.Point.Current.lat() + ", " + driver.Point.Current.lng(),
+        zIndex: 802
+    });
+
+    // set map center to current point
+    map.setCenter(driver.Point.Current);
+
+    if (pIndex != -1) {
+        // update the passenger current point marker
+        passList[pIndex].Point.Current = new google.maps.LatLng(re[0].curpoint.at, re[0].curpoint.ng);
+
+        if (passList[pIndex].Marker.Current != null)
+            passList[pIndex].Marker.Current.setMap(null);
+
+        passList[pIndex].Marker.Current = new google.maps.Marker({
+            position: passList[pIndex].Point.Current,
+            map: map,
+            icon: "img/passenger_1.png",
+            title: passList[pIndex].Point.Current.lat() + ", " + passList[pIndex].Point.Current.lng(),
+            zIndex: 801
+        });
+
+        // set info window number
+        passList[pIndex].Marker.InfoWindow = new google.maps.InfoWindow();
+        passList[pIndex].Marker.InfoWindow.setOptions({
+            content: (pIndex + 1).toString(),
+            position: passList[pIndex].Point.Current,
+            zIndex: 803
+        });
+        passList[pIndex].Marker.InfoWindow.open(map, passList[pIndex].Marker.Current);
+    }
+
+    // update other passengers' current point
+    for (var i = 0; i < pcurpoints.length; i++) {
+        var thisIndex = pid.indexOf(pcurpoints[i].id);
+
+        passList[thisIndex].Point.Current = new google.maps.LatLng(pcurpoints[i].curpoint.at, pcurpoints[i].curpoint.ng);
+
+        if (passList[thisIndex].Marker.Current != null)
+            passList[thisIndex].Marker.Current.setMap(null);
+
+        passList[thisIndex].Marker.Current = new google.maps.Marker({
+            position: passList[thisIndex].Point.Current,
+            map: map,
+            icon: "img/passenger_1.png",
+            title: passList[thisIndex].Point.Current.lat() + ", " + passList[thisIndex].Point.Current.lng(),
+            zIndex: 801
+        });
+
+        // set info window number
+        passList[thisIndex].Marker.InfoWindow = new google.maps.InfoWindow();
+        passList[thisIndex].Marker.InfoWindow.setOptions({
+            content: (thisIndex + 1).toString(),
+            position: passList[thisIndex].Point.Current,
+            zIndex: 803
+        });
+        passList[thisIndex].Marker.InfoWindow.open(map, passList[thisIndex].Marker.Current);
+    }
+
+    // if re length = 2, remove passenger get in point maker or get out off point marker with this passenger
+    if (reNum == 2) {
+        var depIndex = pid.indexOf(re[1].id);
+        if (re[1].type == 1) {
+            // get in point
+            if (passList[depIndex].Marker.Getin)
+                passList[depIndex].Marker.Getin.setMap(null);
+        } else {
+            // carpoolpath marker
+            if (passList[depIndex].Marker.CarpoolPath)
+                passList[depIndex].Marker.CarpoolPath.setMap(null);
+
+            // current point marker
+            if (passList[depIndex].Marker.Current)
+                passList[depIndex].Marker.Current.setMap(null);
+
+            // infowindow
+            if (passList[depIndex].Marker.InfoWindow)
+                passList[depIndex].Marker.InfoWindow.setMap(null);
+
+            // get out off point
+            if (passList[depIndex].Marker.Getoutoff)
+                passList[depIndex].Marker.Getoutoff.setMap(null);
+
+            // remove passenger id in pid and passList
+            pid.splice(depIndex, 1);
+            passList.splice(depIndex, 1);
+        }
+    }
+}
+
+function DetectCurPoint() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+                // pass current location to server
+                var pidsStr = '';
+                if (pid.length > 0)
+                    pidsStr = '"' + pid.join('","') + '"';
+
+                var toServerStr = '{"init": 0, "did":"' + did + '", "pids": [' + pidsStr + '], "curpoint": {"at":' + position.coords.latitude.toFixed(5) + ', "ng": ' + position.coords.longitude.toFixed(5) + '}}';
+                var url = server + 'traceDriverServer.php?data=' + toServerStr;
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("GET", url, true);
+                xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        var result = JSON.parse(xmlhttp.responseText);
+                        driver.Point.Current = new google.maps.LatLng(position.coords.latitude.toFixed(5), position.coords.longitude.toFixed(5));
+                        // update screen infomation
+                        UpdateView(result.calResult, result.passCurpoints);
+                    }
+                }
+                xmlhttp.send();
+            },
+            function(error) {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        console.log("User denied the request for Geolocation.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        console.log("Location information is .");
+                        break;
+                    case error.TIMEOUT:
+                        console.log("The request to get user location timed out.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        console.log("An unknown error occurred.");
+                        break;
+                }
+            });
+    } else {
+        alert("Not support geolocation");
+    }
+}
+
+function resizeScreen() {
+    //set map block height and width
+    var docHight = $(document).height();
+    var mapblockH = docHight - 50;
+
+    $('#map-block').css('height', mapblockH + 'px');
+}
+
+function ConvertToGoogleLatLng(list) {
+    var temp = [];
+    for (var i = 0; i < list.length; i++)
+        temp.push(new google.maps.LatLng(list[i].at, list[i].ng));
+    return temp;
+}
+
+// Prototype
+Array.prototype.last = function() {
+    return this[this.length - 1];
+}
