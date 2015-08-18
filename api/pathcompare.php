@@ -86,7 +86,8 @@
 							array_push($directArr, array($x));
 						} else {
 							$absv = abs($cr_arr[$cr_arrn][$cr_arrtn] - $z);
-							if ($absv == 1) {
+							$absv2 = abs($directArr[$cr_arrn][$cr_arrtn] - $x);
+							if ($absv == 1 && $absv2 == 1) {
 								$cr_arr[$cr_arrn][++$cr_arrtn] = $z;
 								$directArr[$cr_arrn][$cr_arrtn] = $x;
 							} else {
@@ -127,9 +128,15 @@
 				}
 			}
 
+			$carpoolPathIndex = 0;
+			for ($i = 1; $i < count($oid); $i++) {
+				if (count($oid[$carpoolPathIndex]) < count($oid[$i]))
+					$carpoolPathIndex = $i;
+			}
+
 			if (count($oid) == 0)
 				return null;
-			return $oid;
+			return $oid[$carpoolPathIndex];
 		} else {
 			return null;
 		}
