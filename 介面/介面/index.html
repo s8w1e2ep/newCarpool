@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+
+		<link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
+		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="style.css">
+
+		<!-- Uses a header that contracts as the page scrolls down. -->
+		<style>
+		.waterfall-demo-header-nav .mdl-navigation__link:last-of-type  {
+		  padding-right: 0;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+		  <header class="mdl-layout__header mdl-layout__header--waterfall">
+			<!-- Top row, always visible -->
+			<div class="mdl-layout__header-row">
+			  <!-- Title -->
+			  <span class="android-title mdl-layout-title">
+				<a href="index.html"><img src="assets/logo.png" width="50%"></a>
+			  </span>
+			  
+			  <div class="mdl-layout-spacer"></div>
+			  <a class="mdl-navigation__link" href="logout.html">Logout</a>
+			</div>
+		  </header>
+		  <div class="mdl-layout__drawer">
+			<header class="drawer-header mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+				<img src="" alt="user" class="avatar">
+				<div class="avatar-dropdown">
+					<span>NAME</span>
+					<div class="mdl-layout-spacer"></div>
+					<button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+						<i class="material-icons" role="presentation">arrow_drop_down</i>
+						<span class="visuallyhidden">Personal Info</span>
+					</button>
+					<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+					  <li class="mdl-menu__item">NAME</li>
+					  <li class="mdl-menu__item">0912345678</li>
+					  <li class="mdl-menu__item"><i class="material-icons">edit</i>Edit</li>
+					</ul>
+				</div>
+			</header>
+			<nav class="mdl-navigation">
+			  <a class="mdl-navigation__link" href="wall.html"><i class="material-icons">event_note</i>Board</a>
+			  <a class="mdl-navigation__link" href="wall.html"><i class="material-icons">forum</i>Wall</a>
+			  <a class="mdl-navigation__link" href="friendlist.html"><i class="material-icons">group</i>Friendlist</a>
+			  <a class="mdl-navigation__link" href="setting.html"><i class="material-icons">settings</i>Setting</a>
+			  <a class="mdl-navigation__link" href="about.html"><i class="material-icons">info</i>About</a>
+			  <a class="mdl-navigation__link" href="result.html">結果</a>
+			  <a class="mdl-navigation__link" href="trace.html">追蹤</a>
+			  <a class="mdl-navigation__link" href="rating.html">評價</a>
+			</nav>
+		  </div>
+		  <main class="mdl-layout__content">
+			<div class="page-content">
+				<center>
+					<h3>目前狀態</h3>
+					<img src="assets/circle.png">
+					<h4>尚未登入</h4>
+					<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Log in with Facebook</button>
+					
+					<div style="position:fixed; bottom:0px; z-index:0; width:100%">
+						<a href="driver.html"><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="float: left; width:50%"><i class="material-icons">directions_car</i>司機</button></a>
+						<a href="passenger.html"><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="float: left; width:50%"><i class="material-icons">directions_walk</i>乘客</button></a>
+					</div>
+				</center>
+			</div>
+		  </main>
+	  </body>
+	</div>
+</html>

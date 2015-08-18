@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+
+		<link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
+		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="style.css">
+
+		<!-- Uses a header that contracts as the page scrolls down. -->
+		<style>
+		.waterfall-demo-header-nav .mdl-navigation__link:last-of-type  {
+		  padding-right: 0;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+		  <header class="mdl-layout__header mdl-layout__header--waterfall">
+			<!-- Top row, always visible -->
+			<div class="mdl-layout__header-row">
+			  <!-- Title -->
+			  <span class="android-title mdl-layout-title">
+				<a href="index.html"><img src="assets/logo.png" width="50%"></a>
+			  </span>
+			  
+			  <div class="mdl-layout-spacer"></div>
+			  <a class="mdl-navigation__link" href="logout.html">Logout</a>
+			</div>
+		  </header>
+		  <div class="mdl-layout__drawer">
+			<header class="drawer-header mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+				<img src="" alt="user" class="avatar">
+				<div class="avatar-dropdown">
+					<span>NAME</span>
+					<div class="mdl-layout-spacer"></div>
+					<button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+						<i class="material-icons" role="presentation">arrow_drop_down</i>
+						<span class="visuallyhidden">Personal Info</span>
+					</button>
+					<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+					  <li class="mdl-menu__item">NAME</li>
+					  <li class="mdl-menu__item">0912345678</li>
+					  <li class="mdl-menu__item"><i class="material-icons">edit</i>Edit</li>
+					</ul>
+				</div>
+			</header>
+			<nav class="mdl-navigation">
+			  <a class="mdl-navigation__link" href="board.html"><i class="material-icons">event_note</i>Board</a>
+			  <a class="mdl-navigation__link" href="wall.html"><i class="material-icons">forum</i>Wall</a>
+			  <a class="mdl-navigation__link" href="friendlist.html"><i class="material-icons">group</i>Friendlist</a>
+			  <a class="mdl-navigation__link" href="setting.html"><i class="material-icons">settings</i>Setting</a>
+			  <a class="mdl-navigation__link" href="about.html"><i class="material-icons">info</i>About</a>
+			</nav>
+		  </div>
+		  <main class="mdl-layout__content">
+			<div class="page-content">
+				<center>
+					<div class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+					<br/><br/>
+					<h4>等待司機確認...</h4>
+				</center>
+			</div>
+		  </main>
+	  </body>
+	</div>
+</html>
