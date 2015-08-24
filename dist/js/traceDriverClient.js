@@ -7,21 +7,26 @@ $(document).ready(function() {
 
     InitializeDriver();
 
-    // AddPassenger(270371829840730);
+    // AddPassenger(1046779538684826);
     // AddPassenger(1046779538684831);
 
     DetectCurPoint();
-    setInterval(DetectCurPoint, 6000);
+    // setInterval(DetectCurPoint, 6000);
+
+    $('#ok').click(function() {
+        $('#info').modal('hide');
+    });
 });
 
 //global variables
 var map;
+
 // var serverDomain = "http://vu6m3lio.ddns.net/";
 var serverDomain = "http://127.0.0.1/";
-var server = serverDomain + "traceSystem/php/";
+var server = serverDomain + "newcarpool/api/";
 var COLOR = ["#176ae6", "#ff0000", "#6a3906", "#800080"];
 
-var url = window.location.toString();
+var global_url = window.location.toString();
 // driver is
 var did = null;
 // TEST ID 1046779538684826 1046779538684827 1046779538684828
@@ -84,14 +89,13 @@ function InitializeMap() {
 }
 
 function InitializeDriver() {
-    var thestr = theurl.substring(url.indexOf("{"), url.length);
+    var thestr = global_url.substring(global_url.indexOf("{"), global_url.length);
     var thejson = JSON.parse(decodeURIComponent(thestr));
     did = thejson.id;
 
     driver = new DriverObj();
 
     var toServerStr = '{"init": 1,"role": 1, "did":"' + did + '"}';
-
     var url = server + 'traceDriverServer.php?data=' + toServerStr;
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
@@ -216,6 +220,7 @@ function AddPassenger(id) {
             passList[thePassIndex].Marker.InfoWindow.setOptions({
                 content: (thePassIndex + 1).toString(),
                 position: passList[thePassIndex].Point.Current,
+                disableAutoPan: true,
                 zIndex: 803
             });
             passList[thePassIndex].Marker.InfoWindow.open(map, passList[thePassIndex].Marker.Current);
@@ -227,7 +232,7 @@ function AddPassenger(id) {
 function UpdateView(re, pcurpoints) {
     var reNum = re.length;
     var pIndex;
-
+    popInfo(re[0].id, 400, 0);
     // update page bottom text and tts text
     var ttsText = '距離';
     if (re[0].type) {
@@ -237,8 +242,10 @@ function UpdateView(re, pcurpoints) {
 
         if (re[0].type == 1) {
             ttsText += '上車點約';
+            // popInfo(re[0].id, re[0].gdm.distance.val, 1);
         } else {
             ttsText += '下車點約';
+            // popInfo(re[0].id, re[0].gdm.distance.val, 0);
         }
         ttsText += re[0].gdm.time.text + '，' + re[0].gdm.distance.text;
     } else {
@@ -282,6 +289,7 @@ function UpdateView(re, pcurpoints) {
         passList[pIndex].Marker.InfoWindow.setOptions({
             content: (pIndex + 1).toString(),
             position: passList[pIndex].Point.Current,
+            disableAutoPan: true,
             zIndex: 803
         });
         passList[pIndex].Marker.InfoWindow.open(map, passList[pIndex].Marker.Current);
@@ -309,6 +317,7 @@ function UpdateView(re, pcurpoints) {
         passList[thisIndex].Marker.InfoWindow.setOptions({
             content: (thisIndex + 1).toString(),
             position: passList[thisIndex].Point.Current,
+            disableAutoPan: true,
             zIndex: 803
         });
         passList[thisIndex].Marker.InfoWindow.open(map, passList[thisIndex].Marker.Current);
@@ -343,6 +352,42 @@ function UpdateView(re, pcurpoints) {
             passList.splice(depIndex, 1);
         }
     }
+}
+
+var BE_DELTA_NUMBER = 150;
+var BE_STATE_POINT = 25;
+var BE_ARRIVING = 500;
+function popInfo(id, dis, type) {
+    setTimeout(function() {
+        var passIndex = pid.indexOf(id);
+        if (type) {
+            // type is 1, passenger get in car
+            if (dis <= BE_STATE_POINT) {
+                $("#info").modal('show');
+                $('#info_message').html('抵達乘客上車點');
+                $('#info_name').html(passList[passIndex].Name);
+                $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
+            } else if ((BE_ARRIVING - BE_DELTA_NUMBER) <= dis && dis <= BE_ARRIVING) {
+                $("#info").modal('show');
+                $('#info_message').html('即將抵達乘客上車點');
+                $('#info_name').html(passList[passIndex].Name);
+                $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
+            }
+        } else {
+            // type is 0, passenger get out off car
+            if (dis <= BE_STATE_POINT) {
+                $("#info").modal('show');
+                $('#info_message').html('抵達乘客下車點');
+                $('#info_name').html(passList[passIndex].Name);
+                $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
+            } else if ((BE_ARRIVING - BE_DELTA_NUMBER) <= dis && dis <= BE_ARRIVING) {
+                $("#info").modal('show');
+                $('#info_message').html('即將抵達乘客下車點');
+                $('#info_name').html(passList[passIndex].Name);
+                $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
+            }
+        }
+    }, 0);
 }
 
 function DetectCurPoint() {

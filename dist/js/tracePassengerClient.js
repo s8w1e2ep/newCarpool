@@ -7,23 +7,24 @@ $(document).ready(function() {
 
     InitializePassenger();
 
-    AddDriver(1046779538684827, 0);
-    AddDriver(1046779538684828, 1);
+    // AddDriver(1046779538684827, 0);
+    // AddDriver(1046779538684828, 1);
 
     DetectCurPoint();
+    // setInterval(DetectCurPoint, 6000);
 });
 
 //global variables
 var map;
-var server = "http://127.0.0.1/traceSystem/php/";
+var server = "http://127.0.0.1/newcarpool/api/";
 var COLOR = ["#176ae6", "#ff0000", "#6a3906", "#800080"];
 
-var url = window.location.toString();
+var global_url = window.location.toString();
 // passenger id
-// var pid = null;
+var pid = null;
 // TEST ID 1046779538684831
 // var pid = "1046779538684831"
-var pid = "1046779538684831";
+// var pid = "1046779538684831";
 
 // driver is
 var did = [];
@@ -74,14 +75,23 @@ function InitializeMap() {
     //set map options
     var mapOptions = {
         zoom: 16,
-        center: new google.maps.LatLng(22.975375, 120.218936)
+        center: new google.maps.LatLng(22.975375, 120.218936),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
-    //set mapc
+    //set map
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 }
 
 function InitializePassenger() {
+    var thestr = global_url.substring(global_url.indexOf("{"), global_url.length);
+    var thejson = JSON.parse(decodeURIComponent(thestr)).id;
+    pid = thejson[0];
+    console.log(thejson);
+    // add drivers
+    for (var i = 1; i < thejson.length; i++)
+        AddDriver(thejson[i], i - 1);
+
     passenger = new PassengerObj();
 
     var toServerStr = '{"init": 1,"role": 1, "pid":"' + pid + '"}';
@@ -208,6 +218,7 @@ function AddDriver(id, pathid) {
             driverList[theDriverIndex].Marker.InfoWindow.setOptions({
                 content: (theDriverIndex + 1).toString(),
                 position: driverList[theDriverIndex].Point.Current,
+                disableAutoPan: true,
                 zIndex: 803
             });
             driverList[theDriverIndex].Marker.InfoWindow.open(map, driverList[theDriverIndex].Marker.Current);
@@ -246,9 +257,6 @@ function UpdateView(re, dcurpoints) {
         zIndex: 802
     });
 
-    // set map center to current point
-    map.setCenter(passenger.Point.Current);
-
     // update drivers' current point marker
     for (var i = 0; i < dcurpoints.length; i++) {
         var driverIndex = did.indexOf(dcurpoints[i].did);
@@ -273,10 +281,14 @@ function UpdateView(re, dcurpoints) {
         driverList[driverIndex].Marker.InfoWindow.setOptions({
             content: (driverIndex + 1).toString(),
             position: driverList[driverIndex].Point.Current,
+            disableAutoPan: true,
             zIndex: 803
         });
         driverList[driverIndex].Marker.InfoWindow.open(map, driverList[driverIndex].Marker.Current);
     }
+
+    // set map center to current point
+    map.setCenter(passenger.Point.Current);
 }
 
 function DetectCurPoint() {
@@ -296,6 +308,8 @@ function DetectCurPoint() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         var result = JSON.parse(xmlhttp.responseText);
                         passenger.Point.Current = new google.maps.LatLng(position.coords.latitude.toFixed(5), position.coords.longitude.toFixed(5));
+                        console.log(passenger.Point.Current);
+
                         // update screen infomation
                         UpdateView(result.calResult, result.driverCurpoints);
                     }

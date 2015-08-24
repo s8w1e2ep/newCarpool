@@ -3,7 +3,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 // unit meter
-define("CAR_DELTA", 50);
+define("CAR_DELTA", 25);
 
 require_once '../config/db_connect.php';
 $db = new DB_CONNECT();
@@ -31,10 +31,10 @@ if ($data['init']) {
 		// driver initial info
 		// SELECT `driver`.`aid`, `account`.`name`, `driver`.`curpoint`, `driver`.`path` FROM`driver`, `account` WHERE (NOT `driver`.`finished`) AND `account`.`aid` = 1046779538684826 AND `driver`.`aid` = 1046779538684826
 		$driverInfoSql = 'SELECT `driver`.`aid`, `account`.`name`, `driver`.`curpoint`, `driver`.`path` FROM `driver`, `account` WHERE (NOT `driver`.`finished`) AND `account`.`aid` = ' . $data['did'] . ' AND `driver`.`aid` = ' . $data['did'];
-		$driverInfo = mysqli_query($db->conn, $driverInfoSql);
+		$driverInfo = mysql_query($driverInfoSql);
 
-		if (mysqli_num_rows($driverInfo) > 0) {
-			$driverInfo = mysqli_fetch_array($driverInfo, MYSQL_ASSOC);
+		if (mysql_num_rows($driverInfo) > 0) {
+			$driverInfo = mysql_fetch_array($driverInfo, MYSQL_ASSOC);
 			if ($data['did'] == $driverInfo['aid']) {
 				// to client str
 				// {"driver":{"Name": "a", "CurPoint": 1, "Path": 1}}
@@ -47,10 +47,10 @@ if ($data['init']) {
 		// passenger initial info
 		// SELECT `passenger`.`aid`, `account`.`name`, `passenger`.`curpoint`, `passenger`.`carpoolpath` FROM `account`, `passenger` WHERE (NOT `passenger`.`finished`) AND `account`.`aid` = 270371829840730  AND `passenger`.`aid` = 270371829840730
 		$passInfoSql = 'SELECT `passenger`.`aid`, `account`.`name`, `passenger`.`curpoint`, `passenger`.`carpoolpath` FROM `account`, `passenger` WHERE (NOT `passenger`.`finished`) AND `account`.`aid` = ' . $data['pid'] . ' AND `passenger`.`aid` = ' . $data['pid'];
-		$passInfo = mysqli_query($db->conn, $passInfoSql);
+		$passInfo = mysql_query($passInfoSql);
 
-		if (mysqli_num_rows($passInfo) > 0) {
-			$passInfo = mysqli_fetch_array($passInfo, MYSQL_ASSOC);
+		if (mysql_num_rows($passInfo) > 0) {
+			$passInfo = mysql_fetch_array($passInfo, MYSQL_ASSOC);
 			if ($data['pid'] == $passInfo['aid']) {
 				// to client str
 				// {"passenger":{"Name": "a", "CurPoint": 1, "Path": 1}}
@@ -63,8 +63,8 @@ if ($data['init']) {
 } else {
 // Get necessary data from db
 	// function GetneceData($did, $pids, $onlyPath)
-	$neceData = GetneceData($data['did'], $data['pids'], false);
-// print_r($neceData);
+	$neceData = GetneceData($data['did'], $data['pids']);
+	// print_r($neceData);
 
 // first update driver current point
 	UpdateCurrentPoint($data['did'], $data['curpoint']);
@@ -88,11 +88,14 @@ if ($data['init']) {
 	// get each passengers' curpoint
 	// SELECT `passenger`.`aid`, `passenger`.`curpoint` FROM `passenger` WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` =
 	$passCurpoints = array();
-	$passCurpointSql = 'SELECT `passenger`.`aid`, `passenger`.`curpoint` FROM `passenger` WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` IN (' . join(",", $data['pids']) . ')';
-	$passCurpoint = mysqli_query($db->conn, $passCurpointSql);
-	while ($lineData = mysqli_fetch_array($passCurpoint, MYSQL_ASSOC)) {
-		if (in_array($lineData['aid'], $data['pids']) && $lineData['aid'] != $calResult[0]['id']) {
-			array_push($passCurpoints, array("id" => $lineData['aid'], "curpoint" => json_decode($lineData['curpoint'], true)));
+	if (count($data['pids'])) {
+		$passCurpoints = array();
+		$passCurpointSql = 'SELECT `passenger`.`aid`, `passenger`.`curpoint` FROM `passenger` WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` IN (' . join(",", $data['pids']) . ')';
+		$passCurpoint = mysql_query($passCurpointSql);
+		while ($lineData = mysql_fetch_array($passCurpoint, MYSQL_ASSOC)) {
+			if (in_array($lineData['aid'], $data['pids']) && $lineData['aid'] != $calResult[0]['id']) {
+				array_push($passCurpoints, array("id" => $lineData['aid'], "curpoint" => json_decode($lineData['curpoint'], true)));
+			}
 		}
 	}
 	echo '{"calResult":' . urldecode(json_encode($calResult)) . ', "passCurpoints" : ' . json_encode($passCurpoints) . '}';
@@ -111,16 +114,16 @@ if ($data['init']) {
 
 // get necessary data
 // driver path, passengers' get in and get out off point
-function GetneceData($did, $pids, $onlyPath) {
+function GetneceData($did, $pids) {
 	$neceData = array();
 
 	// get driver data
 	// SELECT `driver`.`aid`,  `driver`.`path` FROM `driver` WHERE (NOT `driver`.`finished`) AND `driver`.`aid` = 1046779538684826
 	$getDriverPathSql = 'SELECT `driver`.`aid`, `driver`.`path` FROM `driver` WHERE (NOT `driver`.`finished`) AND `driver`.`aid` = ' . $did;
-	$driverPathResult = mysqli_query($GLOBALS['db']->conn, $getDriverPathSql);
+	$driverPathResult = mysql_query($getDriverPathSql);
 
-	if (mysqli_num_rows($driverPathResult) > 0) {
-		$driverPath = mysqli_fetch_array($driverPathResult);
+	if (mysql_num_rows($driverPathResult) > 0) {
+		$driverPath = mysql_fetch_array($driverPathResult);
 		if ($driverPath['aid'] == $did) {
 			$neceData['driverPath'] = json_decode($driverPath['path'], true);
 		} else {
@@ -133,11 +136,11 @@ function GetneceData($did, $pids, $onlyPath) {
 	// get passengers' data
 	// SELECT `passenger`.`aid`, `passenger`.`getinStatus`, `passenger`.`getoffStatus`, `passenger`.`carpoolpath` FROM `passenger` WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` IN (270371829840730, 1046779538684829, 1046779538684830, 1046779538684831)
 	$neceData['points'] = array();
-	if (count($pids) > 0 && !$onlyPath) {
+	if (count($pids) > 0) {
 		$getPassPointsSql = 'SELECT `passenger`.`aid`, `passenger`.`curpoint`, `passenger`.`getinStatus`, `passenger`.`getoffStatus`, `passenger`.`carpoolpath` FROM `passenger` WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` IN (' . join(",", $pids) . ')';
-		$passPointsResult = mysqli_query($GLOBALS['db']->conn, $getPassPointsSql);
+		$passPointsResult = mysql_query($getPassPointsSql);
 
-		while ($lineData = mysqli_fetch_array($passPointsResult, MYSQL_ASSOC)) {
+		while ($lineData = mysql_fetch_array($passPointsResult, MYSQL_ASSOC)) {
 			if (in_array($lineData['aid'], $pids)) {
 				$cpath = json_decode($lineData['carpoolpath'], true);
 
@@ -166,7 +169,7 @@ function GetneceData($did, $pids, $onlyPath) {
 // UPDATE `driver` SET `driver`.`curpoint` = '{"at": 22.9667, "ng": 120.2288}' WHERE `driver`.`aid` = 1046779538684826
 function UpdateCurrentPoint($id, $point) {
 	$sql = 'UPDATE `driver` SET `driver`.`curpoint` = ' . '\'{"at":"' . $point['at'] . '","ng":"' . $point['ng'] . '"}\'' . ' WHERE `driver`.`aid` = ' . $id;
-	$updateResult = mysqli_query($GLOBALS['db']->conn, $sql);
+	$updateResult = mysql_query($sql);
 }
 
 // get target point to calculate some infomation
@@ -209,7 +212,7 @@ function DetResult($tp) {
 				// update db infomation
 				// UPDATE `passenger` SET `passenger`.`getinStatus` = 1 WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` = 1046779538684829
 				$UpdatePassStatusSql = 'UPDATE `passenger` SET `passenger`.`getinStatus` = 1 WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` = ' . $tp[0]['id'];
-				$UpdatePassStatusResult = mysqli_query($GLOBALS['db']->conn, $UpdatePassStatusSql);
+				$UpdatePassStatusResult = mysql_query($UpdatePassStatusSql);
 				$whichPoint = ($tpNum > 1) ? 1 : 2;
 			} else {
 				$whichPoint = 0;
@@ -222,7 +225,7 @@ function DetResult($tp) {
 				// update db infomation
 				// UPDATE `passenger` SET `passenger`.`getoffStatus` = 1 WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` = 1046779538684829
 				$UpdatePassStatusSql = 'UPDATE `passenger` SET `passenger`.`getoffStatus` = 1 WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` = ' . $tp[0]['id'];
-				$UpdatePassStatusResult = mysqli_query($GLOBALS['db']->conn, $UpdatePassStatusSql);
+				$UpdatePassStatusResult = mysql_query($UpdatePassStatusSql);
 				$whichPoint = ($tpNum > 1) ? 1 : 2;
 			} else {
 				$whichPoint = 0;
