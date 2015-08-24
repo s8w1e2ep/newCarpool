@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		
+		<!-- JQuery -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js" type="text/javascript"></script>
+		
+		<!-- google material lite -->
+		<link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
+		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		
+		<!-- custom css and js -->
+		<link rel="stylesheet" href="style.css">
+		<script src="dist/js/result.js"></script>
+		
+		<!-- jQuery UI -->
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+		<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	    <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+	    <script>
+		  $(function() {
+			$( "#accordion" ).accordion({
+			  collapsible: true
+			});
+			/*$(".parent").click(function() {
+				$(this).toggleClass("selected");
+				$(this).siblings().not(".parent").not(":first-child").hide();
+				$(this).next().show().next().show();
+			});*/
+		  });
+	    </script>
+		<!-- Uses a header that contracts as the page scrolls down. -->
+		<style>
+		.waterfall-demo-header-nav .mdl-navigation__link:last-of-type  {
+		  padding-right: 0;
+		}
+		.parent {
+		  background:#FFF38F;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+		  <header class="mdl-layout__header mdl-layout__header--waterfall">
+			<!-- Top row, always visible -->
+			<div class="mdl-layout__header-row">
+			  <!-- Title -->
+			  <span class="android-title mdl-layout-title">
+				<a href="index.html"><img src="assets/logo.png" width="50%"></a>
+			  </span>
+			  
+			  <div class="mdl-layout-spacer"></div>
+			  <a class="mdl-navigation__link" href="logout.html">Logout</a>
+			</div>
+		  </header>
+		  <div class="mdl-layout__drawer">
+			<header class="drawer-header mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+				<img src="" alt="user" class="avatar">
+				<div class="avatar-dropdown">
+					<span>NAME</span>
+					<div class="mdl-layout-spacer"></div>
+					<button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+						<i class="material-icons" role="presentation">arrow_drop_down</i>
+						<span class="visuallyhidden">Personal Info</span>
+					</button>
+					<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+					  <li class="mdl-menu__item">NAME</li>
+					  <li class="mdl-menu__item">0912345678</li>
+					  <li class="mdl-menu__item"><i class="material-icons">edit</i>Edit</li>
+					</ul>
+				</div>
+			</header>
+			<nav class="mdl-navigation">
+			  <a class="mdl-navigation__link" href="board.html"><i class="material-icons">event_note</i>Board</a>
+			  <a class="mdl-navigation__link" href="wall.html"><i class="material-icons">forum</i>Wall</a>
+			  <a class="mdl-navigation__link" href="friendlist.html"><i class="material-icons">group</i>Friendlist</a>
+			  <a class="mdl-navigation__link" href="setting.html"><i class="material-icons">settings</i>Setting</a>
+			  <a class="mdl-navigation__link" href="about.html"><i class="material-icons">info</i>About</a>
+			</nav>
+		  </div>
+		  
+		  <dialog id="dialog" class="mdl-shadow--2dp"><!-- class="demo-card-square mdl-card mdl-shadow--2dp" tabindex="-1" > -->
+		  <div class="mdl-card__title mdl-card--expand">
+			<h2 >司機資訊</h2>
+		  </div>
+		  <div class="mdl-card__supporting-text">
+			<img id="dialog_image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
+			<b id="dialog_name" style="padding: 5px; font-size: 25px;"></b><br/>
+			<img id="dialog_image2" src="" alt="..." class="img-circle" style="display: none; padding: 5px;">
+			<b id="dialog_name2" style="padding: 5px; font-size: 25px;"></b><br/>
+			<img id="dialog_image3" src="" alt="..." class="img-circle" style="display: none; padding: 5px;">
+			<b id="dialog_name3" style="padding: 5px; font-size: 25px;"></b>
+		  </div>
+		  <div class="mdl-card__actions mdl-card--border">
+			<button class="mdl-button mdl-js-button" onclick="confirm();">
+			  送出
+			</button>
+			<button id="cancel" class="mdl-button mdl-js-button" onclick="cancel();">
+			  取消
+			</button>
+		  </div>
+		  </dialog>
+		  
+		  
+		  <main class="mdl-layout__content">
+			<div class="page-content">
+				<br/><br/>
+				<center>
+					<div id="table1">
+					</div>
+					
+						<!-- 'http://graph.facebook.com/' + id + '/picture?type=large' -->
+						<!-- <tr>
+							<td><b>司機</b></td>
+							<td><b>共乘比例</b></td>
+							<td><b>等待時間</b></td>
+							<td><b>資訊</b></td>
+						</tr>
+						
+						<tr >						
+							<td width="30%" align="center"><img src="" alt="pic1" class="avatar"></td>
+							<td width="25%" align="center">75%</td>
+							<td width="25%" align="center">5分鐘</td>
+							<td width="5%" align="center"><a href="info.html"><i class="material-icons">info</i></a></td>
+						</tr> -->
+					<div id="table2">
+					</div>
+					<div id="table3">
+					</div>
+					
+				</center>
+			</div>
+		  </main>
+	  </body>
+	</div>
+</html>

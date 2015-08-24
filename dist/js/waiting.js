@@ -16,6 +16,7 @@ var url = "";
 var id = "";
 var tid = "";
 var json = "";
+var trace_str = "";
 
 var server = "http://noname0930.no-ip.org/carpool/api/";
 var local = "file:///android_asset/www/";
@@ -23,6 +24,8 @@ var local = "file:///android_asset/www/";
 function initialize()
 {
 	var str = url.substring(url.indexOf("{"), url.length);
+	trace_str = str;
+	console.log(trace_str);
 	json = JSON.parse(decodeURIComponent(str));
 	id = json.id;
 	json = decodeURIComponent(str);
@@ -43,7 +46,8 @@ function setURL()
 // passenger: {"role":"passenger","id":"838717559541922","did":"1046779538684826"}
 function confirmCarpool()
 {
-	window.location = local + 'trace.html?data={"role":"passenger","id":"' + id + '","did":"'+ tid + '"}';
+	console.log(trace_str);
+	window.location = local + 'trace.html?data=' + trace_str;
 }
 function cancelCarpool()
 {
