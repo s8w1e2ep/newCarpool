@@ -303,6 +303,11 @@ function UpdateView(re, pcurpoints) {
         }
         ttsText += re[0].gdm.time.text + '，' + re[0].gdm.distance.text;
     } else {
+        // redirect to rating page
+        if (re[0].gdm.distance.val <= 25) {
+
+        }
+
         pIndex = -1;
         ttsText += '終點約' + re[0].gdm.time.text + '，' + re[0].gdm.distance.text;
     }
