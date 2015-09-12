@@ -1,77 +1,282 @@
-html, body {
-  font-family: 'Roboto', 'Helvetica', sans-serif;
+html,
+body {
+    font-family: 'Roboto', 'Helvetica', sans-serif;
+}
+
+@font-face {
+    font-family: "And Black";
+    src: url("myfont-webfont.eot?#iefix") format('embedded-opentype'), url("fonts/and_black.woff") format('woff'), url("fonts/and_black.ttf") format('truetype');
 }
 
 .avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 24px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
 }
+
 .drawer-header {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 16px;
-  height: 151px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+    height: 151px;
 }
+
 .avatar-dropdown {
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
 }
+
 .logout-dropdown {
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
 }
+
 .card-event.mdl-card {
-  width: 80%;
-  height: 10%;
-  background: #E0E0E0;
+    width: 80%;
+    height: 10%;
+    background: #E0E0E0;
 }
 
 .demo-card-square.mdl-card {
-  /* display: none; */
-  width: 40%;
-  height: 60%;
+    /* display: none; */
+    width: 40%;
+    height: 60%;
 }
+
 .mdl-card__title {
-  color: #fff;
-  background:  bottom right 15% no-repeat #46B6AC;
-    /* url('assets/bg2.png') #46B6AC*/ 
-}
-dialog {
-  width: 50%;
-  height: 75%;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  z-index: 2;
+    color: #fff;
+    background: bottom right 15% no-repeat #46B6AC;
+    /* url('assets/bg2.png') #46B6AC*/
 }
 
-dialog::backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+.img-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
 }
 
-#dialog_image{
-  width: 18%;
-  height: 18%;
+.wrapperOutside {
+    display: none;
+    width: 100vw;
+    height: 100vh;
 }
-#dialog_image2{
-  width: 18%;
-  height: 18%;
+
+.wrapperInside {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
 }
-#dialog_image3{
-  width: 18%;
-  height: 18%;
+
+
+/*
+The attributes below style the css
+dialog window, and content.
+*/
+
+.dialogContainer {
+    /* Form */
+    width: 280px;
+    height: auto;
+    /*
+  Drop Shadow
+  a. Horizontal shadow
+  b. Vertical shadow
+  c. Blur
+  d. Spread
+  e. Color
+  */
+    -webkit-box-shadow: 0 -2px 25px 0 rgba(0, 0, 0, 0.15), 0 13px 25px 0 rgba(0, 0, 0, 0.3);
+    background-color: #FFFFFF;
+    text-align: center;
+    vertical-align: middle;
+    /* Internal padding */
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    /* External padding */
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+}
+
+.dialogContent {
+    /* Form */
+    width: auto;
+    height: auto;
+    background-color: #FFFFFF;
+    /* Corner radius */
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    /* Internal padding */
+    padding-top: 21px;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 12px;
+    /* External padding */
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.dialogContentTitle {
+    /* Form */
+    background-color: #FFFFFF;
+    text-align: center;
+    vertical-align: middle;
+    /* Typography */
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: rgba(0, 0, 0, .9);
+    line-height: 24px;
+    text-align: left;
+    letter-spacing: 0.03px;
+    /* Internal padding */
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    /* External padding */
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.dialogContentBody {
+    text-align: center;
+    vertical-align: middle;
+    /* Typography */
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: rgba(0, 0, 0, .6);
+    line-height: 24px;
+    text-align: left;
+    letter-spacing: 0.03px;
+    /* Internal padding */
+    padding-top: 14px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    /* External padding */
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.dialogActionBar {
+    /* Form */
+    width: auto;
+    height: 48px;
+    background-color: #FFFFFF;
+    text-align: right;
+    /* Corner radius */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    /* Internal padding */
+    padding-top: 0;
+    padding-left: 16px;
+    padding-right: 15px;
+    padding-bottom: 8px;
+    /* External padding */
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+
+/*
+The attributes below style the
+hit target.
+*/
+
+.buttonTouchTarget {
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0);
+    /* Remove grey background on link clicked in ios safari */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+
+/*
+The attributes below style the
+flat button based on the Google
+material design language.
+*/
+
+.buttonFlat {
+    /* Form */
+    display: inline-block;
+    height: 36px;
+    background-color: rgba(9, 9, 9, 0);
+    /* Typography */
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    /* color: rgba(33,150,243,0.9); */
+    color: rgba(0, 0, 0, 0.9);
+    line-height: 36px;
+    text-align: center;
+    letter-spacing: 0.4px;
+    /* Internal padding */
+    padding-top: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 0;
+    /* External padding – Touch target size */
+    margin-top: 6px;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-bottom: 6px;
+}
+
+.friendlist {
+    width: 100vw;
+    height: 80px;
+    vertical-align: middle;
+    text-align: left;
+    /* border */
+    border-bottom-style: solid;
+    border-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.wallOut {
+    display: table;
+    width: 100vw;
+    /* border */
+    border-bottom-style: solid;
+    border-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.wall-left {
+    width: 25%;
+    display: table-cell;
+    vertical-align: top;
+}
+
+.wall-right {
+    width: 75%;
+    display: table-cell;
 }

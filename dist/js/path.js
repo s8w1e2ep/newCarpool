@@ -6,9 +6,8 @@
 	var passenger_json = "";
 	var his_json = ""; //紀錄history json
 
-	var server = "http://127.0.0.1/api/";
-	// var local = "file:///android_asset/www/";
-	var local = "http://127.0.0.1/";
+	var server = "http://120.114.186.4/carpool/api/";
+	var local = "file:///android_asset/www/";
 
 	function initialize() {
 	    var str = url.substring(url.indexOf("{"), url.length);
@@ -21,11 +20,56 @@
 	    //condition = json.condition;
 
 	    GetCurrentPos(id, role);
+	    getName();
 	    setURL();
 	}
 
 	function setURL() {
-	    document.getElementById("logo").href = 'http://52.68.75.40/carpool/index.html?data=' + '{"id":"' + id + '"}';
+	    var temp = '?data={"id":"' + id + '"}';
+
+	    $('#board').attr('href', local + 'board.html' + temp);
+	    $('#wall').attr('href', local + 'wall.html' + temp);
+	    $('#friendlist').attr('href', local + 'friendlist.html' + temp);
+	    $('#about').attr('href', local + 'about.html' + temp);
+	    $('#setting').attr('href', local + 'setting.html' + temp);
+	    $('#edit').attr('href', local + 'edit.html' + temp);
+	    $('#logo').attr('href', local + 'index.html' + temp);
+	    $('#dsgr').attr('href', local + 'index.html' + temp);
+	    $('#user_image').attr('src', 'http://graph.facebook.com/' + id + '/picture?type=large');
+	}
+
+
+	function getName() {
+	    var url = server + 'get_name.php?data={"id":"' + id + '"}';
+	    var xmlhttp = new XMLHttpRequest();
+	    xmlhttp.open("GET", url, true);
+	    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	    xmlhttp.onreadystatechange = function() {
+	        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+	            name = xmlhttp.responseText;
+	            $('#pname').html(name);
+	            $('#pname2').html(name);
+	            $('#name').html('Hi, ' + name);
+	            getPhone();
+	        }
+	    }
+	    xmlhttp.send();
+	}
+
+	function getPhone() {
+	    var url = server + 'get_phone.php?data={"id":"' + id + '"}';
+	    var xmlhttp = new XMLHttpRequest();
+	    xmlhttp.open("GET", url, true);
+	    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	    xmlhttp.onreadystatechange = function() {
+	        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+	            phone = xmlhttp.responseText;
+	            $('#image').attr('src', 'http://graph.facebook.com/' + id + '/picture?type=large');
+	            $('#state').html('已登入');
+	            $('#tel').html(phone);
+	        }
+	    }
+	    xmlhttp.send();
 	}
 
 	function requestAPI(url, data, gid) //傳資料給php
@@ -47,7 +91,7 @@
 	                } else if (jstr.match("NoMatch") != null) {
 	                    alert("沒有司機符合媒合條件");
 	                } else {
-	                    window.location = 'file:///android_asset/www/result.html?data=' + jstr; //跳轉到result頁面
+	                    window.location = local + 'result.html?data=' + jstr; //跳轉到result頁面
 	                }
 	            }
 	        }
@@ -65,7 +109,7 @@
 	    //history json
 	    his_json = file;
 	    //passenger json
-	    passenger_json = file.substring(0, file.length - 1) + ',"path":' + pathJSON + ',"total":' + PathLength + ',"start":' + '{"latitude":"' + (new Number(StartPoint.lat())).toFixed(14) + '","longitude":"' + (new Number(StartPoint.lng())).toFixed(14) + '"}' + ',"end":' + '{"latitude":"' + (new Number(pathTemp[pathTemp.length - 1].at)).toFixed(14) + '","longitude":"' + (new Number(pathTemp[pathTemp.length - 1].ng)).toFixed(14) + '"}}';
+	    passenger_json = file.substring(0, file.length - 1) + ',"path":' + pathJSON + ',"total":' + PathLength + ',"start":' + '{"at":"' + (new Number(StartPoint.lat())).toFixed(14) + '","ng":"' + (new Number(StartPoint.lng())).toFixed(14) + '"}' + ',"end":' + '{"at":"' + (new Number(pathTemp[pathTemp.length - 1].at)).toFixed(14) + '","ng":"' + (new Number(pathTemp[pathTemp.length - 1].ng)).toFixed(14) + '"}}';
 	    //driver json
 	    driver_json = temp_json.substring(0, temp_json.length - 1) + ',"path":' + pathJSON + '}';
 
@@ -73,7 +117,7 @@
 
 	    if (role == "driver") {
 	        var url = "";
-	        url = server + 'driver.php?data=' + driver_json;
+	        url = server + 'driver.php';
 	        console.log("driver: " + url);
 	        var xmlhttp = new XMLHttpRequest();
 	        xmlhttp.open("POST", url, true);
@@ -83,7 +127,7 @@
 	                window.location = local + 'traceDriverPage.html?data={"id":"' + id + '"}';
 	            }
 	        }
-	        xmlhttp.send();
+	        xmlhttp.send('data=' + driver_json);
 	    } else if (role == "passenger") {
 	        requestAPI(server + "path.php", passenger_json, "match"); //取得評價篩選後的司機路徑 => 88行
 	    }

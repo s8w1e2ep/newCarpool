@@ -16,11 +16,10 @@
 
 	$sql = "SELECT MAX(`wnum`) FROM `wall`";
 	$result = mysql_query($sql);
-
 	$max = mysql_fetch_array($result);
 	$max = $max[0] + 1;
 
-	$sql = "INSERT INTO `wall`(`wnum`, `wid`, `comment`, `time`, `rating`, `uid`) VALUES ('$max','$uid','$comment',CURRENT_TIMESTAMP,'$rating','$id')";	
+	$sql = "INSERT INTO `wall`(`wnum`, `wid`, `comment`, `time`, `rating`, `uid`) VALUES ('$max','$uid','$comment',CURRENT_TIMESTAMP,'$rating','$id')";
 	$result = mysql_query($sql);
 
 	$sql = "SELECT AVG(`rating`) FROM `wall` WHERE `wid` = '$uid'";
@@ -32,11 +31,11 @@
 
 	if($role == "driver")
 	{
-		$sql = "UPDATE `history` SET `time` = CURRENT_TIMESTAMP WHERE `did` = '$id' AND `pid` = '$uid'";
+		$sql = "UPDATE `history` SET `time` = CURRENT_TIMESTAMP WHERE `did` = '$id' AND `pid` = '$uid' AND `time` = '0000-00-00 00:00:00'";
 	}
 	else if($role == "passenger")
 	{
-		$sql = "UPDATE `history` SET `time` = CURRENT_TIMESTAMP WHERE `pid` = '$id' AND `did` = '$uid'";
+		$sql = "UPDATE `history` SET `time` = CURRENT_TIMESTAMP WHERE `pid` = '$id' AND `did` = '$uid' AND `time` = '0000-00-00 00:00:00'";
 	}
 
 	$result = mysql_query($sql);

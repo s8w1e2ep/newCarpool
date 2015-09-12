@@ -3,7 +3,7 @@
 	header("Content-Type: application/json; charset=UTF-8");
 	//connection
 	require_once 'pathcompare.php';
-	require_once '../../config//db_connect.php';
+	require_once '../config//db_connect.php';
 	$db = new DB_CONNECT();
 	//get data
 	$data = $_GET['data'];
@@ -15,8 +15,8 @@
 	$distance = $condition[0]['distance'];		//乘客上車距離門檻
 	$waiting = $condition[0]['waiting'];		//乘客等待時間門檻
 	$threshold = $condition[0]['rating'];		//乘客評價門檻
-	$start = '{"latitude":"'.$data['start']['latitude'].'","longitude":"'.$data['start']['longitude'].'"}';	//乘客起點
-	$end = '{"latitude":"'.$data['end']['latitude'].'","longitude":"'.$data['end']['longitude'].'"}';		//乘客終點
+	$start = '{"at":"'.$data['start']['at'].'","ng":"'.$data['start']['ng'].'"}';	//乘客起點
+	$end = '{"at":"'.$data['end']['at'].'","ng":"'.$data['end']['ng'].'"}';		//乘客終點
 	$path = $data['path'];						//乘客路徑json
 	$passengerPath = array($path);				//乘客路徑陣列
 	$totalDistance = $data['total'];			//乘客路徑長
@@ -146,7 +146,7 @@
 				array_push($driverPath, $res[0]);
 				array_push($driverWait, $res[2]);
 				$res = json_decode($res[1], true);
-				$res = '{"at":'.(float)($res["latitude"]).',"ng":'.(float)($res['longitude']).'}';
+				$res = '{"at":'.(float)($res["at"]).',"ng":'.(float)($res['ng']).'}';
 				array_push($driverPos, json_decode($res, true));
 			}
 		}
@@ -474,7 +474,7 @@
 				$carstr1 = "";
 			}
 			
-			print $carstr;
+			// print $carstr;
 			
 			//更新requester資料
 			$sql = "SELECT `aid` FROM `passenger` WHERE `finished` = '0' and `aid` = '$id'";

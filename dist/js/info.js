@@ -6,7 +6,7 @@ $(document).ready(function() {
 function initialize()
 {
 	var str = url.substring(url.indexOf("{"), url.length);		
-	$('#back').attr("href","result.html?data=" + str);
+	$('#back').attr("href","file:///android_asset/www/result.html?data=" + str);
 	console.log("result.html?data=" + str);
 	var map;
 	function initMap() {

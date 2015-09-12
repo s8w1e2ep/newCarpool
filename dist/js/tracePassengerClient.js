@@ -16,7 +16,8 @@ $(document).ready(function() {
 
 //global variables
 var map;
-var server = "http://127.0.0.1/newcarpool/api/";
+var local = "file:///android_asset/www/";
+var server = "http://120.114.186.4/carpool/api/";
 var COLOR = ["#176ae6", "#ff0000", "#6a3906", "#800080"];
 
 var global_url = window.location.toString();
@@ -145,6 +146,56 @@ function InitializePassenger() {
 
             // set map center to current point
             map.setCenter(passenger.Point.Current);
+        }
+    }
+    xmlhttp.send();
+
+    getName();
+    setURL();
+}
+
+function setURL() {
+    var temp = '?data={"id":"' + pid + '"}';
+
+    $('#board').attr('href', local + 'board.html' + temp);
+    $('#wall').attr('href', local + 'wall.html' + temp);
+    $('#friendlist').attr('href', local + 'friendlist.html' + temp);
+    $('#about').attr('href', local + 'about.html' + temp);
+    $('#setting').attr('href', local + 'setting.html' + temp);
+    $('#edit').attr('href', local + 'edit.html' + temp);
+    $('#logo').attr('href', local + 'index.html' + temp);
+    $('#dsgr').attr('href', local + 'index.html' + temp);
+    $('#user_image').attr('src', 'http://graph.facebook.com/' + pid + '/picture?type=large');
+}
+
+function getName() {
+    var url = server + 'get_name.php?data={"id":"' + pid + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            name = xmlhttp.responseText;
+            $('#pname').html(name);
+            $('#pname2').html(name);
+            $('#name').html('Hi, ' + name);
+            getPhone();
+        }
+    }
+    xmlhttp.send();
+}
+
+function getPhone() {
+    var url = server + 'get_phone.php?data={"id":"' + pid + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            phone = xmlhttp.responseText;
+            $('#image').attr('src', 'http://graph.facebook.com/' + pid + '/picture?type=large');
+            $('#state').html('已登入');
+            $('#tel').html(phone);
         }
     }
     xmlhttp.send();

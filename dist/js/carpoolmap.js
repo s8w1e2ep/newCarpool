@@ -8,7 +8,7 @@ $(document).ready(function() {
 
     initialize();
 
-    $('.toggle-menu').jPushMenu();
+    // $('.toggle-menu').jPushMenu();
 
     $('#btnBoundEP').click(function() {
         SetMarkerStatus(2);
@@ -81,8 +81,8 @@ function updateLocation(id, latitude, longitude, role) {
         role = 1;
     else if (role == "driver")
         role = 2;
-    var data = '{"id":"' + id + '", "role":"' + role + '","curpoint":[{"latitude":"' + latitude + '","longitude":"' + longitude + '"}]}';
-    var server = "http://127.0.0.1/car/api/";
+    var data = '{"id":"' + id + '", "role":"' + role + '","curpoint":[{"at":"' + latitude + '","ng":"' + longitude + '"}]}';
+    var server = "http://120.114.186.4/carpool/api/";
     var url = server + 'update_location.php?data=' + data;
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);

@@ -2,78 +2,154 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Let's Carpool</title>
-    <!-- CSS -->
-    <!-- <link rel="stylesheet" href=""> -->
-    <link rel="stylesheet" href="dist/css/traceSystem.css">
-    <link rel="stylesheet" type="text/css" href="dist/css/demo.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <!-- JavaScript -->
-    <!-- <script src=""></script> -->
+    <meta name="description" content="Introducing Lollipop, a sweet new take on Android.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- google material lite -->
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+    <!-- custom css and js -->
+    <link rel="stylesheet" href="dist/css/traceSystem.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google map -->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-    <script src="dist/js/traceDriverClient.js"></script>
+    <!-- Uses a header that contracts as the page scrolls down. -->
+    <style>
+    .waterfall-demo-header-nav .mdl-navigation__link:last-of-type {
+        padding-right: 0;
+    }
+    </style>
 </head>
 
-<body>
-    <div id="map-block" class="map-block">
-        <div id="map-canvas"></div>
-    </div>
-    <div id="footer" class="footer">
-        <!--距離乘客王小明的下車點約2分/400公尺-->
-    </div>
-    <!-- Modal -->
-    <div class="modal fade" id="MsgDialog" tabindex="-1" role="dialog" style="margin-top: 15%">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #232323; color: #fff;">
-                    <h4 class="modal-title" id="ErrorMsgDialogTitle">Title</h4>
-                </div>
-                <div id="ErrorMsgDialogContent" class="modal-body" style="background-color: #4e4e4e; color: #fff;">
-                    Content...
-                </div>
-                <div class="modal-footer" style="background-color: #232323; color: #fff;">
-                    <button type="button" class="btn mybutton" data-dismiss="modal">
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true" style="margin-right: 10px;"></span>關閉
+<body id="mbody">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header mdl-layout__header--waterfall">
+            <!-- Top row, always visible -->
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="android-title mdl-layout-title">
+                <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
+              </span>
+                <div class="mdl-layout-spacer"></div>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <header class="drawer-header mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+                <!-- <img src="" alt="user" class="avatar"> -->
+                <img id="user_image" src="" alt="user" class="avatar">
+                <div class="avatar-dropdown">
+                    <span id="pname2">NAME</span>
+                    <div class="mdl-layout-spacer"></div>
+                    <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                        <i class="material-icons" role="presentation">arrow_drop_down_circle</i>
+                        <span class="visuallyhidden">Personal Info</span>
                     </button>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                        <li class="mdl-menu__item" id="pname">NAME</li>
+                        <li class="mdl-menu__item" id="tel">0912345678</li>
+                        <a href="" id="edit">
+                            <li class="mdl-menu__item"><i class="material-icons">edit</i>Edit</li>
+                        </a>
+                    </ul>
                 </div>
-            </div>
+            </header>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="" id="logo"><i class="material-icons">home</i>主頁</a>
+                <a class="mdl-navigation__link" href="" id="board"><i class="material-icons">event_note</i>公告欄</a>
+                <a class="mdl-navigation__link" href="" id="wall"><i class="material-icons">forum</i>動態牆</a>
+                <a class="mdl-navigation__link" href="" id="friendlist"><i class="material-icons">group</i>朋友</a>
+                <a class="mdl-navigation__link" href="" id="setting"><i class="material-icons">settings</i>設定</a>
+                <a class="mdl-navigation__link" href="" id="about"><i class="material-icons">info</i>關於</a>
+            </nav>
         </div>
-    </div>
-    <div id="dialog" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
+        <main class="mdl-layout__content">
+            <div class="page-content">
                 <center>
-                    <br></br>
-                    <img id="image" src="img/circle.png" alt="..." class="img-circle">
-                    <h2 id="name"></h2>
-                    <h3><div id="message"></div></h3>
-                    <br></br>
-                    <button id="accept" class="btn btn-default" type="button" value="" onclick="confirmCarpool();">接受</button>
-                    <button id="reject" class="btn btn-default" type="button" value="" onclick="cancelCarpool();">拒絕</button>
-                    <br></br>
+                    <!-- Modal 即將上車訊息... -->
+                    <div id="MsgDialog" class="wrapperOutside">
+                        <div class="wrapperInside">
+                            <div class="dialogContainer">
+                                <!-- Dialog title and body -->
+                                <div class="dialogContent">
+                                    <div class="dialogContentTitle">資訊</div>
+                                    <div class="dialogContentBody">
+                                        <img id="image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
+                                        <h3 id="name" style="padding: 5px; font-size: 25px;"></h3>
+                                        <h3><div id="message"></div></h3>
+                                    </div>
+                                </div>
+                                <!-- Dialog action bar -->
+                                <div class="dialogActionBar">
+                                    <button id="submit" class="mdl-button mdl-js-button">
+                                        關閉
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 接收gcm訊息 -->
+                    <div id="dialog" class="wrapperOutside">
+                        <div class="wrapperInside">
+                            <div class="dialogContainer">
+                                <!-- Dialog title and body -->
+                                <div class="dialogContent">
+                                    <div class="dialogContentTitle">共乘資訊</div>
+                                    <div class="dialogContentBody">
+                                        <img id="dialog_image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
+                                        <h3 id="dialog_name" style="padding: 5px; font-size: 25px;"></h3>
+                                        <h3><div id="message"></div></h3>
+                                    </div>
+                                </div>
+                                <!-- Dialog action bar -->
+                                <div class="dialogActionBar">
+                                    <button id="accept" class="mdl-button mdl-js-button" value="" onclick="confirmCarpool();">
+                                        接受
+                                    </button>
+                                    <button id="reject" class="mdl-button mdl-js-button" onclick="cancelCarpool();">
+                                        拒絕
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 完成通知 -->
+                    <div id="info" class="wrapperOutside">
+                        <div class="wrapperInside">
+                            <div class="dialogContainer">
+                                <!-- Dialog title and body -->
+                                <div class="dialogContent">
+                                    <div class="dialogContentTitle">共乘完成</div>
+                                    <div class="dialogContentBody">
+                                        <img id="info_image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
+                                        <b id="info_name" style="padding: 5px; font-size: 25px;"></b>
+                                        <br/>
+                                        <h3><div id="info_message"></div></h3>
+                                    </div>
+                                </div>
+                                <!-- Dialog action bar -->
+                                <div class="dialogActionBar">
+                                    <button id="ok" class="mdl-button mdl-js-button" value="">
+                                        確認
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="map-block" class="map-block">
+                        <div id="map-canvas"></div>
+                    </div>
+                    <div id="footer" class="footer">
+                        <!--距離乘客王小明的下車點約2分/400公尺-->
+                    </div>
                 </center>
             </div>
-        </div>
+        </main>
     </div>
-    <div id="info" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <center>
-                    <br></br>
-                    <img id="info_image" src="img/circle.png" alt="..." class="img-circle">
-                    <h2 id="info_name"></h2>
-                    <h3><div id="info_message"></div></h3>
-                    <br></br>
-                    <button id="ok" class="btn btn-default" type="button" value="">完成</button>
-                    <br></br>
-                </center>
-            </div>
-        </div>
-    </div>
+    <script src="dist/js/traceDriverClient.js"></script>
 </body>
 
 </html>

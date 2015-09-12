@@ -1,59 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Let's Carpool</title>
-    <!-- Bootstrap core CSS -->
-    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
-    <!--load jPushMenu.css, required-->
-    <link rel="stylesheet" type="text/css" href="dist/css/demo.css" />
-    <link rel="stylesheet" type="text/css" href="dist/css/jPushMenu.css" />
-    <link rel="stylesheet" type="text/css" href="dist/css/carpoolmap.css">
+    <meta name="description" content="Introducing Lollipop, a sweet new take on Android.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- JQuery JavaScript -->
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <!-- google material lite -->
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
+    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- custom css and js -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="dist/css/carpoolmap.css">
     <!--Google Map-->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-    <!--load jPushMenu, required-->
-    <script src="dist/js/jPushMenu.js"></script>
+    <!-- Uses a header that contracts as the page scrolls down. -->
+    <style>
+    .waterfall-demo-header-nav .mdl-navigation__link:last-of-type {
+        padding-right: 0;
+    }
+    </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-inverse" role="navigation">
-        <ul class="list-inline">
-            <li>
-                <a class="toggle-menu menu-left push-body" style="color:#FFFFFF">
-                    <h4><span class="glyphicon glyphicon-align-justify"></span></h4>
-                </a>
-            </li>
-            <li>
-                <a id="logo" href="">
-                    <img src="img/logo8350.png" height="50" width="83" alt="Data System Lab Logo">
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left">
-        <h3>功能</h3>
-        <a id="btnBoundEP">終點<img src="img/end_pin.png" height="15" width="12" alt="Bound Left Low" style="margin-right: 10px;"></a>
-    </nav>
-    <div id="map-block" class="map-block">
-        <div id="map-canvas"></div>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header mdl-layout__header--waterfall">
+            <!-- Top row, always visible -->
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="android-title mdl-layout-title">
+                <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
+              </span>
+                <span class="android-title mdl-layout-title">路徑規劃</span>
+                <div class="mdl-layout-spacer"></div>
+                <!-- <a ></a> -->
+                <button id="next" class="mdl-button mdl-js-button mdl-button--icon">
+                    <i class="material-icons">done</i>
+                </button>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <header class="drawer-header mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+                <!-- <img src="" alt="user" class="avatar"> -->
+                <img id="user_image" src="" alt="user" class="avatar">
+                <div class="avatar-dropdown">
+                    <span id="pname2">NAME</span>
+                    <div class="mdl-layout-spacer"></div>
+                    <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                        <i class="material-icons" role="presentation">arrow_drop_down_circle</i>
+                        <span class="visuallyhidden">Personal Info</span>
+                    </button>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                        <li class="mdl-menu__item" id="pname">NAME</li>
+                        <li class="mdl-menu__item" id="tel">0912345678</li>
+                        <a href="" id="edit">
+                            <li class="mdl-menu__item"><i class="material-icons">edit</i>Edit</li>
+                        </a>
+                    </ul>
+                </div>
+            </header>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="" id="logo"><i class="material-icons">home</i>主頁</a>
+                <a class="mdl-navigation__link" href="" id="board"><i class="material-icons">event_note</i>公告欄</a>
+                <a class="mdl-navigation__link" href="" id="wall"><i class="material-icons">forum</i>動態牆</a>
+                <a class="mdl-navigation__link" href="" id="friendlist"><i class="material-icons">group</i>朋友</a>
+                <a class="mdl-navigation__link" href="" id="setting"><i class="material-icons">settings</i>設定</a>
+                <a class="mdl-navigation__link" href="" id="about"><i class="material-icons">info</i>關於</a>
+            </nav>
+        </div>
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <div alt="map" class="map-block">
+                    <center>
+                        <div id="map-block" class="map-block">
+                            <div id="map-canvas"></div>
+                        </div>
+                    </center>
+                    <button id="btnBoundEP" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="position:fixed; bottom:0px; z-index:0; width:100%"><i class="material-icons">room</i>終點-點擊後點選位置</button>
+                </div>
+            </div>
+        </main>
     </div>
-    <button id="next" type="button" class="btn btn-primary btn-lg btn-block" style="position:fixed; bottom:0px; z-index:0;">下一步</button>
-    <!-- Bootstrap core JavaScript
-		================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="dist/js/bootstrap.min.js"></script>
+    <script src="dist/js/carpoolmap.js"></script>
     <script src="dist/js/pathcompare.js"></script>
     <script src="dist/js/path.js"></script>
-    <!-- This APP JavaScript & CSS used -->
-    <script src="dist/js/carpoolmap.js"></script>
 </body>
 
 </html>

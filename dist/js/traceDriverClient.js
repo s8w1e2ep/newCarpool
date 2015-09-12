@@ -14,7 +14,9 @@ $(document).ready(function() {
     // setInterval(DetectCurPoint, 6000);
 
     $('#ok').click(function() {
-        $('#info').modal('hide');
+        // $('#info').modal('hide');
+        $('#info').css("display", "none");
+        $('#mbody').attr('style', 'background-color: #FFFFFF;');
     });
 });
 
@@ -22,13 +24,15 @@ $(document).ready(function() {
 var map;
 
 // var serverDomain = "http://vu6m3lio.ddns.net/";
-var serverDomain = "http://127.0.0.1/";
-var server = serverDomain + "newcarpool/api/";
+var local = "file:///android_asset/www/";
+var serverDomain = "http://120.114.186.4/";
+var server = serverDomain + "carpool/api/";
 var COLOR = ["#176ae6", "#ff0000", "#6a3906", "#800080"];
 
 var global_url = window.location.toString();
 // driver is
 var did = null;
+var tid = ""; //confirmCarpool，updateHistory 會用到
 // TEST ID 1046779538684826 1046779538684827 1046779538684828
 // var did = "1046779538684826";
 // passengers' id
@@ -146,6 +150,56 @@ function InitializeDriver() {
 
             // set map center to current point
             map.setCenter(driver.Point.Current);
+        }
+    }
+    xmlhttp.send();
+
+    getName();
+    setURL();
+}
+
+function setURL() {
+    var temp = '?data={"id":"' + did + '"}';
+
+    $('#board').attr('href', local + 'board.html' + temp);
+    $('#wall').attr('href', local + 'wall.html' + temp);
+    $('#friendlist').attr('href', local + 'friendlist.html' + temp);
+    $('#about').attr('href', local + 'about.html' + temp);
+    $('#setting').attr('href', local + 'setting.html' + temp);
+    $('#edit').attr('href', local + 'edit.html' + temp);
+    $('#logo').attr('href', local + 'index.html' + temp);
+    $('#dsgr').attr('href', local + 'index.html' + temp);
+    $('#user_image').attr('src', 'http://graph.facebook.com/' + did + '/picture?type=large');
+}
+
+function getName() {
+    var url = server + 'get_name.php?data={"id":"' + did + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            name = xmlhttp.responseText;
+            $('#pname').html(name);
+            $('#pname2').html(name);
+            $('#name').html('Hi, ' + name);
+            getPhone();
+        }
+    }
+    xmlhttp.send();
+}
+
+function getPhone() {
+    var url = server + 'get_phone.php?data={"id":"' + did + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            phone = xmlhttp.responseText;
+            $('#image').attr('src', 'http://graph.facebook.com/' + did + '/picture?type=large');
+            $('#state').html('已登入');
+            $('#tel').html(phone);
         }
     }
     xmlhttp.send();
@@ -353,22 +407,80 @@ function UpdateView(re, pcurpoints) {
         }
     }
 }
+//同意 GCM msg
+function confirmCarpool() {
+    var data = json.substring(0, json.length - 1) + ',"tid":"' + tid + '","mode":"2"}';
+    //{"role":"driver","id":"10467795386484826","tid":"838717559541922","mode":"2"}
+    var xmlhttp = new XMLHttpRequest();
+    url = server + 'gcm_server.php?data=' + data;
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var pdata = JSON.parse(data);
+            var curTid = pdata.tid;
+            //var temp = "";
+            AddPassenger(curTid);
+            // if (pdata.hasOwnProperty('pid')) {
+            // var curPid;
+            // curPid = pdata.pid;
+            // curPid.push(curTid);
+            // }
+            // temp = '{"role":"driver","id":"' + pdata.id + '","pid":[';
+            // for (var z = 0; z < curPid.length; z++) {
+            // temp += '"' + curPid[z] + '"';
+            // if (z < curPid.length - 1)
+            // temp += ',';
+            // }
+            // temp += ']}';
+            // } else {
+            // temp = '{"role":"driver","id":"' + pdata.id + '","pid":["' + curTid + '"]}';
+            // }
+            updateHistory();
+            //window.location = local + "traceDriverClient.html?data=" + temp;
+        }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+}
+
+function updateHistory() {
+    var data = '{"did":"' + id + '","pid":"' + tid + '"}';
+    var url = server + 'update_history.php?data=' + data;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            console.log(xmlhttp.responseText);
+        }
+    }
+    xmlhttp.send();
+}
+//拒絕 GCM msg
+function cancelCarpool() {
+    deleteHistory();
+    window.location = local + 'initialization.html?data={"id":"' + id + '"}';
+}
 
 var BE_DELTA_NUMBER = 150;
 var BE_STATE_POINT = 25;
 var BE_ARRIVING = 500;
+
 function popInfo(id, dis, type) {
     setTimeout(function() {
         var passIndex = pid.indexOf(id);
         if (type) {
             // type is 1, passenger get in car
             if (dis <= BE_STATE_POINT) {
-                $("#info").modal('show');
+                //$("#info").modal('show');
+                $('#mbody').attr('style', 'background-color: #666666;');
+                $("#info").css("display", "table");
                 $('#info_message').html('抵達乘客上車點');
                 $('#info_name').html(passList[passIndex].Name);
                 $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
             } else if ((BE_ARRIVING - BE_DELTA_NUMBER) <= dis && dis <= BE_ARRIVING) {
-                $("#info").modal('show');
+                //$("#info").modal('show');
+                $('#mbody').attr('style', 'background-color: #666666;');
+                $("#info").css("display", "table");
                 $('#info_message').html('即將抵達乘客上車點');
                 $('#info_name').html(passList[passIndex].Name);
                 $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
@@ -376,12 +488,16 @@ function popInfo(id, dis, type) {
         } else {
             // type is 0, passenger get out off car
             if (dis <= BE_STATE_POINT) {
-                $("#info").modal('show');
+                //$("#info").modal('show');
+                $('#mbody').attr('style', 'background-color: #666666;');
+                $("#info").css("display", "table");
                 $('#info_message').html('抵達乘客下車點');
                 $('#info_name').html(passList[passIndex].Name);
                 $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
             } else if ((BE_ARRIVING - BE_DELTA_NUMBER) <= dis && dis <= BE_ARRIVING) {
-                $("#info").modal('show');
+                //$("#info").modal('show');
+                $('#mbody').attr('style', 'background-color: #666666;');
+                $("#info").css("display", "table");
                 $('#info_message').html('即將抵達乘客下車點');
                 $('#info_name').html(passList[passIndex].Name);
                 $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");

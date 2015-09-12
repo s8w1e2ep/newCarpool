@@ -2,7 +2,7 @@
 	header("Access-Control-Allow-Origin: *");
 	header("Content-Type: application/json; charset=UTF-8");
 	
-	require_once '../../config//db_connect.php';
+	require_once '../config//db_connect.php';
 	$db = new DB_CONNECT();
 	
 	$data = $_GET['data'];
@@ -43,10 +43,10 @@
 			$name = $name[0];	
 			
 			$imgsrc = 'http://graph.facebook.com/'.$did.'/picture?type=large';
-			$infos = 'info.html?data='.$data_str;
+			$infos = 'file:///android_asset/www/info.html?data='.$data_str;
 			echo '<tr class='.$class_n.'>';// onclick="setDialog('.$did.');">';
 			echo '	<td width="35%" align="center"><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
-			echo '	<td width="15%" align="center">'.ceil(substr($percentage, 0, 2)).'%</td>';
+			echo '	<td width="15%" align="center">'.ceil(substr($percentage, 0, 3)).'%</td>';
 			echo '	<td width="15%" align="center">'.$on_d.'公尺</td>';
 			echo '	<td width="15%" align="center">'.$off_d.'公尺</td>';
 			echo '	<td width="15%" align="center">'.round(($wait/60),0).'分鐘</td>';

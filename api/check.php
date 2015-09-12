@@ -15,8 +15,18 @@
 	$result = mysql_query($sql);
 	$num = mysql_num_rows($result);
 	
-	if($num > 0)
-		echo("success");
-	else
+	if($num > 0){
+		$sql = "SELECT `aid` FROM `account` WHERE `aid` = '$id' and `status` = '1'";
+	
+		$result = mysql_query($sql);
+		$num = mysql_num_rows($result);
+		
+		if($num > 0)
+			echo("success");
+		else 
+			echo("uncertified");
+	}else
 		echo("failed");
+	
+	
 ?>

@@ -3,14 +3,10 @@ $(document).ready(function() {
 	initialize();
 });
 
-$('#next').click(function () {
-	nextStep();
-});
-
 var url = "";
 var id = "";
 
-var server = "http://noname0930.no-ip.org/carpool/api/";
+var server = "http://120.114.186.4/carpool/api/";
 var local = "file:///android_asset/www/";			
 
 function initialize()
@@ -20,34 +16,61 @@ function initialize()
 	
 	id = json.id;
 
-	requestAPI(server + "get_name.php", str, "name");
 	requestAPI(server + "friendlist.php", str, "table");
 	
+	getName();
 	setURL();
+}
+
+function getName()
+{
+	var url = server + 'get_name.php?data={"id":"' + id + '"}';			
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", url, true);
+	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");		
+	xmlhttp.onreadystatechange = function() 
+	{
+		if(xmlhttp.readyState == 4 && xmlhttp.status == 200) 
+		{			
+			var name = xmlhttp.responseText;
+			$('#pname').html(name);
+			$('#pname2').html(name);
+			getPhone();
+		}
+	}
+	xmlhttp.send();
+}
+
+function getPhone(){
+	var url = server + 'get_phone.php?data={"id":"' + id + '"}';			
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", url, true);
+	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");		
+	xmlhttp.onreadystatechange = function() 
+	{
+		if(xmlhttp.readyState == 4 && xmlhttp.status == 200) 
+		{			
+			var phone = xmlhttp.responseText;
+			$('#tel').html(phone);
+		}
+	}
+	xmlhttp.send();
 }
 
 function setURL()
 {
 	var temp = '?data={"id":"' + id + '"}';
-
+			
+	$('#board').attr('href', local + 'board.html' + temp);
 	$('#wall').attr('href', local + 'wall.html' + temp);
 	$('#friendlist').attr('href', local + 'friendlist.html' + temp);
 	$('#about').attr('href', local + 'about.html' + temp);
 	$('#setting').attr('href', local + 'setting.html' + temp);
+	$('#edit').attr('href', local + 'edit.html' + temp);
 	$('#logo').attr('href', local + 'index.html' + temp);
-	
-	$('#image').attr('src', 'http://graph.facebook.com/' + id + '/picture');
+	$('#user_image').attr('src', 'http://graph.facebook.com/' + id + '/picture?type=large');	
 }
-function nextStep()
-{
-	if($('#my_wall').css('disaplay') == "none")
-	{
-		$('#my_wall').attr('style', 'display:');
-		$('#friend_wall').attr('style', 'display:none');
-	}
-	else
-		window.location = local + 'index.html?data=' + '{"id":"' + id + '"}';
-}
+
 function requestAPI(url, data, id)
 {
 	var xmlhttp = new XMLHttpRequest();			
@@ -62,25 +85,7 @@ function requestAPI(url, data, id)
 	xmlhttp.open("GET", url, true);
 	xmlhttp.send();			
 }
-function showFriend(fid)
-{
-	$('#my_wall').attr('style', 'display:none');
-	$('#friend_wall').attr('style', 'display:');	
-	$('#dialog_image').attr('src', 'http://graph.facebook.com/' + fid + '/picture');
 
-	requestAPI(server + "get_name.php", '{"id":"' + fid + '"}', "dialog_name");
-	requestAPI(server + "friend_wall.php", '{"id":"' + fid + '"}', "friend_wall");
-}
-
-function submitComment(fid)
-{
-	var comment = $('#comment').val();
-	var data = '{"id":"' + id + '","fid":"' + fid + '","comment":"' + comment + '"}';
-	requestAPI(server + 'add_wall.php', data, "state");
-	requestAPI(server + "friend_wall.php", '{"id":"' + fid + '"}', "friend_wall");
-}
-
-function setDialog(fid)
-{	
-	$('#submit').val(fid);
+function nextFriend(fid, id){
+	window.location = local + 'wall.html?data={"id":"' + fid + '","uid":"'+ id + '"}';
 }

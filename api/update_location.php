@@ -2,7 +2,7 @@
 	header("Access-Control-Allow-Origin: *");
 	header("Content-Type: application/json; charset=UTF-8");
 
-	require_once '../../config//db_connect.php';
+	require_once '../config//db_connect.php';
 	$db = new DB_CONNECT();
 
 	$data = $_GET['data'];
@@ -16,27 +16,30 @@
 	echo $curpoint;
 
 	if ($role == 1) {
-		$sql = "SELECT `aid` FROM `requester` WHERE `aid` = '$id'";
+		$sql = "SELECT `pnum` FROM `passenger` WHERE `finished` = '0' and `aid` = '$id'";
 		$result = mysql_query($sql);
 		$num = mysql_num_rows($result);
+		
+		$pnum = mysql_fetch_array($result);
+		$pnum = $pnum[0];
+		
 		if($num > 0)
 		{
-			$sql = "UPDATE `passenger` SET `curpoint`= '$curpoint' WHERE `aid` = '$id' and `finished` = '0'";
+			$sql = "UPDATE `passenger` SET `curpoint`= '$curpoint' WHERE `pnum` = '$pnum'";
 			$result = mysql_query($sql);
 		}
-		// else
-		// {
-		// 	$sql = "INSERT INTO `requester` (`aid`, `curpoint`) VALUES ('$id', '$curpoint')";
-		// 	$result = mysql_query($sql);
-		// }
+
 	} else if ($role == 2) {
-		$sql = "SELECT `aid` FROM `receiver` WHERE `aid` = '$id'";
+		$sql = "SELECT `dnum` FROM `driver` WHERE `finished` = '0' and `aid` = '$id'";
 		$result = mysql_query($sql);
 		$num = mysql_num_rows($result);
 
 		if($num > 0)
 		{
-			$sql = "UPDATE `driver` SET `curpoint`= '$curpoint' WHERE `aid` = '$id' and `finished` = '0'";
+			$dnum = mysql_fetch_array($result);
+			$dnum = $dnum[0];
+		
+			$sql = "UPDATE `driver` SET `curpoint`= '$curpoint' WHERE `dnum` = '$dnum'";
 			$result = mysql_query($sql);
 			$success = true;
 		}
