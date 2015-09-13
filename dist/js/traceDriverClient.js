@@ -286,7 +286,7 @@ function AddPassenger(id) {
 function UpdateView(re, pcurpoints) {
     var reNum = re.length;
     var pIndex;
-    popInfo(re[0].id, 400, 0);
+    // popInfo(re[0].id, 400, 0);
     // update page bottom text and tts text
     var ttsText = '距離';
     if (re[0].type) {
@@ -296,10 +296,10 @@ function UpdateView(re, pcurpoints) {
 
         if (re[0].type == 1) {
             ttsText += '上車點約';
-            // popInfo(re[0].id, re[0].gdm.distance.val, 1);
+            popInfo(re[0].id, re[0].gdm.distance.val, 1);
         } else {
             ttsText += '下車點約';
-            // popInfo(re[0].id, re[0].gdm.distance.val, 0);
+            popInfo(re[0].id, re[0].gdm.distance.val, 0);
         }
         ttsText += re[0].gdm.time.text + '，' + re[0].gdm.distance.text;
     } else {
