@@ -20,7 +20,7 @@ function initialization() {
         str += '<div id="user' + i + '" class="mdl-cell--middle">';
 
         str += '<div class="mdl-cell mdl-cell--2-col">';
-        str += '<img src="' + background + '" alt="..." class="img-circle">';
+        str += '<img src="' + background + '" alt="..." class="avatar">';
         str += '</div>';
 
         str += '<div class="mdl-cell mdl-cell--4-col">';

@@ -16,6 +16,9 @@ var id = "";
 var did = "";
 var did2 = "";
 var did3 = "";
+var index1 = -1;
+var index2 = -1;
+var index3 = -1;
 
 var json = "";
 
@@ -103,23 +106,47 @@ function requestAPI(url, data, mode) {
     xmlhttp.send();
 }
 
-function setDialog(value) {
-    $('#mbody').attr('style', 'background-color: #666666;');
+/**
+ * [updateCarpool description]
+ * @param  {"index1": 1, "index2": 2, "index3": 0} data [description]
+ * @return {[type]}      [description]
+ */
+function updateCarpool(data) {
+    var xmlhttp = new XMLHttpRequest();
+    var url = server + "update_carpool.php?data=" + data;
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            alert(xmlhttp.responseText);
+        }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+}
+
+
+function setDialog(value, index) {
+    $('.wrapperInside').attr('style', 'background-color: #666666;');
     $('#dialog').css("display", "table");
-    $('#dialog_image').attr('src', 'http://graph.facebook.com/' + value + '/picture');
+    $('#dialog_image').attr('src', 'http://graph.facebook.com/' + value + '/picture?type=large');
     requestAPI(server + "get_name.php", '{"id":"' + value + '"}', "dialog_name");
+
+    index1 = index;
+    updateCarpool('{"id":"' + id + '","index1":' + index1 + '}');
 
     did = value;
 }
 
-function setDialog2(value1, value2) {
-    $('#mbody').attr('style', 'background-color: #666666;');
+function setDialog2(value1, value2, index) {
+    $('.wrapperInside').attr('style', 'background-color: #666666;');
     $('#dialog').css("display", "table");
-    $('#dialog_image').attr('src', 'http://graph.facebook.com/' + value1 + '/picture');
+    $('#dialog_image').attr('src', 'http://graph.facebook.com/' + value1 + '/picture?type=large');
     requestAPI(server + "get_name.php", '{"id":"' + value1 + '"}', "dialog_name");
-    $('#dialog_image2').attr('src', 'http://graph.facebook.com/' + value2 + '/picture');
+    $('#dialog_image2').attr('src', 'http://graph.facebook.com/' + value2 + '/picture?type=large');
     $('#dialog_image2').css("display", "inline");
     requestAPI(server + "get_name.php", '{"id":"' + value2 + '"}', "dialog_name2");
+
+    index2 = index;
+    updateCarpool('{"id":"' + id + '","index1":' + index1 + ',"index2":' + index2 + '}');
 
     did = value1;
     did2 = value2;
@@ -128,18 +155,21 @@ function setDialog2(value1, value2) {
 
 function showResult2(value) {
     var cid = '#child' + value;
+    index1 = value;
     $(cid).css("display", "inline");
     $("#table1").hide();
 }
 
 function showResult3(value1, value2) {
+    index1 = value1;
+    index2 = value2;
     var cid = '#lastchild' + (value1 * 10 + value2);
     $(cid).css("display", "inline");
     $("#table2").hide();
 }
 
 function confirm() {
-    $('#mbody').attr('style', 'background-color: #FFFFFF;');
+    $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
     var wait_str = 'waiting.html?data={"id":["' + id + '","';
     var num = 0;
     if (did != "") {
@@ -176,7 +206,7 @@ function sendGCM(driver_id) {
 }
 
 function cancel() {
-    $('#mbody').attr('style', 'background-color: #FFFFFF;');
+    $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
     $('#dialog').css("display", "none");
     did = "";
     did2 = "";

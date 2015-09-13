@@ -120,6 +120,40 @@ function addRating() {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             console.log(xmlhttp.responseText);
+            updateFinished();
+        }
+    }
+    xmlhttp.send();
+}
+
+function updateFinished() {
+    var data = '';
+    if (role === "passenger") {
+        data = '{"pid":"' + id + '","did":"' + rid[index] + '"}';
+    } else if (role === 'driver') {
+        data = '{"did":"' + id + '","pid":"' + rid[index] + '"}';
+    }
+
+    var url = server + 'update_finished.php?data=' + data;
+    console.log(url);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            console.log(xmlhttp.responseText);
+            index++;
+            if (index < rid.length) {
+                setTarget();
+            }
+
+            $('#comment').val('');
+
+            if (index == rid.length - 1) {
+                // setTimeout(function() {
+                window.location = local + 'index.html?data=' + '{"id":"' + id + '"}'
+                    // }, 5000);
+            }
         }
     }
     xmlhttp.send();
@@ -127,19 +161,6 @@ function addRating() {
 
 function nextStep() {
     addRating();
-    index++;
-
-    if (index < rid.length) {
-        setTarget();
-    }
-
-    $('#comment').val('');
-
-    if (index == rid.length - 1) {
-        setTimeout(function() {
-            window.location = local + 'index.html?data=' + '{"id":"' + id + '"}'
-        }, 5000);
-    }
 
     // if (index < rid.length) {
     //     addRating();

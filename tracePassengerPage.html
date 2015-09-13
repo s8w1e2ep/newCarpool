@@ -66,48 +66,32 @@
                 <a class="mdl-navigation__link" href="" id="about"><i class="material-icons">info</i>關於</a>
             </nav>
         </div>
-        <!-- 接收gcm訊息 -->
-        <dialog id="dialog" class="mdl-shadow--2dp">
-            <!-- class="demo-card-square mdl-card mdl-shadow--2dp" tabindex="-1" > -->
-            <div class="mdl-card__title mdl-card--expand">
-                <h2>共乘資訊</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <img id="image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
-                <b id="name" style="padding: 5px; font-size: 25px;"></b>
-                <br/>
-                <h3><div id="message"></div></h3>
-            </div>
-            <div class="mdl-card__actions mdl-card--border">
-                <button id="accept" class="mdl-button mdl-js-button" value="" onclick="confirmCarpool();">
-                    接受
-                </button>
-                <button id="reject" class="mdl-button mdl-js-button" onclick="cancelCarpool();">
-                    拒絕
-                </button>
-            </div>
-        </dialog>
-        <!-- 完成通知 -->
-        <dialog id="info" class="mdl-shadow--2dp">
-            <!-- class="demo-card-square mdl-card mdl-shadow--2dp" tabindex="-1" > -->
-            <div class="mdl-card__title mdl-card--expand">
-                <h2>共乘完成</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <img id="info_image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
-                <b id="info_name" style="padding: 5px; font-size: 25px;"></b>
-                <br/>
-                <h3><div id="info_message"></div></h3>
-            </div>
-            <div class="mdl-card__actions mdl-card--border">
-                <button id="ok" class="mdl-button mdl-js-button" value="">
-                    完成
-                </button>
-            </div>
-        </dialog>
         <main class="mdl-layout__content">
             <div class="page-content">
                 <center>
+                    <!-- 完成通知 -->
+                    <div id="info" class="wrapperOutside">
+                        <div class="wrapperInside">
+                            <div class="dialogContainer">
+                                <!-- Dialog title and body -->
+                                <div class="dialogContent">
+                                    <div class="dialogContentTitle">共乘完成</div>
+                                    <div class="dialogContentBody">
+                                        <img id="info_image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
+                                        <b id="info_name" style="padding: 5px; font-size: 25px;"></b>
+                                        <br/>
+                                        <h3><div id="info_message"></div></h3>
+                                    </div>
+                                </div>
+                                <!-- Dialog action bar -->
+                                <div class="dialogActionBar">
+                                    <button id="ok" class="mdl-button mdl-js-button" value="">
+                                        確認
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div id="map-block" class="map-block">
                         <div id="map-canvas"></div>
                     </div>
@@ -118,7 +102,11 @@
             </div>
         </main>
     </div>
-    <script src="dist/js/traceDriverClient.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="dist/js/tracePassengerClient.js"></script>
+    <!--load GCM-->
+    <script src="dist/js/plugins.js"></script>
+    <script src="push.js"></script>
 </body>
 
 </html>

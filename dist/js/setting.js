@@ -85,5 +85,5 @@ function logout() {
 }
 
 function status() {
-    window.location = local + 'status.html?data={"id":"' + id + '"}';
+    window.location = local + 'uncertified.html?data={"id":"' + id + '"}';
 }
