@@ -481,7 +481,7 @@
 
 			}
 
-			print $carstr;
+			//print $carstr;
 
 			//§ó·spassenger¸ê®Æ
 			$sql = "SELECT `aid` FROM `passenger` WHERE `finished` = '0' and `aid` = '$id'";
