@@ -7,11 +7,8 @@ $(document).ready(function() {
 
     InitializeDriver();
 
-    // AddPassenger(1046779538684826);
-    // AddPassenger(1046779538684831);
-
     DetectCurPoint();
-    // setInterval(DetectCurPoint, 6000);
+    setInterval(DetectCurPoint, 6000);
 
     $('#ok').click(function() {
         // $('#info').modal('hide');
@@ -37,9 +34,6 @@ var tid = ""; //confirmCarpool，updateHistory 會用到
 // var did = "1046779538684826";
 // passengers' id
 var pid = [];
-// TEST ID 270371829840730 1046779538684829 1046779538684830 1046779538684831
-// var pid = ["270371829840730", "1046779538684831"];
-// var pid = [];
 
 // driver variables
 var driver = null;

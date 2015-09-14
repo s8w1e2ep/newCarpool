@@ -7,11 +7,8 @@ $(document).ready(function() {
 
     InitializePassenger();
 
-    // AddDriver(1046779538684827, 0);
-    // AddDriver(1046779538684828, 1);
-
     DetectCurPoint();
-    // setInterval(DetectCurPoint, 6000);
+    setInterval(DetectCurPoint, 6000);
 });
 
 //global variables
@@ -23,14 +20,9 @@ var COLOR = ["#176ae6", "#ff0000", "#6a3906", "#800080"];
 var global_url = window.location.toString();
 // passenger id
 var pid = null;
-// TEST ID 1046779538684831
-// var pid = "1046779538684831"
-// var pid = "1046779538684831";
 
 // driver is
 var did = [];
-// TEST ID 1046779538684826 1046779538684827 1046779538684828
-// var did = ["1046779538684827", "1046779538684828"];
 
 // driver variables
 var driverList = [];
