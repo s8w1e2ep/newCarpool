@@ -101,7 +101,7 @@
                                     <div class="dialogContentBody">
                                         <img id="dialog_image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
                                         <h3 id="dialog_name" style="padding: 5px; font-size: 25px;"></h3>
-                                        <h3><div id="message"></div></h3>
+                                        <h3><div id="dialog_message"></div></h3>
                                     </div>
                                 </div>
                                 <!-- Dialog action bar -->
@@ -149,7 +149,11 @@
             </div>
         </main>
     </div>
+    <script type="text/javascript" src="cordova.js"></script>
     <script src="dist/js/traceDriverClient.js"></script>
+    <!--load GCM-->
+    <script src="dist/js/plugins.js"></script>
+    <script src="push.js"></script>
 </body>
 
 </html>

@@ -99,7 +99,7 @@ function setInfo(response) {
     id = response.id;
     name = response.name;
     gender = response.gender;
-    alert("verified: " + response.verified);
+    // alert("verified: " + response.verified);
     //alert("link: " + response.link);
 
     if (name.length > 0)
@@ -141,7 +141,7 @@ function checkCarpool() {
 function show() {
     $('#dialog').attr('style', 'display:table');
     $('#register_button').attr('style', 'display:none');
-    $('#mbody').attr('style', 'background-color: #666666;');
+    $('.wrapperInside').attr('style', 'background-color: #666666;');
 }
 
 function registerCarpool() {
@@ -167,7 +167,7 @@ function registerCarpool() {
             {
                 //registed
                 if (xmlhttp.responseText.trim() === "success") {
-                    $('#mbody').attr('style', 'background-color: #FFFFFF;');
+                    $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
                     $('#dialog').attr('style', 'display:none');
                     var temp = [];
                     temp.push({
@@ -255,14 +255,14 @@ function onDeviceReady() {
             regid = data.registrationId;
         });
         //通知設定
-        push.on('notification', function(data) {
-            var additional = JSON.stringify(data.additionalData);
-            additional = JSON.parse(additional);
-            alert("tid: " + additional.tid);
-            alert("sound: " + data.sound);
-            alert("count: " + data.count);
-            alert("img: " + additional.count);
-        });
+        // push.on('notification', function(data) {
+        //     var additional = JSON.stringify(data.additionalData);
+        //     additional = JSON.parse(additional);
+        //     alert("tid: " + additional.tid);
+        //     alert("sound: " + data.sound);
+        //     alert("count: " + data.count);
+        //     alert("img: " + additional.count);
+        // });
 
         push.on('error', function(e) {
             console.log("push error");

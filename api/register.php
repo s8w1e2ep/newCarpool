@@ -25,7 +25,7 @@ if ($num == 0) {
 
 		if ($result) {
 			//取得最後編號
-			$sql2 = "SELECT MAX(`dnum`) FROM `driver`";
+			$sql2 = "SELECT MAX(`ticket`) FROM `events`";
 			$result2 = mysql_query($sql2);
 			$max = mysql_fetch_array($result2);
 			$max = $max[0] + 1;

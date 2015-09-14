@@ -34,6 +34,7 @@ var tid = ""; //confirmCarpool，updateHistory 會用到
 // var did = "1046779538684826";
 // passengers' id
 var pid = [];
+var rid = [];
 
 // driver variables
 var driver = null;
@@ -205,6 +206,7 @@ function AddPassenger(id) {
         id = id.toString();
     }
 
+    rid.push(id);
     pid.push(id);
     var thePassIndex = pid.length - 1;
     passList.push(new PassengerObj());
@@ -280,7 +282,7 @@ function AddPassenger(id) {
 function UpdateView(re, pcurpoints) {
     var reNum = re.length;
     var pIndex;
-    // popInfo(re[0].id, 400, 0);
+    //popInfo(re[0].id, 400, 0);
     // update page bottom text and tts text
     var ttsText = '距離';
     if (re[0].type) {
@@ -299,7 +301,8 @@ function UpdateView(re, pcurpoints) {
     } else {
         // redirect to rating page
         if (re[0].gdm.distance.val <= 25) {
-
+            var rid_str = JSON.stringify(rid);
+            window.location = local + 'rating.html?data={"id":"' + did + '","role":"driver","rid":' + rid_str + '}';
         }
 
         pIndex = -1;
@@ -408,16 +411,19 @@ function UpdateView(re, pcurpoints) {
 }
 //同意 GCM msg
 function confirmCarpool() {
-    var data = json.substring(0, json.length - 1) + ',"tid":"' + tid + '","mode":"2"}';
+
+    $('#dialog').attr('style', 'display:none');
+    $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
+    var data = '{"id":"' + did + '","tid":"' + tid + '","mode":"2"}';
     //{"role":"driver","id":"10467795386484826","tid":"838717559541922","mode":"2"}
     var xmlhttp = new XMLHttpRequest();
     url = server + 'gcm_server.php?data=' + data;
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            var pdata = JSON.parse(data);
-            var curTid = pdata.tid;
+            AddPassenger(tid);
+            // var pdata = JSON.parse(data);
+            // var curTid = pdata.tid;
             //var temp = "";
-            AddPassenger(curTid);
             // if (pdata.hasOwnProperty('pid')) {
             // var curPid;
             // curPid = pdata.pid;
@@ -471,14 +477,14 @@ function popInfo(id, dis, type) {
             // type is 1, passenger get in car
             if (dis <= BE_STATE_POINT) {
                 //$("#info").modal('show');
-                $('#mbody').attr('style', 'background-color: #666666;');
+                $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('抵達乘客上車點');
                 $('#info_name').html(passList[passIndex].Name);
                 $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
             } else if ((BE_ARRIVING - BE_DELTA_NUMBER) <= dis && dis <= BE_ARRIVING) {
                 //$("#info").modal('show');
-                $('#mbody').attr('style', 'background-color: #666666;');
+                $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('即將抵達乘客上車點');
                 $('#info_name').html(passList[passIndex].Name);
@@ -488,14 +494,14 @@ function popInfo(id, dis, type) {
             // type is 0, passenger get out off car
             if (dis <= BE_STATE_POINT) {
                 //$("#info").modal('show');
-                $('#mbody').attr('style', 'background-color: #666666;');
+                $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('抵達乘客下車點');
                 $('#info_name').html(passList[passIndex].Name);
                 $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
             } else if ((BE_ARRIVING - BE_DELTA_NUMBER) <= dis && dis <= BE_ARRIVING) {
                 //$("#info").modal('show');
-                $('#mbody').attr('style', 'background-color: #666666;');
+                $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('即將抵達乘客下車點');
                 $('#info_name').html(passList[passIndex].Name);
@@ -568,3 +574,62 @@ function ConvertToGoogleLatLng(list) {
 Array.prototype.last = function() {
     return this[this.length - 1];
 }
+
+function setName(data, mode) {
+    var url = server + 'get_name.php?data={"id":"' + data + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            $('#dialog_image').attr('src', 'http://graph.facebook.com/' + data + '/picture?type=large');
+            document.getElementById(mode).innerHTML = xmlhttp.responseText;
+        }
+    }
+    xmlhttp.send();
+}
+
+//確認device ready
+function onDeviceReady() {
+
+    try {
+        var push = PushNotification.init({
+            "android": {
+                "senderID": "47580372845"
+                    // "image": "http://120.114.186.4/carpool/assets/logo.png"
+            },
+            "ios": {},
+            "windows": {}
+        });
+
+        //通知設定
+        push.on('notification', function(data) {
+            var additional = JSON.stringify(data.additionalData);
+            additional = JSON.parse(additional);
+            alert("tid: " + additional.tid);
+            document.getElementById("dialog_message").innerHTML += data.message;
+            tid = additional.tid;
+            if (additional.foreground) {
+                setName(tid, 'dialog_name');
+                $('#dialog').css("display", "table");
+                $('.wrapperInside').attr('style', 'background-color: #666666;');
+            } else {
+                setName(tid, 'dialog_name');
+                $('#dialog').css("display", "table");
+                $('.wrapperInside').attr('style', 'background-color: #666666;');
+            }
+
+        });
+
+        push.on('error', function(e) {
+            console.log("push error");
+        });
+
+    } catch (err) {
+        txt = "There was an error on this page.\n\n";
+        txt += "Error description: " + err.message + "\n\n";
+        alert(txt);
+    }
+}
+
+document.addEventListener('deviceready', onDeviceReady, true);

@@ -19,8 +19,16 @@
 	            additional = JSON.parse(additional);
 	            alert("tid: " + additional.tid);
 	            document.getElementById("message").innerHTML += data.message;
-	            setName(additional.tid, 'name');
-	            $('#dialog').css("display", "table");
+	            if (additional.foreground) {
+	                setName(additional.tid, 'name');
+	                $('#dialog').css("display", "table");
+	                $('.wrapperInside').attr('style', 'background-color: #666666;');
+	            } else {
+	                setName(additional.tid, 'name');
+	                $('#dialog').css("display", "table");
+	                $('.wrapperInside').attr('style', 'background-color: #666666;');
+	            }
+
 	        });
 
 	        push.on('error', function(e) {
@@ -33,14 +41,6 @@
 	        alert(txt);
 	    }
 	}
-
-	// function successHandler(result) {
-
-	// }
-
-	// function errorHandler(error) {
-
-	// }
 
 	function setName(data, mode) {
 	    var url = server + 'get_name.php?data={"id":"' + data + '"}';
