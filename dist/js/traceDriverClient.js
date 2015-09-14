@@ -30,6 +30,7 @@ var global_url = window.location.toString();
 // driver is
 var did = null;
 var tid = ""; //confirmCarpool，updateHistory 會用到
+var path_index = ""; //store the index of passenger path
 // TEST ID 1046779538684826 1046779538684827 1046779538684828
 // var did = "1046779538684826";
 // passengers' id
@@ -200,7 +201,7 @@ function getPhone() {
     xmlhttp.send();
 }
 
-function AddPassenger(id) {
+function AddPassenger(id, index) {
     // be sure that id is string
     if (!isNaN(id)) {
         id = id.toString();
@@ -420,7 +421,7 @@ function confirmCarpool() {
     url = server + 'gcm_server.php?data=' + data;
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            AddPassenger(tid);
+            AddPassenger(tid, path_index);
             // var pdata = JSON.parse(data);
             // var curTid = pdata.tid;
             //var temp = "";
@@ -609,6 +610,7 @@ function onDeviceReady() {
             alert("tid: " + additional.tid);
             document.getElementById("dialog_message").innerHTML += data.message;
             tid = additional.tid;
+            path_index = additional.index;
             if (additional.foreground) {
                 setName(tid, 'dialog_name');
                 $('#dialog').css("display", "table");

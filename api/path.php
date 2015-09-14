@@ -497,7 +497,6 @@
 
 			if($num == 1){
 				$sql = "UPDATE `passenger` SET `path`='$path', `start`='$start', `end`='$end', `time`=CURRENT_TIMESTAMP, `carpoolpath`='$carstr' WHERE `aid` = '$id' AND `finished` = 0";
-				echo $sql;
 				$result = mysql_query($sql);
 			}else{
 				$sql = "INSERT INTO `passenger`(`pnum`, `aid`, `path`, `start`, `end`, `curpoint`, `time`, `carpoolpath`, `finished`, `getinStatus`, `getoffStatus`) VALUES ('$max', '$id', '$path', '$start', '$end', '$start', CURRENT_TIMESTAMP, '$carstr', '0', '0', '0')";

@@ -42,7 +42,7 @@ if ($num == 0) {
 	}
 
 } else {
-	echo ("registed");
+	echo ("手機號碼已註冊");
 }
 
 ?>

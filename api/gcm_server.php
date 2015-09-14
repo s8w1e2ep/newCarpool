@@ -19,9 +19,11 @@ $regid = $i[0];
 
 //乘客選擇後，傳送訊息給司機，讓司機確認
 if ($mode == "1") {
+	$index = $data['index'];
 	$data = array('message' => '向您發出的共乘邀請',
 		'title' => '共乘邀請',
 		'tid' => $id,
+		'index' => $index,
 		'image' => 'http://120.114.186.4/carpool/assets/logo.png',
 		'mode' => '1');
 } else if ($mode == "2") {

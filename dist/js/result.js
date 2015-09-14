@@ -174,17 +174,17 @@ function confirm() {
     var num = 0;
     if (did != "") {
         num++;
-        sendGCM(did);
+        sendGCM(did, 1);
         wait_str += did + '"';
     }
     if (did2 != "") {
         num++;
-        sendGCM(did2);
+        sendGCM(did2, 2);
         wait_str += ',"' + did2 + '"';
     }
     if (did3 != "") {
         num++;
-        sendGCM(did3);
+        sendGCM(did3, 3);
         wait_str += ',"' + did3 + '"';
     }
     wait_str += '], "num":"' + num + '"}';
@@ -193,9 +193,9 @@ function confirm() {
     window.location = local + wait_str;
 }
 
-function sendGCM(driver_id) {
+function sendGCM(driver_id, index) {
     var xmlhttp = new XMLHttpRequest();
-    url = server + 'gcm_server.php?data={"id":"' + id + '","tid":"' + driver_id + '","mode":"1"}';
+    url = server + 'gcm_server.php?data={"id":"' + id + '","tid":"' + driver_id + '","index":"' + index + '","mode":"1"}';
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             alert(xmlhttp.responseText);
