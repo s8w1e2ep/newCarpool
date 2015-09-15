@@ -423,35 +423,17 @@ function confirmCarpool() {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             AddPassenger(tid, path_index);
-            // var pdata = JSON.parse(data);
-            // var curTid = pdata.tid;
-            //var temp = "";
-            // if (pdata.hasOwnProperty('pid')) {
-            // var curPid;
-            // curPid = pdata.pid;
-            // curPid.push(curTid);
-            // }
-            // temp = '{"role":"driver","id":"' + pdata.id + '","pid":[';
-            // for (var z = 0; z < curPid.length; z++) {
-            // temp += '"' + curPid[z] + '"';
-            // if (z < curPid.length - 1)
-            // temp += ',';
-            // }
-            // temp += ']}';
-            // } else {
-            // temp = '{"role":"driver","id":"' + pdata.id + '","pid":["' + curTid + '"]}';
-            // }
-            updateHistory();
-            //window.location = local + "traceDriverClient.html?data=" + temp;
+            updateHistory(path_index);
         }
     }
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
 }
 
-function updateHistory() {
-    var data = '{"did":"' + id + '","pid":"' + tid + '"}';
+function updateHistory(index) {
+    var data = '{"did":"' + id + '","pid":"' + tid + '","index":"' + index + '"}';
     var url = server + 'update_history.php?data=' + data;
+    alert(url);
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

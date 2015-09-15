@@ -141,6 +141,7 @@ function updateFinished() {
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            alert("進入update finished");
             console.log(xmlhttp.responseText);
             index++;
             if (index < rid.length) {
