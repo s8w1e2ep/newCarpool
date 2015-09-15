@@ -213,7 +213,7 @@ function AddPassenger(id, index) {
     passList.push(new PassengerObj());
 
     // get the passengers info
-    var toServerStr = '{"init": 1, "role": 0, "pid":"' + id + '"}';
+    var toServerStr = '{"init": 1, "role": 0, "pid":"' + id + '", "carpoolidx": ' + index + '}';
 
     var url = server + 'traceDriverServer.php?data=' + toServerStr;
     var xmlhttp = new XMLHttpRequest();

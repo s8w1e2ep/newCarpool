@@ -52,9 +52,11 @@ if ($data['init']) {
 		if (mysql_num_rows($passInfo) > 0) {
 			$passInfo = mysql_fetch_array($passInfo, MYSQL_ASSOC);
 			if ($data['pid'] == $passInfo['aid']) {
+				$passInfo['carpoolpath'] = json_decode($passInfo['carpoolpath'], true);
+				$reCarpoolPath = json_encode($passInfo['carpoolpath'][$data['carpoolidx']]);
 				// to client str
 				// {"passenger":{"Name": "a", "CurPoint": 1, "Path": 1}}
-				$clientStr = '{"passenger":{"Name": "' . $passInfo['name'] . '", "CurPoint": ' . $passInfo['curpoint'] . ', "Path": ' . $passInfo['carpoolpath'] . '}}';
+				$clientStr = '{"passenger":{"Name": "' . $passInfo['name'] . '", "CurPoint": ' . $passInfo['curpoint'] . ', "Path": ' . $reCarpoolPath . '}}';
 				// print_r($passInfo);
 				echo $clientStr;
 			}
