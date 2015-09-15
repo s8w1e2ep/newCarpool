@@ -174,17 +174,17 @@ function confirm() {
     var num = 0;
     if (did != "") {
         num++;
-        sendGCM(did, 1);
+        sendGCM(did, 0);
         wait_str += did + '"';
     }
     if (did2 != "") {
         num++;
-        sendGCM(did2, 2);
+        sendGCM(did2, 1);
         wait_str += ',"' + did2 + '"';
     }
     if (did3 != "") {
         num++;
-        sendGCM(did3, 3);
+        sendGCM(did3, 2);
         wait_str += ',"' + did3 + '"';
     }
     wait_str += '], "num":"' + num + '"}';
