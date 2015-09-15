@@ -65,7 +65,7 @@ if ($data['init']) {
 } else {
 // Get necessary data from db
 	// function GetneceData($did, $pids, $onlyPath)
-	$neceData = GetneceData($data['did'], $data['pids']);
+	$neceData = GetneceData($data['did'], $data['pids'], $data['carpoolidx']);
 	// print_r($neceData);
 
 // first update driver current point
@@ -116,7 +116,7 @@ if ($data['init']) {
 
 // get necessary data
 // driver path, passengers' get in and get out off point
-function GetneceData($did, $pids) {
+function GetneceData($did, $pids, $carpoolPathIdx) {
 	$neceData = array();
 
 	// get driver data
@@ -145,13 +145,14 @@ function GetneceData($did, $pids) {
 		while ($lineData = mysql_fetch_array($passPointsResult, MYSQL_ASSOC)) {
 			if (in_array($lineData['aid'], $pids)) {
 				$cpath = json_decode($lineData['carpoolpath'], true);
+				$carpoolPathCurrentIdx = array_search($lineData['aid'], $pids);
 
 				if (!$lineData['getinStatus']) {
 					$pData = array();
 					$pData['id'] = $lineData['aid'];
 					$pData['type'] = 1;
 					$pData['curpoint'] = json_decode($lineData['curpoint'], true);
-					$pData['point'] = $cpath[0];
+					$pData['point'] = $cpath[$carpoolPathCurrentIdx][0];
 					array_push($neceData['points'], $pData);}
 
 				if (!$lineData['getoffStatus']) {
@@ -159,7 +160,7 @@ function GetneceData($did, $pids) {
 					$pData['id'] = $lineData['aid'];
 					$pData['type'] = 2;
 					$pData['curpoint'] = json_decode($lineData['curpoint'], true);
-					$pData['point'] = end($cpath);
+					$pData['point'] = end($cpath[$carpoolPathCurrentIdx]);
 					array_push($neceData['points'], $pData);}
 			}
 		}

@@ -7,8 +7,11 @@ $(document).ready(function() {
 
     InitializeDriver();
 
+    AddPassenger(1046779538684826, 0);
+
     DetectCurPoint();
     setInterval(DetectCurPoint, 6000);
+
 
     $('#ok').click(function() {
         // $('#info').modal('hide');
@@ -35,6 +38,7 @@ var path_index = ""; //store the index of passenger path
 // var did = "1046779538684826";
 // passengers' id
 var pid = [];
+var pidPathIdx = [];
 var rid = [];
 
 // driver variables
@@ -92,7 +96,6 @@ function InitializeDriver() {
     var thestr = global_url.substring(global_url.indexOf("{"), global_url.length);
     var thejson = JSON.parse(decodeURIComponent(thestr));
     did = thejson.id;
-
     driver = new DriverObj();
 
     var toServerStr = '{"init": 1,"role": 1, "did":"' + did + '"}';
@@ -209,6 +212,7 @@ function AddPassenger(id, index) {
 
     rid.push(id);
     pid.push(id);
+    pidPathIdx.push(index);
     var thePassIndex = pid.length - 1;
     passList.push(new PassengerObj());
 
@@ -517,10 +521,13 @@ function DetectCurPoint() {
         navigator.geolocation.getCurrentPosition(function(position) {
                 // pass current location to server
                 var pidsStr = '';
-                if (pid.length > 0)
+                var pidPathIdxStr = '';
+                if (pid.length > 0) {
                     pidsStr = '"' + pid.join('","') + '"';
+                    pidPathIdxStr = '"' + pidPathIdx.join('","') + '"';
+                }
 
-                var toServerStr = '{"init": 0, "did":"' + did + '", "pids": [' + pidsStr + '], "curpoint": {"at":' + position.coords.latitude.toFixed(5) + ', "ng": ' + position.coords.longitude.toFixed(5) + '}}';
+                var toServerStr = '{"init": 0, "did":"' + did + '", "pids": [' + pidsStr + '], "carpoolidx": [' + pidPathIdxStr + '], "curpoint": {"at":' + position.coords.latitude.toFixed(5) + ', "ng": ' + position.coords.longitude.toFixed(5) + '}}';
                 var url = server + 'traceDriverServer.php?data=' + toServerStr;
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("GET", url, true);
@@ -557,11 +564,14 @@ function DetectCurPoint() {
 }
 
 function resizeScreen() {
-    //set map block height and width
     var docHight = $(document).height();
-    var mapblockH = docHight - 50;
 
-    $('#map-block').css('height', mapblockH + 'px');
+    // get header height
+    var headerHeight = $('.mdl-layout__header').height();
+
+    var mapblockH = docHight - headerHeight - 50;
+    $('.map-block').css('height', mapblockH + 'px');
+    $('.map-block').css('top', headerHeight + 'px');
 }
 
 function ConvertToGoogleLatLng(list) {
