@@ -129,9 +129,9 @@ function addRating() {
 function updateFinished() {
     var data = '';
     if (role === "passenger") {
-        data = '{"pid":"' + id + '","did":"' + rid[index] + '"}';
+        data = '{"pid":"' + id + '"}';
     } else if (role === 'driver') {
-        data = '{"did":"' + id + '","pid":"' + rid[index] + '"}';
+        data = '{"did":"' + id + '"}';
     }
 
     var url = server + 'update_finished.php?data=' + data;
