@@ -7,8 +7,6 @@ $(document).ready(function() {
 
     InitializeDriver();
 
-    AddPassenger(1046779538684826, 0);
-
     DetectCurPoint();
     setInterval(DetectCurPoint, 6000);
 
