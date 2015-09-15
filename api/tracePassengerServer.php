@@ -4,17 +4,12 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 // unit meter
 define("CAR_DELTA", 25);
-// define("DRIVER_ARRIVING", 50);
 
 require_once '../config/db_connect.php';
 $db = new DB_CONNECT();
 
-//place this before any script you want to calculate time
-$EXEC_START_TIME = microtime(true);
-
 $data = $_GET['data'];
 $data = json_decode($data, true);
-// print_r($data);
 
 if ($data['init']) {
 	if ($data['role']) {
@@ -29,7 +24,6 @@ if ($data['init']) {
 				// to client str
 				// {"passenger":{"Name": "a", "CurPoint": 1, "Path": 1}}
 				$clientStr = '{"passenger":{"Name": "' . $passengerInfo['name'] . '", "CurPoint": ' . $passengerInfo['curpoint'] . ', "Path": ' . $passengerInfo['path'] . '}}';
-				// print_r($driverInfo);
 				echo $clientStr;
 			}
 		}
@@ -73,22 +67,17 @@ if ($data['init']) {
 	} else {
 // Get necessary data from db
 		// function GetneceData($pid, $dids, $onlyPath)
-		$neceData = GetneceData($data['pid'], $data['dids'], false);
-		// print_r($neceData);
+		$neceData = GetneceData($data['pid'], $data['dids'], $data['curdriveridx']);
 
 // first update driver current point
 		UpdateCurrentPoint($data['pid'], $data['curpoint']);
 
 // determine target point owner if get in car or get out off car
 		$calResult = DetResult($neceData);
-		// print_r($calResult);
 
 		echo '{"calResult":' . $calResult . ', "driverCurpoints" : ' . json_encode($neceData['driversCurpoint']) . '}';
 	}
 }
-
-$EXEC_END_TIME = microtime(true);
-// echo "\nExecution time : " . ($EXEC_END_TIME - $EXEC_START_TIME) . " sec";
 
 /*
  **************************************************************************************************
@@ -100,7 +89,7 @@ $EXEC_END_TIME = microtime(true);
 
 // get necessary data
 // carpool path , driver curpoint
-function GetneceData($pid, $dids) {
+function GetneceData($pid, $dids, $curDidIdx) {
 	$neceData = array();
 
 	// get passenger data
@@ -112,13 +101,16 @@ function GetneceData($pid, $dids) {
 		$passInfo = mysql_fetch_array($passInfo, MYSQL_ASSOC);
 		if ($passInfo['aid'] == $pid) {
 			if (!$passInfo['getinStatus']) {
-				$neceData['targetPoint'] = json_decode($passInfo['carpoolpath'], true)[0][0];
+				// if passenger not get in car
+				$neceData['targetPoint'] = json_decode($passInfo['carpoolpath'], true)[$curDidIdx][0];
 				$neceData['type'] = 0;
-			} else if (!$passInfo['getoffStatus']) {
-				$neceData['targetPoint'] = end(json_decode($passInfo['carpoolpath'], true)[0]);
-				$neceData['type'] = 1;
+			} else {
+				if (!$passInfo['getoffStatus']) {
+					// passenger not get out off car
+					$neceData['targetPoint'] = end(json_decode($passInfo['carpoolpath'], true)[$curDidIdx]);
+					$neceData['type'] = 1;
+				}
 			}
-			$neceData['passEndpoint'] = json_decode($passInfo['end'], true);
 		}
 	}
 
@@ -176,11 +168,12 @@ function DetResult($data) {
 				$UpdatePassStatusResult = mysql_query($UpdatePassStatusSql);
 				$getcarStatus = 1;
 			} else {
-				$getcarStatus = 2;
+				// remove marker
+				$getcarStatus = 0;
 			}
 		}
 	} else {
-		$getcarStatus = 2;
+		$getcarStatus = 1;
 	}
 
 	return $getcarStatus;

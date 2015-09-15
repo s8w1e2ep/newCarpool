@@ -24,6 +24,8 @@ var pid = null;
 // driver is
 var did = [];
 var rid = [];
+// first driver index map to carpool path two-dimentional array index
+var currentDid = 0;
 
 // driver variables
 var driverList = [];
@@ -81,13 +83,12 @@ function InitializePassenger() {
     var thestr = global_url.substring(global_url.indexOf("{"), global_url.length);
     var thejson = JSON.parse(decodeURIComponent(thestr)).id;
     pid = thejson[0];
-    console.log(thejson);
+
     // add drivers
     for (var i = 1; i < thejson.length; i++) {
         AddDriver(thejson[i], i - 1);
         rid.push(thejson[i]);
     }
-
     passenger = new PassengerObj();
 
     var toServerStr = '{"init": 1,"role": 1, "pid":"' + pid + '"}';
@@ -278,8 +279,10 @@ function UpdateView(re, dcurpoints) {
     switch (re) {
         case 0:
             // remove get in car point marker
-            if (driverList[0].Marker.Getin != null)
+            if (driverList[0].Marker.Getin != null) {
                 driverList[0].Marker.Getin.setMap(null);
+                driverList[0].Marker.Getin = null;
+            }
             break;
         case 1:
             removeDriver();
@@ -345,7 +348,7 @@ function DetectCurPoint() {
                 if (did.length > 0)
                     didsStr = '"' + did.join('","') + '"';
 
-                var toServerStr = '{"init": 0, "resetStatus" : 0, "pid":"' + pid + '", "dids": [' + didsStr + '], "curpoint": {"at":' + position.coords.latitude.toFixed(5) + ', "ng": ' + position.coords.longitude.toFixed(5) + '}}';
+                var toServerStr = '{"init": 0, "resetStatus" : 0, "pid":"' + pid + '", "dids": [' + didsStr + '], "curpoint": {"at":' + position.coords.latitude.toFixed(5) + ', "ng": ' + position.coords.longitude.toFixed(5) + '}, "curdriveridx": ' + currentDid + '}';
                 var url = server + 'tracePassengerServer.php?data=' + toServerStr;
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("GET", url, true);
@@ -354,7 +357,6 @@ function DetectCurPoint() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         var result = JSON.parse(xmlhttp.responseText);
                         passenger.Point.Current = new google.maps.LatLng(position.coords.latitude.toFixed(5), position.coords.longitude.toFixed(5));
-                        console.log(passenger.Point.Current);
 
                         // update screen infomation
                         UpdateView(result.calResult, result.driverCurpoints);
@@ -403,6 +405,7 @@ function removeDriver() {
     // remove passenger id in pid and passList
     did.splice(0, 1);
     driverList.splice(0, 1);
+    currentDid++;
 
     // update passenger get in and get out off car state to database
     var toServerStr = '{"init": 0, "resetStatus" : 1, "pid":"' + pid + '"}';
@@ -423,11 +426,14 @@ function removeDriver() {
 }
 
 function resizeScreen() {
-    //set map block height and width
     var docHight = $(document).height();
-    var mapblockH = docHight - 50;
 
-    $('#map-block').css('height', mapblockH + 'px');
+    // get header height
+    var headerHeight = $('.mdl-layout__header').height();
+
+    var mapblockH = docHight - headerHeight - 50;
+    $('.map-block').css('height', mapblockH + 'px');
+    $('.map-block').css('top', headerHeight + 'px');
 }
 
 function ConvertToGoogleLatLng(list) {

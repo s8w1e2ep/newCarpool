@@ -8,23 +8,8 @@ define("CAR_DELTA", 25);
 require_once '../config/db_connect.php';
 $db = new DB_CONNECT();
 
-//place this before any script you want to calculate time
-// $EXEC_START_TIME = microtime(true);
-
 $data = $_GET['data'];
 $data = json_decode($data, true);
-// print_r($data);
-
-/*
-[did] => 1
-[pids] => Array (
-[0] => 2
-[1] => 3
-[2] => 4
-[3] => 5)
-[curpoint] => Array (
-[at] => 22.9705936
-[ng] => 120.2219606)*/
 
 if ($data['init']) {
 	if ($data['role']) {
@@ -39,7 +24,6 @@ if ($data['init']) {
 				// to client str
 				// {"driver":{"Name": "a", "CurPoint": 1, "Path": 1}}
 				$clientStr = '{"driver":{"Name": "' . $driverInfo['name'] . '", "CurPoint": ' . $driverInfo['curpoint'] . ', "Path": ' . $driverInfo['path'] . '}}';
-				// print_r($driverInfo);
 				echo $clientStr;
 			}
 		}
@@ -57,7 +41,6 @@ if ($data['init']) {
 				// to client str
 				// {"passenger":{"Name": "a", "CurPoint": 1, "Path": 1}}
 				$clientStr = '{"passenger":{"Name": "' . $passInfo['name'] . '", "CurPoint": ' . $passInfo['curpoint'] . ', "Path": ' . $reCarpoolPath . '}}';
-				// print_r($passInfo);
 				echo $clientStr;
 			}
 		}
@@ -66,26 +49,15 @@ if ($data['init']) {
 // Get necessary data from db
 	// function GetneceData($did, $pids, $onlyPath)
 	$neceData = GetneceData($data['did'], $data['pids'], $data['carpoolidx']);
-	// print_r($neceData);
 
 // first update driver current point
 	UpdateCurrentPoint($data['did'], $data['curpoint']);
 
 // get target point
-	// function GetTargetPoint($did, $pids, $path, $points)
-	/*
-	[id] => 270371829840730
-	[type] => 1
-	[point] => Array
-	[at] => 22.9685
-	[ng] => 120.23124
-	 */
 	$targetPoint = GetTargetPoint($neceData['driverPath'], $neceData['points']);
-	// print_r($targetPoint);
 
 // determine target point owner if get in car or get out off car
 	$calResult = DetResult($targetPoint);
-	// print_r($calResult);
 
 	// get each passengers' curpoint
 	// SELECT `passenger`.`aid`, `passenger`.`curpoint` FROM `passenger` WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` =
@@ -102,9 +74,6 @@ if ($data['init']) {
 	}
 	echo '{"calResult":' . urldecode(json_encode($calResult)) . ', "passCurpoints" : ' . json_encode($passCurpoints) . '}';
 }
-
-// $EXEC_END_TIME = microtime(true);
-// echo "\nExecution time : " . ($EXEC_END_TIME - $EXEC_START_TIME) . " sec";
 
 /*
  **************************************************************************************************
@@ -153,7 +122,8 @@ function GetneceData($did, $pids, $carpoolPathIdx) {
 					$pData['type'] = 1;
 					$pData['curpoint'] = json_decode($lineData['curpoint'], true);
 					$pData['point'] = $cpath[$carpoolPathCurrentIdx][0];
-					array_push($neceData['points'], $pData);}
+					array_push($neceData['points'], $pData);
+				}
 
 				if (!$lineData['getoffStatus']) {
 					$pData = array();
@@ -161,7 +131,8 @@ function GetneceData($did, $pids, $carpoolPathIdx) {
 					$pData['type'] = 2;
 					$pData['curpoint'] = json_decode($lineData['curpoint'], true);
 					$pData['point'] = end($cpath[$carpoolPathCurrentIdx]);
-					array_push($neceData['points'], $pData);}
+					array_push($neceData['points'], $pData);
+				}
 			}
 		}
 	}
@@ -248,7 +219,6 @@ function DetResult($tp) {
 	} else {
 		$gdmResult = getPathDistance($GLOBALS['data']['curpoint'], $tp[$whichPoint]['point'], "driving");
 	}
-	// print_r($gdmResult);
 
 	// $tp[0] point if get in or get out off
 	// $whichPoint is driver page display infomation to driver by google distance matrix api

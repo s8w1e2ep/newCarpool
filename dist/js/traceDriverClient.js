@@ -10,7 +10,6 @@ $(document).ready(function() {
     DetectCurPoint();
     setInterval(DetectCurPoint, 6000);
 
-
     $('#ok').click(function() {
         // $('#info').modal('hide');
         $('#info').css("display", "none");
@@ -476,6 +475,7 @@ var BE_ARRIVING = 500;
 function popInfo(id, dis, type) {
     setTimeout(function() {
         var passIndex = pid.indexOf(id);
+
         if (type) {
             // type is 1, passenger get in car
             if (dis <= BE_STATE_POINT) {
@@ -567,7 +567,7 @@ function resizeScreen() {
     // get header height
     var headerHeight = $('.mdl-layout__header').height();
 
-    var mapblockH = docHight - headerHeight - 50;
+    var mapblockH = docHight - headerHeight;
     $('.map-block').css('height', mapblockH + 'px');
     $('.map-block').css('top', headerHeight + 'px');
 }
