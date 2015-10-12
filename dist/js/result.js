@@ -116,7 +116,7 @@ function updateCarpool(data) {
     var url = server + "update_carpool.php?data=" + data;
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            alert(xmlhttp.responseText);
+            //alert(xmlhttp.responseText);
         }
     }
     xmlhttp.open("GET", url, true);
@@ -190,6 +190,7 @@ function confirm() {
     wait_str += '], "num":"' + num + '"}';
 
     console.log(wait_str);
+    alert(wait_str);
     window.location = local + wait_str;
 }
 
@@ -198,7 +199,7 @@ function sendGCM(driver_id, index) {
     url = server + 'gcm_server.php?data={"id":"' + id + '","tid":"' + driver_id + '","index":"' + index + '","mode":"1"}';
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            alert(xmlhttp.responseText);
+            //alert(xmlhttp.responseText);
         }
     }
     xmlhttp.open("GET", url, true);

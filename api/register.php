@@ -20,7 +20,7 @@ $num = mysql_num_rows($result);
 
 if ($num == 0) {
 	if (strlen($id) > 0 && strlen($gender) > 0) {
-		$sql = "INSERT INTO `account`(`aid`, `name`, `gender`, `phone`, `regid`, `cid`) VALUES ('$id','$name','$gender','$phone','$regid','null')";
+		$sql = "INSERT INTO `account`(`aid`, `name`, `gender`, `phone`, `regid`, `cid`, `friendlist`) VALUES ('$id','$name','$gender','$phone','$regid','null', '[]')";
 		$result = mysql_query($sql);
 
 		if ($result) {

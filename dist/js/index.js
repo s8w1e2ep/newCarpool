@@ -107,7 +107,7 @@ function setInfo(response) {
 }
 
 function checkCarpool() {
-    var url = server + 'check.php?data={"id":"' + id + '"}';
+    var url = server + 'check.php?data={"id":"' + id + '","regid":"' + regid + '"}';
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

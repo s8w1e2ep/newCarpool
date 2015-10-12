@@ -23,6 +23,21 @@ var num = 0;
 var server = "http://120.114.186.4/carpool/api/";
 var local = "file:///android_asset/www/";
 
+var countdownnumber = 300;
+var countdownid, x;
+
+function countdownfunc() {
+    x.innerHTML = countdownnumber;
+    if (countdownnumber == 0) {
+        alert("倒數結束!");
+        clearInterval(countdownid);
+        window.location = local + 'index.html?data={"id":"' + id + '"}';
+    }
+    countdownnumber--;
+    var show = document.getElementById("show_time");
+    show.innerHTML = parseInt(countdownnumber / 60, 10) + "分" + (countdownnumber % 60) + "秒";
+}
+
 function initialize() {
     var str = url.substring(url.indexOf("{"), url.length);
     trace_str = str;
@@ -31,6 +46,12 @@ function initialize() {
     id = json.id;
     num = json.num;
     json = decodeURIComponent(str);
+
+    x = document.getElementById("countdown");
+    x.innerHTML = countdownnumber;
+    countdownnumber--;
+    countdownid = window.setInterval(countdownfunc, 1000);
+
 
     getName();
     setURL();
@@ -93,14 +114,28 @@ function confirmCarpool() {
         window.location = local + 'tracePassengerPage.html?data=' + trace_str;
 }
 
+function setName(data, mode) {
+    var url = server + 'get_name.php?data={"id":"' + data + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            $('#image').attr('src', 'http://graph.facebook.com/' + data + '/picture?type=large');
+            document.getElementById(mode).innerHTML = xmlhttp.responseText;
+        }
+    }
+    xmlhttp.send();
+}
+
 //確認device ready
 function onDeviceReady() {
 
     try {
         var push = PushNotification.init({
             "android": {
-                "senderID": "47580372845",
-                "image": "http://120.114.186.4/carpool/assets/logo.png"
+                "senderID": "47580372845"
+                    //"image": "http://120.114.186.4/carpool/assets/logo.png"
             },
             "ios": {},
             "windows": {}
@@ -110,7 +145,7 @@ function onDeviceReady() {
         push.on('notification', function(data) {
             var additional = JSON.stringify(data.additionalData);
             additional = JSON.parse(additional);
-            alert("tid: " + additional.tid);
+            //alert("tid: " + additional.tid);
             document.getElementById("message").innerHTML += data.message;
             if (additional.foreground) {
                 setName(additional.tid, 'name');
@@ -133,20 +168,6 @@ function onDeviceReady() {
         txt += "Error description: " + err.message + "\n\n";
         alert(txt);
     }
-}
-
-function setName(data, mode) {
-    var url = server + 'get_name.php?data={"id":"' + data + '"}';
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", url, true);
-    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            $('#image').attr('src', 'http://graph.facebook.com/' + data + '/picture?type=large');
-            document.getElementById(mode).innerHTML = xmlhttp.responseText;
-        }
-    }
-    xmlhttp.send();
 }
 
 document.addEventListener('deviceready', onDeviceReady, true);

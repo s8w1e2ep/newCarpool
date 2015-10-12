@@ -83,9 +83,14 @@
                                     <h3 id="rname"></h3></li>
                             </ul>
                         </div>
-                        <input id="input-21e" value="0" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs">
+                        <input id="input-21e" value="1" type="number" class="rating" min=0 max=5 step=1 data-size="xs">
                         <label for="comment">評語</label>
                         <input type="text" id="comment" class="form-control" placeholder="">
+                        <br/>
+                        <button id="add" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="addFriend();" style="display: none;">
+                            加好友
+                        </button>
+                        <div id="status"></div>
                     </div>
                 </div>
                 <button id="next" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="nextStep();" style="width: 100%; position:fixed; bottom:0px;">下一步</button>

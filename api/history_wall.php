@@ -1,21 +1,21 @@
  <?php
 	header("Access-Control-Allow-Origin: *");
 	header("Content-Type: application/json; charset=UTF-8");
-	
+
 	require_once '../config//db_connect.php';
 	$db = new DB_CONNECT();
-	
+
 	$data = $_GET['data'];
 	$data = json_decode($data, true);
-	
+
 	$id = $data['id'];
-		
-	$sql = "SELECT * FROM `passenger` WHERE `finished`=1 and `aid` = '$id' ORDER BY `pnum` DESC";	
+
+	$sql = "SELECT * FROM `passenger` WHERE `finished`=1 and `aid` = '$id' ORDER BY `pnum` DESC";
 	$result = mysql_query($sql);
-	
+
 	$index = 0;
 	date_default_timezone_set("Asia/Taipei");
-	
+
 	function getAddress($latlng){
 		$latlng = json_decode($latlng);
 		$url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='.($latlng->at).','.($latlng->ng).'&language=zh-TW';
@@ -30,26 +30,26 @@
 			return $address;
 		}
 	}
-	
+
 	while($index < 10 && $i = mysql_fetch_array($result))
 	{
-		$ssql = "SELECT * FROM `history` WHERE `pnum` = ".$i['pnum'];	
+		$ssql = "SELECT * FROM `history` WHERE `pnum` = ".$i['pnum'];
 		$rresult = mysql_query($ssql);
 		$j = mysql_fetch_array($rresult);
 		$dnum = $j['dnum'];
 		$dis = $j['distance'];
-	
-		$ssql = "SELECT `aid` FROM `driver` WHERE `dnum` = ".$dnum;	
+
+		$ssql = "SELECT `aid` FROM `driver` WHERE `dnum` = ".$dnum;
 		$rresult = mysql_query($ssql);
 		$j = mysql_fetch_array($rresult);
 		$did = $j[0];
-		
-		$ssql = "SELECT `name` FROM `account` WHERE `aid` = ".$did;	
+
+		$ssql = "SELECT `name` FROM `account` WHERE `aid` = ".$did;
 		$rresult = mysql_query($ssql);
 		$j = mysql_fetch_array($rresult);
 		$name = $j[0];
-		
-		echo '<div class="wallOut">';	
+
+		echo '<div class="wallOut">';
 		echo '	<div class="wall-left">';
 		echo '		<img id="image" src="http://graph.facebook.com/'.$did.'/picture?type=large" class="avatar" style="padding: 5px">';
 		echo '	</div>';
@@ -75,7 +75,7 @@
 		echo '		</div>';
 		echo '	</div>';
 		echo '</div>';
-		
+
 		$index++;
 	}
 ?>

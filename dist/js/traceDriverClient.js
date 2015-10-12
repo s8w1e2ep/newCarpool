@@ -202,6 +202,7 @@ function getPhone() {
 }
 
 function AddPassenger(id, index) {
+
     // be sure that id is string
     if (!isNaN(id)) {
         id = id.toString();
@@ -304,6 +305,7 @@ function UpdateView(re, pcurpoints) {
         // redirect to rating page
         if (re[0].gdm.distance.val <= 25) {
             var rid_str = JSON.stringify(rid);
+            alert('{"id":"' + did + '","role":"driver","rid":' + rid_str + '}');
             window.location = local + 'rating.html?data={"id":"' + did + '","role":"driver","rid":' + rid_str + '}';
         }
 
@@ -411,29 +413,11 @@ function UpdateView(re, pcurpoints) {
         }
     }
 }
-//同意 GCM msg
-function confirmCarpool() {
 
-    $('#dialog').attr('style', 'display:none');
-    $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
-    var data = '{"id":"' + did + '","tid":"' + tid + '","mode":"2"}';
-    //{"role":"driver","id":"10467795386484826","tid":"838717559541922","mode":"2"}
-    var xmlhttp = new XMLHttpRequest();
-    url = server + 'gcm_server.php?data=' + data;
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            AddPassenger(tid, path_index);
-            updateHistory(path_index);
-        }
-    }
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-}
-
-function updateHistory(index) {
-    var data = '{"did":"' + id + '","pid":"' + tid + '","index":"' + index + '"}';
+function addHistory(pindex) {
+    var data = '{"did":"' + did + '","pid":"' + tid + '","index":"' + pindex + '"}';
     var url = server + 'update_history.php?data=' + data;
-    alert(url);
+    alert("history: " + url);
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -444,6 +428,28 @@ function updateHistory(index) {
     }
     xmlhttp.send();
 }
+
+//同意 GCM msg
+function confirmCarpool() {
+
+    $('#dialog').attr('style', 'display:none');
+    $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
+    var data = '{"id":"' + did + '","tid":"' + tid + '","mode":"2"}';
+    //{"role":"driver","id":"10467795386484826","tid":"838717559541922","mode":"2"}
+    var xmlhttp = new XMLHttpRequest();
+    alert("data: " + data);
+    url = server + 'gcm_server.php?data=' + data;
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            alert("+乘客&&更新history");
+            AddPassenger(tid, path_index);
+            addHistory(path_index);
+        }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+}
+
 //拒絕 GCM msg
 function cancelCarpool() {
     deleteHistory();
@@ -597,10 +603,9 @@ function onDeviceReady() {
         push.on('notification', function(data) {
             var additional = JSON.stringify(data.additionalData);
             additional = JSON.parse(additional);
-            alert("tid: " + additional.tid);
             document.getElementById("dialog_message").innerHTML += data.message;
             tid = additional.tid;
-            path_index = additional.index;
+            path_index = additional.pindex;
             if (additional.foreground) {
                 setName(tid, 'dialog_name');
                 $('#dialog').css("display", "table");

@@ -87,7 +87,6 @@ function InitializePassenger() {
     // add drivers
     for (var i = 1; i < thejson.length; i++) {
         AddDriver(thejson[i], i - 1);
-        rid.push(thejson[i]);
     }
     passenger = new PassengerObj();
 
@@ -204,6 +203,7 @@ function AddDriver(id, pathid) {
     }
 
     did.push(id);
+    rid.push(id);
     var theDriverIndex = did.length - 1;
     driverList.push(new DriverObj());
 
@@ -421,6 +421,7 @@ function removeDriver() {
     // redirect to rating page
     if (!did.length) {
         var rid_str = JSON.stringify(rid);
+        alert('{"id":"' + pid + '","role":"passenger","rid":' + rid_str + '}');
         window.location = local + 'rating.html?data={"id":"' + pid + '","role":"passenger","rid":' + rid_str + '}';
     }
 }

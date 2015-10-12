@@ -14,7 +14,7 @@ var server = "http://120.114.186.4/carpool/api/";
 var local = "file:///android_asset/www/";
 
 /*
- *   data={"id":"860467000642654", "rid":["779892335364114","1046779538684826","id3"]}
+ *   data={"id":"860467000642654","role":"driver" ,"rid":["779892335364114","1046779538684826","id3"]}
  */
 
 function initialize() {
@@ -26,6 +26,7 @@ function initialize() {
     rid = json.rid;
 
     setTarget();
+    check();
 
     getName();
     setURL();
@@ -75,19 +76,21 @@ function setURL() {
     $('#user_image').attr('src', 'http://graph.facebook.com/' + id + '/picture?type=large');
 }
 
-// function getTarget() {
-//     var url = server + 'get_unrated.php?data={"id":"' + id + '","role":"' + role + '"}';
-//     var xmlhttp = new XMLHttpRequest();
-//     xmlhttp.open("GET", url, true);
-//     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-//     xmlhttp.onreadystatechange = function() {
-//         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-//             target = JSON.parse(xmlhttp.responseText);
-//             setTarget();
-//         }
-//     }
-//     xmlhttp.send();
-// }
+function check() {
+    var url = server + 'check_friend.php?data={"id":"' + id + '","fid":"' + rid[index] + '"}';
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var res = xmlhttp.responseText;
+            if (res.match("success"))
+                $('#add').css("display", "block");
+        }
+    }
+    xmlhttp.send();
+}
 
 function setTarget() {
     console.log(index);
@@ -111,19 +114,25 @@ function setName(data, mode) {
 
 function addRating() {
     var comment = $('#comment').val();
-    var data = '{"id":"' + id + '","uid":"' + rid[index] + '","role":"' + role + '","rating":"' + rate + '","comment":"' + comment + '"}';
-    var url = server + 'add_rating.php?data=' + data;
-    console.log(url);
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", url, true);
-    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            console.log(xmlhttp.responseText);
-            updateFinished();
+    rate = $('#input-21e').val();
+    if (rate == 0) {
+        alert("最低評價為1分!");
+    } else {
+        var data = '{"id":"' + id + '","uid":"' + rid[index] + '","role":"' + role + '","rating":"' + rate + '","comment":"' + comment + '"}';
+        alert(data);
+        var url = server + 'add_rating.php?data=' + data;
+        console.log(url);
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", url, true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                console.log(xmlhttp.responseText);
+                updateFinished();
+            }
         }
+        xmlhttp.send();
     }
-    xmlhttp.send();
 }
 
 function updateFinished() {
@@ -141,19 +150,14 @@ function updateFinished() {
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            alert("進入update finished");
+
             console.log(xmlhttp.responseText);
             index++;
             if (index < rid.length) {
+                $('#comment').val('');
                 setTarget();
-            }
-
-            $('#comment').val('');
-
-            if (index == rid.length - 1) {
-                // setTimeout(function() {
+            } else if (index == rid.length) {
                 window.location = local + 'index.html?data=' + '{"id":"' + id + '"}'
-                    // }, 5000);
             }
         }
     }
@@ -162,16 +166,27 @@ function updateFinished() {
 
 function nextStep() {
     addRating();
+}
 
-    // if (index < rid.length) {
-    //     addRating();
+function addFriend() {
+    var data = '{"id":"' + id + '","fid":"' + rid[index] + '"}';
+    var url = server + 'add_friend.php?data=' + data;
 
-    //     index++;
-
-    //     if (index < target.length - 1) {
-    //         setTarget();
-    //     }
-    //     $('#comment').val('');
-    // } else
-    //     window.location = local + 'index.html?data=' + '{"id":"' + id + '"}';
+    console.log(url);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var res = xmlhttp.responseText;
+            $('#add').css("display", "none");
+            console.log(res);
+            var status = document.getElementById("status");
+            if (res.match("success"))
+                status.innerHTML = '成功加入好友';
+            else if (res.match("failed"))
+                status.innerHTML = '加入失敗';
+        }
+    }
+    xmlhttp.send();
 }

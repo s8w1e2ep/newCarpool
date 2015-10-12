@@ -23,7 +23,7 @@ if ($mode == "1") {
 	$data = array('message' => '向您發出的共乘邀請',
 		'title' => '共乘邀請',
 		'tid' => $id,
-		'index' => $index,
+		'pindex' => $index,
 		'image' => 'http://120.114.186.4/carpool/assets/logo.png',
 		'mode' => '1');
 } else if ($mode == "2") {
