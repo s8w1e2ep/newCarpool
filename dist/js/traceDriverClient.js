@@ -543,6 +543,8 @@ function DetectCurPoint() {
                         console.log("An unknown error occurred.");
                         break;
                 }
+            }, {
+                enableHighAccuracy: true
             });
     } else {
         alert("Not support geolocation");
@@ -554,8 +556,9 @@ function resizeScreen() {
 
     // get header height
     var headerHeight = $('.mdl-layout__header').height();
+    var footerHeight = $('#footer').height();
 
-    var mapblockH = docHight - headerHeight;
+    var mapblockH = docHight - headerHeight - footerHeight;
     $('.map-block').css('height', mapblockH + 'px');
     $('.map-block').css('top', headerHeight + 'px');
 }

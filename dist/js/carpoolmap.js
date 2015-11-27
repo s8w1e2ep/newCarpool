@@ -6,11 +6,11 @@ $(document).ready(function() {
     // initialize map
     InitialMap();
 
-    initialize();
-
-    // $('.toggle-menu').jPushMenu();
-
+    // path.js
+    // initialize();
+    GetCurrentPos();
     $('#btnBoundEP').click(function() {
+        $('#btnBoundEP').children('i').addClass("hidden");
         SetMarkerStatus(2);
     });
 
@@ -34,9 +34,12 @@ $(document).ready(function() {
 
     //click set marker event
     google.maps.event.addListener(map, 'click', function(event) {
+        $('#btnBoundEP').children('i').removeClass("hidden");
         SetMarkerForMap(event.latLng);
     });
 });
+
+document.addEventListener("deviceready", initialize, false);
 
 //global variables
 var map;
@@ -109,9 +112,8 @@ function calRoute() {
         optimizeWaypoints: true
     };
 
-    var randColor = "#" + (randInt(50, 200)).toString(16) + (randInt(50, 200)).toString(16) + (randInt(50, 200)).toString(16);
     var PathPolylineOptions = {
-        strokeColor: randColor,
+        strokeColor: "#1565C0",
         strokeOpacity: 0.9,
         strokeWeight: 8
     };
@@ -231,18 +233,11 @@ function SetMarkerStatus(type) {
 function resizeScreen() {
     //set map block height and width
     var docHight = $(document).height();
-    var mapblockH = docHight - 70;
+    var headerHight = $('.mdl-layout__header').height();
+    var btnHight = $('#btnBoundEP').height();
+    var mapblockH = docHight - headerHight - btnHight;
 
     $('#map-block').css('height', mapblockH + 'px');
-}
-
-function randFloat(minVal, maxVal, floatVal) {
-    var randVal = minVal + (Math.random() * (maxVal - minVal));
-    return typeof floatVal == 'undefined' ? Math.round(randVal) : randVal.toFixed(floatVal);
-}
-
-function randInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function GetCurrentPos(id, role) {
@@ -281,6 +276,8 @@ function GetCurrentPos(id, role) {
                         console.log("An unknown error occurred.");
                         break;
                 }
+            }, {
+                enableHighAccuracy: true
             });
     } else {
         alert("Not support geolocation");
