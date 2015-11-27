@@ -588,7 +588,6 @@ function setName(data, mode) {
 
 //確認device ready
 function onDeviceReady() {
-
     try {
         var push = PushNotification.init({
             "android": {
@@ -615,6 +614,17 @@ function onDeviceReady() {
                 $('#dialog').css("display", "table");
                 $('.wrapperInside').attr('style', 'background-color: #666666;');
             }
+            TTS
+                .speak({
+                    text: '您有一則新請求!',
+                    locale: 'zh-TW',
+                    rate: 1
+                }, function() {
+                    alert('success');
+                    confirmCarpool();
+                }, function(reason) {
+                    alert(reason);
+                });
 
         });
 
