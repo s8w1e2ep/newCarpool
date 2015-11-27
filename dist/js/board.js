@@ -15,7 +15,7 @@ function initialize() {
 
     id = json.id;
 
-    //requestAPI(server + "friendlist.php", str, "table");
+    requestAPI(server + "board.php", '', "show");
 
     getName();
     setURL();

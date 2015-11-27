@@ -10,7 +10,6 @@ $data = json_decode($data, true);
 
 $id = $data['id'];
 
-//$sql = "SELECT * FROM `passenger` WHERE `finished`=1 and `aid` = '$id' ORDER BY `pnum` DESC";
 $sql = "SELECT * FROM `history` ORDER BY `hid` DESC";
 $result = mysql_query($sql);
 
