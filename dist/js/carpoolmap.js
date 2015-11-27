@@ -6,9 +6,6 @@ $(document).ready(function() {
     // initialize map
     InitialMap();
 
-    // path.js
-    // initialize();
-    GetCurrentPos();
     $('#btnBoundEP').click(function() {
         $('#btnBoundEP').children('i').addClass("hidden");
         SetMarkerStatus(2);
@@ -39,7 +36,7 @@ $(document).ready(function() {
     });
 });
 
-document.addEventListener("deviceready", initialize, false);
+document.addEventListener("deviceready", onDeviceReady, false);
 
 //global variables
 var map;
@@ -77,6 +74,13 @@ function InitialMap() {
 
     //directions set map
     directionsRender.setMap(map);
+}
+
+// device APIs are available
+//
+function onDeviceReady() {
+    // path.js
+    initialize();
 }
 
 function updateLocation(id, latitude, longitude, role) {
@@ -238,6 +242,7 @@ function resizeScreen() {
     var mapblockH = docHight - headerHight - btnHight;
 
     $('#map-block').css('height', mapblockH + 'px');
+    $('.map-block').css('top', headerHight + 'px');
 }
 
 function GetCurrentPos(id, role) {
