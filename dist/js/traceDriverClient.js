@@ -687,6 +687,7 @@ function onDeviceReady() {
             document.getElementById("dialog_message").innerHTML += data.message;
             tid = additional.tid;
             path_index = additional.pindex;
+            alert("additional.pindex: " + additional.pindex);
             if (additional.foreground) {
                 setName(tid, 'dialog_name');
                 $('#dialog').css("display", "table");
