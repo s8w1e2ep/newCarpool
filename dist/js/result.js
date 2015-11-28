@@ -173,19 +173,16 @@ function confirm() {
     var wait_str = 'waiting.html?data={"id":["' + id + '","';
     var num = 0;
     if (did != "") {
-        alert('176');
         num++;
         sendGCM(did, 0);
         wait_str += did + '"';
     }
     if (did2 != "") {
-        alert('182');
         num++;
         sendGCM(did2, 1);
         wait_str += ',"' + did2 + '"';
     }
     if (did3 != "") {
-        alert('188');
         num++;
         sendGCM(did3, 2);
         wait_str += ',"' + did3 + '"';

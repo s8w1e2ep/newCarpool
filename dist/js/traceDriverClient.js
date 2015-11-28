@@ -291,7 +291,6 @@ function UpdateView(re, pcurpoints) {
     //popInfo(re[0].id, 400, 0);
     // update page bottom text and tts text
     var ttsText = '距離';
-    alert("line 294: re[0].type: " + re[0].type);
     if (re[0].type) {
         // type 0 is driver end point
         pIndex = pid.indexOf(re[0].id);
@@ -684,7 +683,7 @@ function onDeviceReady() {
             document.getElementById("dialog_message").innerHTML += data.message;
             tid = additional.tid;
             path_index = additional.pindex;
-            alert("additional.pindex: " + additional.pindex);
+            //alert("additional.pindex: " + additional.pindex);
             if (additional.foreground) {
                 setName(tid, 'dialog_name');
                 $('#dialog').css("display", "table");

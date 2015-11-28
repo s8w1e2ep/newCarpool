@@ -119,7 +119,7 @@ function addRating() {
         alert("最低評價為1分!");
     } else {
         var data = '{"id":"' + id + '","uid":"' + rid[index] + '","role":"' + role + '","rating":"' + rate + '","comment":"' + comment + '"}';
-        alert(data);
+        //alert(data);
         var url = server + 'add_rating.php?data=' + data;
         console.log(url);
         var xmlhttp = new XMLHttpRequest();
