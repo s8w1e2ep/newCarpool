@@ -111,10 +111,12 @@ function GetneceData($did, $pids, $carpoolPathIdx) {
 		$getPassPointsSql = 'SELECT `passenger`.`aid`, `passenger`.`curpoint`, `passenger`.`getinStatus`, `passenger`.`getoffStatus`, `passenger`.`carpoolpath` FROM `passenger` WHERE (NOT `passenger`.`finished`) AND `passenger`.`aid` IN (' . join(",", $pids) . ')';
 		$passPointsResult = mysql_query($getPassPointsSql);
 
+		$i = 0;
 		while ($lineData = mysql_fetch_array($passPointsResult, MYSQL_ASSOC)) {
 			if (in_array($lineData['aid'], $pids)) {
 				$cpath = json_decode($lineData['carpoolpath'], true);
-				$carpoolPathCurrentIdx = array_search($lineData['aid'], $pids);
+				// $carpoolPathCurrentIdx = array_search($lineData['aid'], $pids);
+				$carpoolPathCurrentIdx = $carpoolPathIdx[$i];
 
 				if (!$lineData['getinStatus']) {
 					$pData = array();
