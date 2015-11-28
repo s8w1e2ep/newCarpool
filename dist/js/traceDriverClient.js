@@ -563,7 +563,6 @@ function popInfo(id, dis, type) {
 
 function DetectCurPoint() {
     if (navigator.geolocation) {
-        alert("line 566");
         navigator.geolocation.getCurrentPosition(function(position) {
                 // pass current location to server
                 var pidsStr = '';
@@ -580,12 +579,13 @@ function DetectCurPoint() {
                 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        alert("line 582: " + xmlhttp.responseText);
                         var result = JSON.parse(xmlhttp.responseText);
+                        alert("line 584");
                         driver.Point.Current = new google.maps.LatLng(position.coords.latitude.toFixed(5), position.coords.longitude.toFixed(5));
-                        alert("line 585");
+                        alert("line 586");
                         // update screen infomation
                         UpdateView(result.calResult, result.passCurpoints);
-                        alert("line 588");
                     }
                 }
                 xmlhttp.send();
