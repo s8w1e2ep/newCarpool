@@ -37,6 +37,9 @@ var path_index = ""; //store the index of passenger path
 var pid = [];
 var pidPathIdx = [];
 var rid = [];
+var ttsName = ""; // 紀錄乘客姓名給TTS
+var ttsText2 = "";
+var ttscheck = false;
 
 // driver variables
 var driver = null;
@@ -202,7 +205,7 @@ function getPhone() {
 }
 
 function AddPassenger(id, index) {
-
+    ttscheck = true;
     // be sure that id is string
     if (!isNaN(id)) {
         id = id.toString();
@@ -305,7 +308,7 @@ function UpdateView(re, pcurpoints) {
         // redirect to rating page
         if (re[0].gdm.distance.val <= 25) {
             var rid_str = JSON.stringify(rid);
-            alert('{"id":"' + did + '","role":"driver","rid":' + rid_str + '}');
+            //alert('{"id":"' + did + '","role":"driver","rid":' + rid_str + '}');
             window.location = local + 'rating.html?data={"id":"' + did + '","role":"driver","rid":' + rid_str + '}';
         }
 
@@ -313,6 +316,18 @@ function UpdateView(re, pcurpoints) {
         ttsText += '終點約' + re[0].gdm.time.text + '，' + re[0].gdm.distance.text;
     }
     $('#footer').html(ttsText);
+    if (ttscheck) {
+        TTS
+            .speak({
+                text: ttsText,
+                locale: 'zh-TW',
+                rate: 1
+            }, function() {
+                //alert('success');
+            }, function(reason) {
+                alert(reason);
+            });
+    }
 
     // update driver current point marker
     if (driver.Marker.Current != null)
@@ -417,7 +432,7 @@ function UpdateView(re, pcurpoints) {
 function addHistory(pindex) {
     var data = '{"did":"' + did + '","pid":"' + tid + '","index":"' + pindex + '"}';
     var url = server + 'update_history.php?data=' + data;
-    alert("history: " + url);
+    //alert("history: " + url);
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -437,11 +452,11 @@ function confirmCarpool() {
     var data = '{"id":"' + did + '","tid":"' + tid + '","mode":"2"}';
     //{"role":"driver","id":"10467795386484826","tid":"838717559541922","mode":"2"}
     var xmlhttp = new XMLHttpRequest();
-    alert("data: " + data);
+    //alert("data: " + data);
     url = server + 'gcm_server.php?data=' + data;
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            alert("+乘客&&更新history");
+            //alert("+乘客&&更新history");
             AddPassenger(tid, path_index);
             addHistory(path_index);
         }
@@ -468,6 +483,17 @@ function popInfo(id, dis, type) {
             // type is 1, passenger get in car
             if (dis <= BE_STATE_POINT) {
                 //$("#info").modal('show');
+                ttsText2 = '抵達乘客' + passList[passIndex].Name + '的上車點';
+                TTS
+                    .speak({
+                        text: ttsText2,
+                        locale: 'zh-TW',
+                        rate: 1
+                    }, function() {
+                        //alert('success');
+                    }, function(reason) {
+                        alert(reason);
+                    });
                 $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('抵達乘客上車點');
@@ -475,6 +501,17 @@ function popInfo(id, dis, type) {
                 $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
             } else if ((BE_ARRIVING - BE_DELTA_NUMBER) <= dis && dis <= BE_ARRIVING) {
                 //$("#info").modal('show');
+                ttsText2 = '即將抵達乘客' + passList[passIndex].Name + '的上車點';
+                TTS
+                    .speak({
+                        text: ttsText2,
+                        locale: 'zh-TW',
+                        rate: 1
+                    }, function() {
+                        //alert('success');
+                    }, function(reason) {
+                        alert(reason);
+                    });
                 $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('即將抵達乘客上車點');
@@ -485,6 +522,17 @@ function popInfo(id, dis, type) {
             // type is 0, passenger get out off car
             if (dis <= BE_STATE_POINT) {
                 //$("#info").modal('show');
+                ttsText2 = '抵達乘客' + passList[passIndex].Name + '的下車點';
+                TTS
+                    .speak({
+                        text: ttsText2,
+                        locale: 'zh-TW',
+                        rate: 1
+                    }, function() {
+                        //alert('success');
+                    }, function(reason) {
+                        alert(reason);
+                    });
                 $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('抵達乘客下車點');
@@ -492,6 +540,17 @@ function popInfo(id, dis, type) {
                 $('#info_image').attr('src', "http://graph.facebook.com/" + id + "/picture?type=large");
             } else if ((BE_ARRIVING - BE_DELTA_NUMBER) <= dis && dis <= BE_ARRIVING) {
                 //$("#info").modal('show');
+                ttsText2 = '即將抵達乘客' + passList[passIndex].Name + '的下車點';
+                TTS
+                    .speak({
+                        text: ttsText2,
+                        locale: 'zh-TW',
+                        rate: 1
+                    }, function() {
+                        //alert('success');
+                    }, function(reason) {
+                        alert(reason);
+                    });
                 $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('即將抵達乘客下車點');
@@ -582,8 +641,20 @@ function setName(data, mode) {
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            ttsText2 = '您有一則來自乘客' + xmlhttp.responseText + '的共乘請求!';
             $('#dialog_image').attr('src', 'http://graph.facebook.com/' + data + '/picture?type=large');
             document.getElementById(mode).innerHTML = xmlhttp.responseText;
+            TTS
+                .speak({
+                    text: ttsText2,
+                    locale: 'zh-TW',
+                    rate: 1
+                }, function() {
+                    //alert('success');
+                    confirmCarpool();
+                }, function(reason) {
+                    alert('TTS:' + reason);
+                });
         }
     }
     xmlhttp.send();
@@ -600,9 +671,14 @@ function onDeviceReady() {
             "ios": {},
             "windows": {}
         });
-
         //通知設定
         push.on('notification', function(data) {
+            // TTS
+            //     .stop(function() {
+            //         //alert('success');
+            //     }, function(reason) {
+            //         alert(reason);
+            //     });
             var additional = JSON.stringify(data.additionalData);
             additional = JSON.parse(additional);
             document.getElementById("dialog_message").innerHTML += data.message;
@@ -617,18 +693,6 @@ function onDeviceReady() {
                 $('#dialog').css("display", "table");
                 $('.wrapperInside').attr('style', 'background-color: #666666;');
             }
-            TTS
-                .speak({
-                    text: '您有一則新請求!',
-                    locale: 'zh-TW',
-                    rate: 1
-                }, function() {
-                    alert('success');
-                    confirmCarpool();
-                }, function(reason) {
-                    alert(reason);
-                });
-
         });
 
         push.on('error', function(e) {
@@ -641,5 +705,4 @@ function onDeviceReady() {
         alert(txt);
     }
 }
-
 document.addEventListener('deviceready', onDeviceReady, true);

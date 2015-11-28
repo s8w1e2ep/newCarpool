@@ -7,17 +7,20 @@
     <meta name="description" content="Introducing Lollipop, a sweet new take on Android.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- JQuery JavaScript -->
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="dist/js/jquery-1.9.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <!-- google material lite -->
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
-    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+    <link rel="stylesheet" href="dist/css/material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="dist/js/material.min.js"></script>
     <!-- custom css and js -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" type="text/css" href="dist/css/carpoolmap.css">
     <!--Google Map-->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <!-- [if lt IE 9]>
+        <script src="dist/js/html5shiv.js"></script>
+    <![endif] -->
     <!-- Uses a header that contracts as the page scrolls down. -->
     <style>
     .waterfall-demo-header-nav .mdl-navigation__link:last-of-type {
@@ -35,11 +38,11 @@
                 <span class="android-title mdl-layout-title">
                 <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
               </span>
-                <span class="android-title mdl-layout-title">路徑規劃</span>
+                <span class="android-title mdl-layout-title">點選終點</span>
                 <div class="mdl-layout-spacer"></div>
                 <!-- <a ></a> -->
-                <button id="next" class="mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">done</i>
+                <button id="btnBoundEP" class="mdl-button mdl-js-button mdl-button--icon">
+                    <i class="material-icons">room</i>
                 </button>
             </div>
         </header>
@@ -80,7 +83,7 @@
                             <div id="map-canvas"></div>
                         </div>
                     </center>
-                    <button id="btnBoundEP" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="position:fixed; bottom:0px; z-index:0; width:100%"><i class="material-icons">room</i>終點-點擊後點選位置</button>
+                    <button id="next" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="position:fixed; bottom:0px; z-index:0; width:100%"><i class="material-icons">done</i>確定路線</button>
                 </div>
             </div>
         </main>

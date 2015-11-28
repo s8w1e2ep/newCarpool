@@ -26,7 +26,7 @@ function getAddress($latlng) {
 	}
 }
 
-while ($index < 20 && $i = mysql_fetch_array($result)) {
+while ($index < 10 && $i = mysql_fetch_array($result)) {
 
 	$ssql = "SELECT `aid` FROM `passenger` WHERE `pnum` = " . $i['pnum'] and `finished` == 1;
 	$rresult = mysql_query($ssql);
@@ -51,8 +51,8 @@ while ($index < 20 && $i = mysql_fetch_array($result)) {
 	$j = mysql_fetch_array($rresult);
 	$pname = $j[0];
 
-	echo '<br/><br/>';
-	echo '<div class="card-event mdl-card mdl-shadow--2dp">';
+	echo '<br/>';
+	echo '<div class="card-event mdl-card mdl-shadow--2dp" style="background: #0088A8; color: #fff;">';
 	echo '<br/><div style="float: right;">';
 	$d = substr($i['time'], 0, 10);
 	if ($d == date('Y-m-d')) {
@@ -64,11 +64,11 @@ while ($index < 20 && $i = mysql_fetch_array($result)) {
 	}
 	echo substr($i['time'], strrpos($i['time'], ' '), 6);
 	echo '</div>';
-	echo '<span>司機:' . $dname . '</span>';
-	echo '<span>乘客:' . $pname . '</span/><br/>';
+	echo '<span><i class="material-icons">directions_car</i>' . $dname . '</span>';
+	echo '<span><i class="material-icons">directions_walk</i>' . $pname . '</span/><br/>';
 	echo '<span>共乘距離:' . $dis . ' 公尺</span><br/>';
 	echo '共乘配對成功';
-	echo '</div>';
+	echo '</div><br/>';
 
 	$index++;
 }

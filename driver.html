@@ -9,12 +9,15 @@
     <!-- jQuery -->
     <script src="dist/js/jquery-1.9.1.min.js"></script>
     <!-- google material lite -->
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
-    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+    <link rel="stylesheet" href="dist/css/material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="dist/js/material.min.js"></script>
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
     <!-- custom js and css -->
     <link rel="stylesheet" href="style.css">
+    <!-- [if lt IE 9]>
+        <script src="dist/js/html5shiv.js"></script>
+    <![endif] -->
     <!-- Uses a header that contracts as the page scrolls down. -->
     <style>
     .waterfall-demo-header-nav .mdl-navigation__link:last-of-type {
@@ -68,7 +71,7 @@
         <main class="mdl-layout__content">
             <div class="page-content">
                 <center>
-                    <div style="width:60%">
+                    <div class="mdl-textfield mdl-js-textfield" style="width:60%">
                         <br/>
                         <br/>
                         <label for="cid">車牌號碼</label>
@@ -105,11 +108,11 @@
                         </select>
                     </div>
                 </center>
-                <button id="next" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="position:fixed; bottom:0px; z-index:0; width:100%" onclick="nextStep();"><i class="material-icons">arrow_forward</i>下一步</button>
+                <button id="next" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="position:fixed; bottom:0px; z-index:0; width:100%"><i class="material-icons ">arrow_forward</i>下一步</button>
             </div>
         </main>
     </div>
-    <script src="dist/js/dinit.js"></script>
+    <script src="dist/js/dinit.js "></script>
 </body>
 
 </html>

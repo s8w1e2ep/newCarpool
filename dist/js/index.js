@@ -10,9 +10,21 @@ $('#login').click(function() {
     loginFacebook();
 });
 
-// $('#submit').click(function() {
-// registerCarpool();
-// });
+$('#submit').click(function() {
+    registerCarpool();
+});
+
+$('#register_button').click(function() {
+    show();
+});
+
+$('#driver').click(function() {
+    nextDriver();
+});
+
+$('#passenger').click(function() {
+    nextPassenger();
+});
 
 //global variable
 var url = "";
@@ -21,6 +33,7 @@ var id = "";
 var name = "";
 var phone = "";
 var gender = "";
+var rvalue = "";
 var check = 0;
 
 var server = "http://120.114.186.4/carpool/api/";
@@ -38,6 +51,7 @@ function initialize() {
     $('#login').attr('style', 'display:none');
 
     getName();
+    getRating();
 
     //all clear
     // $('#login').removeAttr('disabled');
@@ -61,6 +75,27 @@ function setURL() {
     $('#user_image').attr('src', 'http://graph.facebook.com/' + id + '/picture?type=large');
 }
 
+function getRating() {
+    var url = server + 'get_rating.php?data={"id":"' + id + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            rvalue = xmlhttp.responseText;
+            document.getElementById('rating').innerHTML = '評價: ' + rvalue;
+            $("#jRate").jRate({
+                startColor: 'yellow',
+                endColor: 'yellow',
+                backgroundColor: 'lightgray',
+                shapeGap: '5px',
+                rating: rvalue,
+                readOnly: true
+            });
+        }
+    }
+    xmlhttp.send();
+}
 
 function getName() {
     var url = server + 'get_name.php?data={"id":"' + id + '"}';

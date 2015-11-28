@@ -146,7 +146,7 @@ function onDeviceReady() {
             var additional = JSON.stringify(data.additionalData);
             additional = JSON.parse(additional);
             //alert("tid: " + additional.tid);
-            document.getElementById("message").innerHTML += data.message;
+            document.getElementById("message").innerHTML = data.message;
             if (additional.foreground) {
                 setName(additional.tid, 'name');
                 $('#dialog').css("display", "table");

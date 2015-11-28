@@ -3,9 +3,9 @@ $(document).ready(function() {
     initialize();
 });
 
-// $('#next').click(function() {
-// nextStep();
-// });
+$('#next').click(function() {
+    nextStep();
+});
 
 var url = "";
 var id = "";

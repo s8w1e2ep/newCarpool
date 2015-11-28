@@ -7,18 +7,21 @@
     <meta name="description" content="Introducing Lollipop, a sweet new take on Android.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="dist/js/jquery-1.9.1.min.js"></script>
     <!-- google material lite -->
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="dist/css/material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+    <script src="dist/js/material.min.js"></script>
     <!-- custom css and js -->
     <link rel="stylesheet" href="dist/css/traceSystem.css">
     <link rel="stylesheet" href="style.css">
     <!-- Google map -->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <!--TTS-->
-    <script type="text/javascript" src="dist/tts.js"></script>
+    <script type="text/javascript" src="dist/js/tts.js"></script>
+    <!-- [if lt IE 9]>
+        <script src="dist/js/html5shiv.js"></script>
+    <![endif] -->
     <!-- Uses a header that contracts as the page scrolls down. -->
     <style>
     .waterfall-demo-header-nav .mdl-navigation__link:last-of-type {
@@ -68,7 +71,7 @@
                 <a class="mdl-navigation__link" href="" id="about"><i class="material-icons">info</i>關於</a>
             </nav>
         </div>
-        <main class="mdl-layout__content" lang="zh">
+        <main class="mdl-layout__content">
             <div class="page-content">
                 <center>
                     <!-- Modal 即將上車訊息... -->
@@ -77,10 +80,12 @@
                             <div class="dialogContainer">
                                 <!-- Dialog title and body -->
                                 <div class="dialogContent">
-                                    <div class="dialogContentTitle">資訊</div>
-                                    <div class="dialogContentBody">
+                                    <div class="dialogContentTitle" style="text-align: center;">上車訊息</div>
+                                    <div class="dialogContentBody" style="text-align: center;">
                                         <img id="image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
-                                        <h3 id="name" style="padding: 5px; font-size: 25px;"></h3>
+                                        <br/>
+                                        <br/>
+                                        <h3 id="name" style="padding: 5px; font-size: 18px;"></h3>
                                         <h3><div id="message"></div></h3>
                                     </div>
                                 </div>
@@ -99,10 +104,12 @@
                             <div class="dialogContainer">
                                 <!-- Dialog title and body -->
                                 <div class="dialogContent">
-                                    <div class="dialogContentTitle">共乘資訊</div>
-                                    <div class="dialogContentBody">
+                                    <div class="dialogContentTitle" style="text-align: center;">共乘資訊</div>
+                                    <div class="dialogContentBody" style="text-align: center;">
                                         <img id="dialog_image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
-                                        <h3 id="dialog_name" style="padding: 5px; font-size: 25px;"></h3>
+                                        <br/>
+                                        <br/>
+                                        <h3 id="dialog_name" style="padding: 5px; font-size: 18px;"></h3>
                                         <h3><div id="dialog_message"></div></h3>
                                     </div>
                                 </div>
@@ -111,9 +118,9 @@
                                     <button id="accept" class="mdl-button mdl-js-button" value="" onclick="confirmCarpool();">
                                         接受
                                     </button>
-                                    <button id="reject" class="mdl-button mdl-js-button" onclick="cancelCarpool();">
+                                    <!-- <button id="reject" class="mdl-button mdl-js-button" onclick="cancelCarpool();">
                                         拒絕
-                                    </button>
+                                    </button> -->
                                 </div>
                             </div>
                         </div>
@@ -124,10 +131,12 @@
                             <div class="dialogContainer">
                                 <!-- Dialog title and body -->
                                 <div class="dialogContent">
-                                    <div class="dialogContentTitle">共乘完成</div>
-                                    <div class="dialogContentBody">
+                                    <div class="dialogContentTitle" style="text-align: center;">共乘完成</div>
+                                    <div class="dialogContentBody" style="text-align: center;">
                                         <img id="info_image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
-                                        <b id="info_name" style="padding: 5px; font-size: 25px;"></b>
+                                        <br/>
+                                        <br/>
+                                        <b id="info_name" style="padding: 5px; font-size: 18px;"></b>
                                         <br/>
                                         <h3><div id="info_message"></div></h3>
                                     </div>

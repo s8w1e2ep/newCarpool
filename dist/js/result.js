@@ -190,7 +190,7 @@ function confirm() {
     wait_str += '], "num":"' + num + '"}';
 
     console.log(wait_str);
-    alert(wait_str);
+    //alert(wait_str);
     window.location = local + wait_str;
 }
 

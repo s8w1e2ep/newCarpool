@@ -8,11 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- jQuery -->
     <script src="dist/js/jquery-1.9.1.min.js"></script>
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
-    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+    <!-- google material lite -->
+    <link rel="stylesheet" href="dist/css/material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="dist/js/material.min.js"></script>
     <!-- custom js and css -->
     <link rel="stylesheet" href="style.css">
+    <!-- [if lt IE 9]>
+        <script src="dist/js/html5shiv.js"></script>
+    <![endif] -->
     <!-- Uses a header that contracts as the page scrolls down. -->
     <style>
     .waterfall-demo-header-nav .mdl-navigation__link:last-of-type {
@@ -65,17 +69,7 @@
         </div>
         <main class="mdl-layout__content">
             <div class="page-content">
-                <center>
-                    <br/>
-                    <br/>
-                    <div class="card-event mdl-card mdl-shadow--2dp">
-                        <h4>NAME</h4> testing...
-                    </div>
-                    <br/>
-                    <br/>
-                    <div class="card-event mdl-card mdl-shadow--2dp">
-                        <h4>NAME</h4> testing...
-                    </div>
+                <center id="show">
                 </center>
             </div>
         </main>

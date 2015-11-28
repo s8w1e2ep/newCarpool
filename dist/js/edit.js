@@ -3,6 +3,10 @@ $(document).ready(function() {
     initialize();
 });
 
+$('#next').click(function() {
+    ok();
+});
+
 var url = "";
 var id = "";
 
