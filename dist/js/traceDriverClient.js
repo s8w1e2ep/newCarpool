@@ -571,7 +571,7 @@ function DetectCurPoint() {
                     pidsStr = '"' + pid.join('","') + '"';
                     pidPathIdxStr = '"' + pidPathIdx.join('","') + '"';
                 }
-
+                alert("pidPathIdxStr: " + pidPathIdxStr);
                 var toServerStr = '{"init": 0, "did":"' + did + '", "pids": [' + pidsStr + '], "carpoolidx": [' + pidPathIdxStr + '], "curpoint": {"at":' + position.coords.latitude.toFixed(5) + ', "ng": ' + position.coords.longitude.toFixed(5) + '}}';
                 var url = server + 'traceDriverServer.php?data=' + toServerStr;
                 var xmlhttp = new XMLHttpRequest();
@@ -579,11 +579,8 @@ function DetectCurPoint() {
                 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                        alert("line 582: " + xmlhttp.responseText);
                         var result = JSON.parse(xmlhttp.responseText);
-                        alert("line 584");
                         driver.Point.Current = new google.maps.LatLng(position.coords.latitude.toFixed(5), position.coords.longitude.toFixed(5));
-                        alert("line 586");
                         // update screen infomation
                         UpdateView(result.calResult, result.passCurpoints);
                     }
