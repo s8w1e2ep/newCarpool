@@ -570,7 +570,6 @@ function DetectCurPoint() {
                     pidsStr = '"' + pid.join('","') + '"';
                     pidPathIdxStr = '"' + pidPathIdx.join('","') + '"';
                 }
-                alert("pidPathIdxStr: " + pidPathIdxStr);
                 var toServerStr = '{"init": 0, "did":"' + did + '", "pids": [' + pidsStr + '], "carpoolidx": [' + pidPathIdxStr + '], "curpoint": {"at":' + position.coords.latitude.toFixed(5) + ', "ng": ' + position.coords.longitude.toFixed(5) + '}}';
                 var url = server + 'traceDriverServer.php?data=' + toServerStr;
                 var xmlhttp = new XMLHttpRequest();
