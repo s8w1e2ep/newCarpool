@@ -293,7 +293,6 @@ function UpdateView(re, pcurpoints) {
     var ttsText = '距離';
     alert("line 294: re[0].type: " + re[0].type);
     if (re[0].type) {
-        alert("line 296");
         // type 0 is driver end point
         pIndex = pid.indexOf(re[0].id);
         ttsText += '乘客' + passList[pIndex].Name + '的';
@@ -307,7 +306,6 @@ function UpdateView(re, pcurpoints) {
         }
         ttsText += re[0].gdm.time.text + '，' + re[0].gdm.distance.text;
     } else {
-        alert("line 310");
         // redirect to rating page
         if (re[0].gdm.distance.val <= 25) {
             var rid_str = JSON.stringify(rid);
@@ -318,7 +316,6 @@ function UpdateView(re, pcurpoints) {
         pIndex = -1;
         ttsText += '終點約' + re[0].gdm.time.text + '，' + re[0].gdm.distance.text;
     }
-    alert("line 321");
     $('#footer').html(ttsText);
     if (ttscheck) {
         TTS
@@ -347,7 +344,6 @@ function UpdateView(re, pcurpoints) {
 
     // set map center to current point
     map.setCenter(driver.Point.Current);
-    alert("line 350");
     if (pIndex != -1) {
         // update the passenger current point marker
         passList[pIndex].Point.Current = new google.maps.LatLng(re[0].curpoint.at, re[0].curpoint.ng);
@@ -567,6 +563,7 @@ function popInfo(id, dis, type) {
 
 function DetectCurPoint() {
     if (navigator.geolocation) {
+        alert("line 566");
         navigator.geolocation.getCurrentPosition(function(position) {
                 // pass current location to server
                 var pidsStr = '';
@@ -585,8 +582,10 @@ function DetectCurPoint() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         var result = JSON.parse(xmlhttp.responseText);
                         driver.Point.Current = new google.maps.LatLng(position.coords.latitude.toFixed(5), position.coords.longitude.toFixed(5));
+                        alert("line 585");
                         // update screen infomation
                         UpdateView(result.calResult, result.passCurpoints);
+                        alert("line 588");
                     }
                 }
                 xmlhttp.send();
