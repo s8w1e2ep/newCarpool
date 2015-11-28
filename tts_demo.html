@@ -12,8 +12,12 @@
     <link rel="stylesheet" href="dist/css/material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="dist/js/material.min.js"></script>
-    <!-- custom js and css -->
+    <!-- custom css and js -->
     <link rel="stylesheet" href="style.css">
+    <!-- Google map -->
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <!--TTS-->
+    <script type="text/javascript" src="dist/js/tts.js"></script>
     <!-- [if lt IE 9]>
         <script src="dist/js/html5shiv.js"></script>
     <![endif] -->
@@ -25,16 +29,15 @@
     </style>
 </head>
 
-<body>
+<body id="mbody">
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
         <header class="mdl-layout__header mdl-layout__header--waterfall">
             <!-- Top row, always visible -->
             <div class="mdl-layout__header-row">
                 <!-- Title -->
                 <span class="android-title mdl-layout-title">
-        <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
-         </span>
-                <span class="android-title mdl-layout-title">關於</span>
+                <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
+              </span>
                 <div class="mdl-layout-spacer"></div>
             </div>
         </header>
@@ -69,40 +72,33 @@
         </div>
         <main class="mdl-layout__content">
             <div class="page-content">
-            <a href="tts_demo.html"></a>
                 <center>
-                    <br/>
-                    <br/>
-                    <div>---PROJECT---</div>
-                    <div>Let’s Carpool</div>
-                    <br/>
-                    <div>---DEVELOPER---</div>
-                    <div>Min-Hsuan, Hu</div>
-                    <div>Ci-Ruei, Jiang</div>
-                    <div>Chia-Yu, Huang</div>
-                    <div>Shih-Hao, Huang</div>
-                    <br/>
-                    <div>---CONTACT---</div>
-                    <div>fake30820@gmail.com</div>
-                    <div>ha9mv8c@gmail.com</div>
-                    <div>happy082807@gmail.com</div>
-                    <div>dt9450108@gmail.com</div>
-                    <br/>
-                    <div>---ADVISOR---</div>
-                    <div>Prof. Chow-Sing, Lin</div>
-                    <br/>
-                    <br/>
-                    <div>National University of Tainan</div>
-                    <div>Data System Laboratory(DSG)</div>
-                    <div>http://www.dsg.nutn.edu.tw</div>
+                    <!-- Modal 即將上車訊息... -->
+                    <input id="tts_input" class="mdl-textfield__input" type="text">
+                    <button id="speak" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width:100% height:50px;">Speak</button>
+                </center>
             </div>
-            <br/>
-            <br/>
-            </center>
+        </main>
     </div>
-    </main>
-    </div>
-    <script type="text/javascript" src="dist/js/about.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <!--load GCM-->
+    <script src="dist/js/plugins.js"></script>
+    <script>
+    $('#speak').click(function() {
+        var ttsText = $('#tts_input').val();
+        console.log(ttsText);
+        TTS.speak({
+            text: ttsText,
+            locale: 'zh-TW',
+            rate: 1
+        }, function() {
+            //alert('success');
+            confirmCarpool();
+        }, function(reason) {
+            alert('TTS:' + reason);
+        });
+    });
+    </script>
 </body>
 
 </html>
