@@ -116,7 +116,7 @@ function GetneceData($did, $pids, $carpoolPathIdx) {
 			if (in_array($lineData['aid'], $pids)) {
 				$cpath = json_decode($lineData['carpoolpath'], true);
 				// $carpoolPathCurrentIdx = array_search($lineData['aid'], $pids);
-				$carpoolPathCurrentIdx = $carpoolPathIdx[$i];
+				$carpoolPathCurrentIdx = $carpoolPathIdx[$i++];
 
 				if (!$lineData['getinStatus']) {
 					$pData = array();
