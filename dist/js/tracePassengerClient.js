@@ -24,6 +24,7 @@ var pid = null;
 // driver is
 var did = [];
 var rid = [];
+var cid = []; //store the cid of the driver
 // first driver index map to carpool path two-dimentional array index
 var currentDid = 0;
 
@@ -201,7 +202,7 @@ function AddDriver(id, pathid) {
     if (!isNaN(id)) {
         id = id.toString();
     }
-
+    getCid(id);
     did.push(id);
     rid.push(id);
     var theDriverIndex = did.length - 1;
@@ -263,7 +264,7 @@ function AddDriver(id, pathid) {
             // set info window number
             driverList[theDriverIndex].Marker.InfoWindow = new google.maps.InfoWindow();
             driverList[theDriverIndex].Marker.InfoWindow.setOptions({
-                content: (theDriverIndex + 1).toString(),
+                content: (theDriverIndex + 1).toString() + "車牌: " + cid[theDriverIndex],
                 position: driverList[theDriverIndex].Point.Current,
                 disableAutoPan: true,
                 zIndex: 803
@@ -502,6 +503,19 @@ function setName(data, mode) {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             $('#image').attr('src', 'http://graph.facebook.com/' + data + '/picture?type=large');
             document.getElementById(mode).innerHTML = xmlhttp.responseText;
+        }
+    }
+    xmlhttp.send();
+}
+
+function getCid(data) {
+    var url = server + 'get_cid.php?data={"id":"' + data + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            cid.push(xmlhttp.responseText);
         }
     }
     xmlhttp.send();
