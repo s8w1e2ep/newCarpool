@@ -329,7 +329,7 @@ function UpdateView(re, dcurpoints) {
         // set info window number
         driverList[driverIndex].Marker.InfoWindow = new google.maps.InfoWindow();
         driverList[driverIndex].Marker.InfoWindow.setOptions({
-            content: (driverIndex + 1).toString(),
+            content: (driverIndex + 1).toString() + "車牌: " + cid[driverIndex],
             position: driverList[driverIndex].Point.Current,
             disableAutoPan: true,
             zIndex: 803
