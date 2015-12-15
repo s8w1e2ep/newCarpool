@@ -12,16 +12,16 @@
 	$id = $data['id'];
 	$result = $data['result'];
 
-	echo '<table  class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">';
-	echo '	<tr>';
-	echo '		<th><b>司機</b></th>';
-	echo '		<th><b>共乘比例</b></th>';
-	echo '		<th><b>上車點距離</b></th>';
-	echo '		<th><b>下車點距離</b></th>';
-	echo '		<th><b>等待時間</b></th>';
-	echo '		<th><b>資訊</b></th>';
-	echo '	</tr>';
-	echo '<tbody>';
+	// echo '<table  class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">';
+	// echo '	<tr>';
+	// echo '		<th><b>司機</b></th>';
+	// echo '		<th><b>共乘比例</b></th>';
+	// echo '		<th><b>上車點距離</b></th>';
+	// echo '		<th><b>下車點距離</b></th>';
+	// echo '		<th><b>等待時間</b></th>';
+	// echo '		<th><b>資訊</b></th>';
+	// echo '	</tr>';
+	// echo '<tbody>';
 
 	usort($result, 'sort_by_percentage');
 
@@ -44,29 +44,89 @@
 		$infos = 'file:///android_asset/www/info.html?data='.$data_str;
 
 		if(sizeof($result[$index]) > 1){
-			echo '<tr value="'.$index.'" onclick="showResult2('.$index.');">';// onclick="setDialog('.$did.');">';
-			// echo '	<td width="35%" align="center"><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
-			echo '	<td ><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
-			echo '	<td >'.ceil(substr($percentage, 0, 2)).'%</td>';
-			echo '	<td >'.$on_d.'公尺</td>';
-			echo '	<td >'.$off_d.'公尺</td>';
-			echo '	<td >'.round(($wait/60),0).'分鐘</td>';
-			echo '	<td  onclick="cancel();"><a href='.$infos.'><i class="material-icons">info</i></a></td>';
+			echo '<table  class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">';
+			echo '<tbody value="'.$index.'" onclick="showResult2('.$index.');">';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">司機'.($index+1).'</td>';
+			echo '<td><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
 			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">司機姓名</td>';
+			echo '<td>'.$name.'</td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">共乘比例</td>';
+			echo '<td>'.ceil(substr($percentage, 0, 2)).'%</td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">上車點距離</td>';
+			echo '<td>'.$on_d.'公尺</td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">下車點距離</td>';
+			echo '<td>'.$off_d.'公尺</td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">等待時間</td>';
+			echo '<td>'.round(($wait/60),0).'分鐘</td>';
+			echo '</tr>';
+			echo '</tbody>';
+			echo '</table>';
+			echo '<br/>';
+
+			// echo '<tr value="'.$index.'" onclick="showResult2('.$index.');">';// onclick="setDialog('.$did.');">';
+			// // echo '	<td width="35%" align="center"><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
+			// echo '	<td ><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
+			// echo '	<td >'.ceil(substr($percentage, 0, 2)).'%</td>';
+			// echo '	<td >'.$on_d.'公尺</td>';
+			// echo '	<td >'.$off_d.'公尺</td>';
+			// echo '	<td >'.round(($wait/60),0).'分鐘</td>';
+			// echo '	<td  onclick="cancel();"><a href='.$infos.'><i class="material-icons">info</i></a></td>';
+			// echo '</tr>';
 		}else{
-			echo '<tr value="'.$index.'" onclick="setDialog('.$did.','.$index.');">';// onclick="setDialog('.$did.');">';
-			echo '	<td ><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
-			echo '	<td >'.ceil(substr($percentage, 0, 3)).'%</td>';
-			echo '	<td >'.$on_d.'公尺</td>';
-			echo '	<td >'.$off_d.'公尺</td>';
-			echo '	<td >'.round(($wait/60),0).'分鐘</td>';
-			echo '	<td  onclick="cancel();"><a href='.$infos.'><i class="material-icons">info</i></a></td>';
+			echo '<table  class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">';
+			echo '<tbody value="'.$index.'" onclick="setDialog('.$did.','.$index.');">';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">司機'.($index+1).'</td>';
+			echo '<td><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
 			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">司機姓名</td>';
+			echo '<td>'.$name.'</td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">共乘比例</td>';
+			echo '<td>'.ceil(substr($percentage, 0, 2)).'%</td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">上車點距離</td>';
+			echo '<td>'.$on_d.'公尺</td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">下車點距離</td>';
+			echo '<td>'.$off_d.'公尺</td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '<td class="mdl-data-table__cell--non-numeric">等待時間</td>';
+			echo '<td>'.round(($wait/60),0).'分鐘</td>';
+			echo '</tr>';
+			echo '</tbody>';
+			echo '</table>';
+			echo '<br/>';
+
+			// echo '<tr value="'.$index.'" onclick="setDialog('.$did.','.$index.');">';// onclick="setDialog('.$did.');">';
+			// echo '	<td ><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
+			// echo '	<td >'.ceil(substr($percentage, 0, 3)).'%</td>';
+			// echo '	<td >'.$on_d.'公尺</td>';
+			// echo '	<td >'.$off_d.'公尺</td>';
+			// echo '	<td >'.round(($wait/60),0).'分鐘</td>';
+			// echo '	<td  onclick="cancel();"><a href='.$infos.'><i class="material-icons">info</i></a></td>';
+			// echo '</tr>';
 		}
 		$index++;
 	}
-	echo '</tbody>';
-	echo '</table>';
+	// echo '</tbody>';
+	// echo '</table>';
 
 	function sort_by_percentage($a, $b)
 	{

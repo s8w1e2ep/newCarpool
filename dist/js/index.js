@@ -6,8 +6,29 @@ $(document).ready(function() {
 
 });
 
-$('#login').click(function() {
+$('#login1').click(function() {
+    $('#loginbyphone').attr('style', 'display:none');
     loginFacebook();
+});
+
+$('#login2').click(function() {
+    $('#loginbyphone').attr('style', 'display:');
+});
+
+$('#check').click(function() {
+    var phone = $('#phone_number').val();
+    var password = $('#password').val();
+    var url = server + 'check_member.php?data={"phone":"' + phone + '","password":"' + password + '"}';
+    console.log(url);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            //php response
+        }
+    }
+    xmlhttp.send();
 });
 
 $('#submit').click(function() {
@@ -24,6 +45,27 @@ $('#driver').click(function() {
 
 $('#passenger').click(function() {
     nextPassenger();
+});
+
+$('#registermember').click(function() {
+    var name = $('#rname').val();
+    var gender;
+
+    if ($('#male').attr('checked') == true)
+        gender = "male";
+    else if ($('#female').attr('checked') == true)
+        gender = "female";
+
+    var phone = $('#rphonenumber').val();
+    var password = $('#rpassword').val();
+
+    //接原本 registerCarpool();
+});
+
+
+$('#test').click(function() {
+    console.log("x");
+    $('#registbyphone').attr('style', 'display:table');
 });
 
 //global variable
@@ -48,7 +90,9 @@ function initialize() {
 
     id = json.id;
 
-    $('#login').attr('style', 'display:none');
+    $('#login1').attr('style', 'display:none');
+    $('#login2').attr('style', 'display:none');
+    $('#test').attr('style', 'display:none');
 
     getName();
     getRating();
@@ -152,7 +196,9 @@ function checkCarpool() {
             if (xmlhttp.responseText.trim() === "success") {
                 window.location = local + 'index.html?data={"id":"' + id + '"}';
             } else if (xmlhttp.responseText.trim() === "uncertified") {
-                $('#login').attr('style', 'display:none');
+                $('#login1').attr('style', 'display:none');
+                $('#login2').attr('style', 'display:none');
+                $('#test').attr('style', 'display:none');
                 $('#state').html('尚未審核');
                 $('#name').html('Hi, ' + name);
                 $('#dialog_name').html(name);
@@ -160,7 +206,9 @@ function checkCarpool() {
                 $('#dialog_image').attr('src', 'http://graph.facebook.com/' + id + '/picture?type=large');
                 $('#setting').attr('href', local + 'setting.html?data={"id":"' + id + '"}');
             } else {
-                $('#login').attr('style', 'display:none');
+                $('#login1').attr('style', 'display:none');
+                $('#login2').attr('style', 'display:none');
+                $('#test').attr('style', 'display:none');
                 $('#register_button').attr('style', 'display:');
                 $('#state').html('尚未註冊');
                 $('#name').html('Hi, ' + name);

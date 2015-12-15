@@ -72,11 +72,13 @@ function getPhone() {
 function getInput() {
     var rating = $('#rating').val();
     var time = $('#time').val();
+    var gender = $('#gender').val();
     var percentage = $('#percentage').val();
 
     var json = '"condition":[' + '{';
 
     json += '"rating":"' + rating + '",';
+    json += '"gender":"' + gender + '",';
     json += '"waiting":"' + time + '",';
 
     json = '"role":"driver",' + json;

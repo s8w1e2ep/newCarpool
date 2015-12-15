@@ -110,7 +110,72 @@
                     <span id="rating" style="font-size: 24px;"></span>
                     <div id="jRate" style="font-size: 24px; -webkit-user-select: none;-moz-user-select: none;"></div>
                     <h4 id="name"></h4>
-                    <button id="login" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Log in with Facebook</button>
+                    <button id="login1" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Facebook登入</button>
+                    <span>  </span>
+                    <button id="login2" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">手機登入</button>
+                    <br/>
+                    <br/>
+                    <button id="test" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">測試</button>
+                    <div id="loginbyphone" style="display:none">
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input id="phone_number" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+                            <label class="mdl-textfield__label" for="phone_number">手機號碼...</label>
+                            <span class="mdl-textfield__error">輸入不是號碼!</span>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input id="password" class="mdl-textfield__input" type="text" pattern="">
+                            <label class="mdl-textfield__label" for="sample2">密碼...</label>
+                            <span class="mdl-textfield__error"></span>
+                        </div>
+                        <button id="check" class="mdl-button mdl-js-button mdl-button--primary">
+                            登入
+                        </button>
+                    </div>
+                    <div id="registbyphone" class="wrapperOutside">
+                        <div class="wrapperInside">
+                            <div class="dialogContainer">
+                                <!-- Dialog title and body -->
+                                <div class="dialogContent">
+                                    <div class="dialogContentTitle">註冊</div>
+                                    <div class="dialogContentBody">
+                                        <img id="dialog_image" src="img/circle.png" alt="..." class="img-circle" style="padding: 5px;">
+                                        <button id="upload" type="file" class="mdl-button mdl-js-button">
+                                            上傳頭像
+                                        </button>
+                                        <div class="mdl-textfield mdl-js-textfield">
+                                            <input id="rname" class="mdl-textfield__input" type="text" pattern="" style="width:60%;">
+                                            <label class="mdl-textfield__label" for="rname">姓名...</label>
+                                            <span class="mdl-textfield__error">不能為空</span>
+                                        </div>
+                                        <div class="mdl-textfield mdl-js-textfield">
+                                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+                                                <input type="radio" id="male" class="mdl-radio__button" name="options" value="1" checked>
+                                                <span class="mdl-radio__label">男</span>
+                                            </label>
+                                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
+                                                <input type="radio" id="female" class="mdl-radio__button" name="options" value="2">
+                                                <span class="mdl-radio__label">女</span>
+                                            </label>
+                                        </div>
+                                        <div class="mdl-textfield mdl-js-textfield">
+                                            <input id="rphone_number" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" style="width:60%;">
+                                            <label class="mdl-textfield__label" for="rphone_number">手機號碼...</label>
+                                            <span class="mdl-textfield__error">輸入不是號碼!</span>
+                                        </div>
+                                        <div class="mdl-textfield mdl-js-textfield">
+                                            <input id="rpassword" class="mdl-textfield__input" type="text" pattern="" style="width:60%;">
+                                            <label class="mdl-textfield__label" for="password">密碼...</label>
+                                            <span class="mdl-textfield__error"></span>
+                                        </div>
+                                        <button id="registmember" class="mdl-button mdl-js-button mdl-button--primary">
+                                            提交
+                                        </button>
+                                        <div id="register_state"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button id="register_button" style="display:none" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">註冊</button>
                     <div style="position:fixed; bottom:0px; z-index:0; width:100%">
                         <button id="driver" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="float: left; width:50%" disabled><i class="material-icons">directions_car</i>司機</button>

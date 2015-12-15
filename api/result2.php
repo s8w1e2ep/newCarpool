@@ -17,17 +17,17 @@ usort($result, 'sort_by_percentage');
 $index = 0;
 while ($index < sizeof($result)) {
 	$class_n = 'child' . $index;
-	if (sizeof($result[$index]) > 1) {
-		echo '<table id=' . $class_n . ' class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp" style="display: none;">';
-		echo '	<tr>';
-		echo '		<td><b>司機</b></td>';
-		echo '		<td><b>共乘比例</b></td>';
-		echo '		<td><b>上車點距離</b></td>';
-		echo '		<td><b>下車點距離</b></td>';
-		echo '		<td><b>等待時間</b></td>';
-		echo '		<td><b>資訊</b></td>';
-		echo '	</tr>';
-	}
+	// if (sizeof($result[$index]) > 1) {
+	// 	echo '<table id=' . $class_n . ' class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp" style="display: none;">';
+	// 	echo '	<tr>';
+	// 	echo '		<td><b>司機</b></td>';
+	// 	echo '		<td><b>共乘比例</b></td>';
+	// 	echo '		<td><b>上車點距離</b></td>';
+	// 	echo '		<td><b>下車點距離</b></td>';
+	// 	echo '		<td><b>等待時間</b></td>';
+	// 	echo '		<td><b>資訊</b></td>';
+	// 	echo '	</tr>';
+	// }
 
 	for ($i = 1; $i < sizeof($result[$index]); $i++) {
 		$order = $result[$index][$i]['order'];
@@ -48,14 +48,45 @@ while ($index < sizeof($result)) {
 
 				$imgsrc = 'http://graph.facebook.com/' . $did . '/picture?type=large';
 				$infos = 'file:///android_asset/www/info.html?data=' . $data_str;
-				echo '<tr onclick="setDialog2(' . $did2 . ',' . $did . ',' . ($i - 1) . ');">'; // onclick="setDialog('.$did.');">';
-				echo '	<td width="35%" align="center"><img src="' . $imgsrc . '"alt="pic1" class="avatar"></td>';
-				echo '	<td width="15%" align="center">' . ceil(substr($percentage, 0, 2)) . '%</td>';
-				echo '	<td width="15%" align="center">' . $on_d . '公尺</td>';
-				echo '	<td width="15%" align="center">' . $off_d . '公尺</td>';
-				echo '	<td width="15%" align="center">' . round(($wait / 60), 0) . '分鐘</td>';
-				echo '	<td width="5%" align="center" onclick="cancel();"><a href=' . $infos . '><i class="material-icons">info</i></a></td>';
+
+				echo '<table  class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">';
+				echo '<tbody value="'.$index.'" onclick="setDialog2(' . $did2 . ',' . $did . ',' . ($i - 1) . ');">';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">司機'.($index+1).'</td>';
+				echo '<td><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
 				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">司機姓名</td>';
+				echo '<td>'.$name.'</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">共乘比例</td>';
+				echo '<td>'.ceil(substr($percentage, 0, 2)).'%</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">上車點距離</td>';
+				echo '<td>'.$on_d.'公尺</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">下車點距離</td>';
+				echo '<td>'.$off_d.'公尺</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">等待時間</td>';
+				echo '<td>'.round(($wait/60),0).'分鐘</td>';
+				echo '</tr>';
+				echo '</tbody>';
+				echo '</table>';
+				echo '<br/>';
+
+				// echo '<tr onclick="setDialog2(' . $did2 . ',' . $did . ',' . ($i - 1) . ');">'; // onclick="setDialog('.$did.');">';
+				// echo '	<td width="35%" align="center"><img src="' . $imgsrc . '"alt="pic1" class="avatar"></td>';
+				// echo '	<td width="15%" align="center">' . ceil(substr($percentage, 0, 2)) . '%</td>';
+				// echo '	<td width="15%" align="center">' . $on_d . '公尺</td>';
+				// echo '	<td width="15%" align="center">' . $off_d . '公尺</td>';
+				// echo '	<td width="15%" align="center">' . round(($wait / 60), 0) . '分鐘</td>';
+				// echo '	<td width="5%" align="center" onclick="cancel();"><a href=' . $infos . '><i class="material-icons">info</i></a></td>';
+				// echo '</tr>';
 			} else if ($order = $result[$index][$i + 1]['order'] != 3) {
 				//get name;
 				$sql = "SELECT `name` FROM `account` WHERE `aid` = '$did'";
@@ -65,14 +96,45 @@ while ($index < sizeof($result)) {
 
 				$imgsrc = 'http://graph.facebook.com/' . $did . '/picture?type=large';
 				$infos = 'file:///android_asset/www/info.html?data=' . $data_str;
-				echo '<tr onclick="setDialog2(' . $did2 . ',' . $did . ',' . ($i - 1) . ');">'; // onclick="setDialog('.$did.');">';
-				echo '	<td width="35%" align="center"><img src="' . $imgsrc . '"alt="pic1" class="avatar"></td>';
-				echo '	<td width="15%" align="center">' . ceil(substr($percentage, 0, 3)) . '%</td>';
-				echo '	<td width="15%" align="center">' . $on_d . '公尺</td>';
-				echo '	<td width="15%" align="center">' . $off_d . '公尺</td>';
-				echo '	<td width="15%" align="center">' . round(($wait / 60), 0) . '分鐘</td>';
-				echo '	<td width="5%" align="center" onclick="cancel();"><a href=' . $infos . '><i class="material-icons">info</i></a></td>';
+
+				echo '<table  class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">';
+				echo '<tbody value="'.$index.'" onclick="setDialog2(' . $did2 . ',' . $did . ',' . ($i - 1) . ');">';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">司機'.($index+1).'</td>';
+				echo '<td><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
 				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">司機姓名</td>';
+				echo '<td>'.$name.'</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">共乘比例</td>';
+				echo '<td>'.ceil(substr($percentage, 0, 2)).'%</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">上車點距離</td>';
+				echo '<td>'.$on_d.'公尺</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">下車點距離</td>';
+				echo '<td>'.$off_d.'公尺</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">等待時間</td>';
+				echo '<td>'.round(($wait/60),0).'分鐘</td>';
+				echo '</tr>';
+				echo '</tbody>';
+				echo '</table>';
+				echo '<br/>';
+
+				// echo '<tr onclick="setDialog2(' . $did2 . ',' . $did . ',' . ($i - 1) . ');">'; // onclick="setDialog('.$did.');">';
+				// echo '	<td width="35%" align="center"><img src="' . $imgsrc . '"alt="pic1" class="avatar"></td>';
+				// echo '	<td width="15%" align="center">' . ceil(substr($percentage, 0, 3)) . '%</td>';
+				// echo '	<td width="15%" align="center">' . $on_d . '公尺</td>';
+				// echo '	<td width="15%" align="center">' . $off_d . '公尺</td>';
+				// echo '	<td width="15%" align="center">' . round(($wait / 60), 0) . '分鐘</td>';
+				// echo '	<td width="5%" align="center" onclick="cancel();"><a href=' . $infos . '><i class="material-icons">info</i></a></td>';
+				// echo '</tr>';
 			} else {
 				//get name;
 				$sql = "SELECT `name` FROM `account` WHERE `aid` = '$did'";
@@ -82,14 +144,45 @@ while ($index < sizeof($result)) {
 
 				$imgsrc = 'http://graph.facebook.com/' . $did . '/picture?type=large';
 				$infos = 'file:///android_asset/www/info.html?data=' . $data_str;
-				echo '<tr onclick="showResult3(' . $index . ',' . ($i - 1) . ');">'; // onclick="setDialog('.$did.');">';
-				echo '	<td width="35%" align="center"><img src="' . $imgsrc . '"alt="pic1" class="avatar"></td>';
-				echo '	<td width="15%" align="center">' . ceil(substr($percentage, 0, 2)) . '%</td>';
-				echo '	<td width="15%" align="center">' . $on_d . '公尺</td>';
-				echo '	<td width="15%" align="center">' . $off_d . '公尺</td>';
-				echo '	<td width="15%" align="center">' . round(($wait / 60), 0) . '分鐘</td>';
-				echo '	<td width="5%" align="center" onclick="cancel();"><a href=' . $infos . '><i class="material-icons">info</i></a></td>';
+
+				echo '<table  class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">';
+				echo '<tbody value="'.$index.'" onclick="showResult3(' . $index . ',' . ($i - 1) . ');">';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">司機'.($index+1).'</td>';
+				echo '<td><img src="'.$imgsrc.'"alt="pic1" class="avatar"></td>';
 				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">司機姓名</td>';
+				echo '<td>'.$name.'</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">共乘比例</td>';
+				echo '<td>'.ceil(substr($percentage, 0, 2)).'%</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">上車點距離</td>';
+				echo '<td>'.$on_d.'公尺</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">下車點距離</td>';
+				echo '<td>'.$off_d.'公尺</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td class="mdl-data-table__cell--non-numeric">等待時間</td>';
+				echo '<td>'.round(($wait/60),0).'分鐘</td>';
+				echo '</tr>';
+				echo '</tbody>';
+				echo '</table>';
+				echo '<br/>';
+
+				// echo '<tr onclick="showResult3(' . $index . ',' . ($i - 1) . ');">'; // onclick="setDialog('.$did.');">';
+				// echo '	<td width="35%" align="center"><img src="' . $imgsrc . '"alt="pic1" class="avatar"></td>';
+				// echo '	<td width="15%" align="center">' . ceil(substr($percentage, 0, 2)) . '%</td>';
+				// echo '	<td width="15%" align="center">' . $on_d . '公尺</td>';
+				// echo '	<td width="15%" align="center">' . $off_d . '公尺</td>';
+				// echo '	<td width="15%" align="center">' . round(($wait / 60), 0) . '分鐘</td>';
+				// echo '	<td width="5%" align="center" onclick="cancel();"><a href=' . $infos . '><i class="material-icons">info</i></a></td>';
+				// echo '</tr>';
 			}
 		}
 

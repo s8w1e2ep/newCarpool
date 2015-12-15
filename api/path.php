@@ -9,35 +9,36 @@
 	$data = $_GET['data'];
 	$data = json_decode($data, true);
 
-	$id = $data['id'];							//­¼«Èid
-	$condition = $data['condition'];			//±ø¥ó
-	$percentage = $condition[0]['percentage'];	//­¼«È¦@­¼¤ñ¨ÒªùÂe
-	$distance = $condition[0]['distance'];		//­¼«È¤W¨®¶ZÂ÷ªùÂe
-	$waiting = $condition[0]['waiting'];		//­¼«Èµ¥«Ý®É¶¡ªùÂe
-	$threshold = $condition[0]['rating'];		//­¼«Èµû»ùªùÂe
-	$start = '{"at":"'.$data['start']['at'].'","ng":"'.$data['start']['ng'].'"}';	//­¼«È°_ÂI
-	$end = '{"at":"'.$data['end']['at'].'","ng":"'.$data['end']['ng'].'"}';		//­¼«È²×ÂI
-	$path = $data['path'];						//­¼«È¸ô®|json
-	$passengerPath = array($path);				//­¼«È¸ô®|°}¦C
-	$totalDistance = $data['total'];			//­¼«È¸ô®|ªø
+	$id = $data['id'];					//user id
+	$condition = $data['condition'];
+	$percentage = $condition[0]['percentage'];	//percentage of the overlapping path
+	$distance = $condition[0]['distance'];		//distance of user-accepted
+	$waiting = $condition[0]['waiting'];			//waiting time of user-accepted
+	$threshold = $condition[0]['rating'];			//threshold of the driver
+	$gender = $condition[0]['gender'];			//gender of the driver
+	$start = '{"at":"'.$data['start']['at'].'","ng":"'.$data['start']['ng'].'"}';	//乘客上車點
+	$end = '{"at":"'.$data['end']['at'].'","ng":"'.$data['end']['ng'].'"}';	//乘客下車點
+	$path = $data['path'];
+	$passengerPath = array($path);			//path of the passenger
+	$totalDistance = $data['total'];			//distance of the path
 
-	$_SAFE = 100;								//¦w¥þ°Ï¶¡(m)
-	$_END = 100;								//¶ZÂ÷²×ÂI¶ZÂ÷(m)
-	//¨ú­¼«È¦Û¨­µû»ù
+	$_SAFE = 100;	//safe period
+	$_END = 100;	//目前位置與乘客的終點距離(判斷是否要多段共乘)
+
 	function getRating($fid){
 		$sql = "SELECT `rating` FROM `account` WHERE `aid` = '$fid'";
 		$result = mysql_query($sql);
 		$i = mysql_fetch_array($result);
 		return $i[0];
 	}
-	//¨ú¥q¾÷ªùÂe
+
 	function getDriverThreshold($fid){
 		$sql = "SELECT `threshold` FROM `driver` WHERE `finished` = '0' and `aid` = '$fid'";
 		$result = mysql_query($sql);
 		$i = mysql_fetch_array($result);
 		return $i[0];
 	}
-	//­pºâ¸ô®|¶ZÂ÷»P®É¶¡
+	//calculate the distance of path - use google map api
 	function getPathDistance($p1, $p2, $mode){
 		if(strcmp($p1["at"], $p2["at"]) != 0 &&  strcmp($p1["ng"], $p2["ng"]) != 0){
 			$origin = $p1["at"].','.$p1["ng"];
@@ -67,18 +68,7 @@
 		}
 		return $result;
 	}
-	//­pºâª½±µ¶ZÂ÷
-	function getDirectDistance($origin, $destination){
-		$radLat1 = deg2rad($origin["at"]);
-		$radLat2 = deg2rad($origin["ng"]);
-		$radLng1 = deg2rad($destination["at"]);
-		$radLng2 = deg2rad($destination["ng"]);
-		$a = $radLat1 - $radLat2;//½n«×®t, ½n«× < 90
-		$b = $radLng1 - $radLng2;//¸g«×®t¡A½n«× < 180
-		$dis = 2*asin(sqrt(pow(sin($a/2),2) + cos($radLat1)*cos($radLat2)*pow(sin($b/2),2)))*6378.137;
-		return round($dis);
-	}
-	//­pºâ¸ô®|ª½±µ¶ZÂ÷
+	//calculate the distance of path - use formula
 	function getDistance($path){
 		$R = 6378137;
 		$l = count($path);
@@ -97,20 +87,32 @@
 		}
 		return round($sum);
 	}
-	//¤ñ¹ï´C¦X
-	function matchPath($dpath, $ppath, $dwait, $did){
-
+	//calculate direct distance - use formula
+	function getDirectDistance($origin, $destination){
+		$radLat1 = deg2rad($origin["at"]);
+		$radLat2 = deg2rad($origin["ng"]);
+		$radLng1 = deg2rad($destination["at"]);
+		$radLng2 = deg2rad($destination["ng"]);
+		$a = $radLat1 - $radLat2;//½n«×®t, ½n«× < 90
+		$b = $radLng1 - $radLng2;//¸g«×®t¡A½n«× < 180
+		$dis = 2*asin(sqrt(pow(sin($a/2),2) + cos($radLat1)*cos($radLat2)*pow(sin($b/2),2)))*6378.137;
+		return round($dis);
 	}
 
-
-	//¥q¾÷µû»ù²Å¦X­¼«ÈªùÂe
-	$sql = "SELECT `driver`.`aid` FROM `driver`,`account` WHERE `finished` = '0' and `account`.`rating` >= '$threshold' and `account`.`aid`=`driver`.`aid` and `seat` != '0'";//¿z¿ï­¼«Èµû»ùªùÂe
-	$result = mysql_query($sql);
-	$driver_num = mysql_num_rows($result);
-
-	$driverId = array();	//¬ö¿ýµû»ù¿z¿ï«áªº¥q¾÷id
+	//評價與性別篩選
+	$driver_num = 0;
+	if(strcmp($gender, "n") == 0){
+		$sql = "SELECT `driver`.`aid` FROM `driver`,`account` WHERE `finished` = '0' and `account`.`rating` >= '$threshold' and `account`.`aid`=`driver`.`aid` and `seat` != '0'";
+		$result = mysql_query($sql);
+		$driver_num = mysql_num_rows($result);
+	}else{
+		$sql = "SELECT `driver`.`aid` FROM `driver`,`account` WHERE `finished` = '0' and `account`.`rating` >= '$threshold' and `account`.`aid`=`driver`.`aid` and `account`.`gender`= '$gender' and `seat` != '0'";
+		$result = mysql_query($sql);
+		$driver_num = mysql_num_rows($result);
+	}
+	$driverId = array();
 	$count = 0;
-	//­¼«Èµû»ù²Å¦X¥q¾÷ªùÂe
+	//紀錄符合評價與性別篩選的司機ID
 	for($i=0; $i < $driver_num; $i++){
 		$res = mysql_result($result, $i);
 		if(getDriverThreshold($res) <= getRating($id)){
@@ -119,25 +121,25 @@
 		}
 	}
 
-	$driverPath = array();		//¬ö¿ýµû»ù¿z¿ï«áªº¥q¾÷path
-	$driverPos = array();		//¬ö¿ýµû»ù¿z¿ï«áªº¥q¾÷¥Ø«e¦ì¸m
-	$driverWait = array();		//¬ö¿ýµû»ù¿z¿ï«áªº¥q¾÷µ¥«Ý®É¶¡
-	$matchResult = array();		//¬ö¿ý´C¦X¦¨¥\³æ¬q¦@­¼¸ô®|µ²ªG
-	$matchResult2 = array();	//¬ö¿ý´C¦X¦¨¥\¤G¬q¦@­¼¸ô®|µ²ªG
-	$matchResult3 = array();	//¬ö¿ý´C¦X¦¨¥\¤T¬q¦@­¼¸ô®|µ²ªG
-	$list1 = array();			//¬ö¿ý´C¦X¦¨¥\³æ¬q¦@­¼¸ô®|¯Á¤Þ
-	$list2 = array();			//¬ö¿ý´C¦X¦¨¥\¤G¬q¦@­¼¸ô®|¯Á¤Þ
-	$list3 = array();			//¬ö¿ý´C¦X¦¨¥\¤T¬q¦@­¼¸ô®|¯Á¤Þ
-	$matchJson = "";			//¬ö¿ý³æ¬q¦@­¼´C¦X¦¨¥\ªºjson string
-	$matchJson2 = "";			//¬ö¿ý¤G¬q¦@­¼´C¦X¦¨¥\ªºjson string
-	$matchJson3 = "";			//¬ö¿ý¤T¬q¦@­¼´C¦X¦¨¥\ªºjson string
+	$driverPath = array();	//the path of driver
+	$driverPos = array();	//the current position of driver
+	$driverWait = array();	//the waiting time of driver
+	$matchResult = array();	//first match result
+	$matchResult2 = array();	//second match result
+	$matchResult3 = array();	//third match result
+	$list1 = array();		//carpool path1
+	$list2 = array();		//carpool path2
+	$list3 = array();		//carpool path3
+	$matchJson = "";		//match1 json string
+	$matchJson2 = "";		//mathc2 json string
+	$matchJson3 = "";		//match3 json string
 	$result_n = 0;
 	$index = 0;
-	//¦pªG¦³¥q¾÷idµ²ªG
+
 	if($count != 0){
 		for($i = 0; $i < $count; $i++){
 			$key = $driverId[$i];
-			//¨ú±o¥q¾÷¸ô®|¡B¥q¾÷¥Ø«e¦ì¸m¡B¥q¾÷µ¥«Ý®É¶¡ªùÂe
+			//get the path, current position, waiting time of the driver
 			$sql = "SELECT `path`, `curpoint`, `waiting` FROM `driver` WHERE `finished` = '0' and `aid` = '$key'";
 			$result = mysql_query($sql);
 			$num = mysql_num_rows($result);
@@ -150,53 +152,52 @@
 				array_push($driverPos, json_decode($res, true));
 			}
 		}
-		//¤ñ¹ï¸ô®|»P´C¦X
+		//比對路徑
 		$compare_n = count($driverPath);
 		$count_failed = 0;
 		for($i = 0; $i < $compare_n; $i++){
 			$overlap = PathCompare(json_encode($path), $driverPath[$i], true);
-			//¦³­«Å|
 			if($overlap != null){
-				$carpoolDistance;	//¦@­¼¶ZÂ÷
-				$match = true;		//½T»{²Ä¤@¬q¬O§_³q¹L¿z¿ï
-				$match2 = true;		//½T»{²Ä¤G¬q¬O§_³q¹L¿z¿ï
-				$match3 = true;		//½T»{²Ä¤T¬q¬O§_³q¹L¿z¿ï
-				$safeDistance;		//¦w¥þ¶ZÂ÷
-				$onDistance;		//¤W¨®ÂI»P­¼«È°_ÂI¶ZÂ÷(m)
-				$offDistance;		//¤U¨®ÂI»P­¼«È²×ÂI¶ZÂ÷(m)
-				$passengerTime;		//­¼«È¨«¸ô®É¶¡(s)
-				$driverTime;		//¥q¾÷¦æ¾p®É¶¡(s)
-				$carpoolTime;		//­pºâ¦@­¼¸ô®|1ªº¦æ¾p®É¶¡
-				$carpoolTime2;		//­pºâ¦@­¼¸ô®|2ªº¦æ¾p®É¶¡
-				//­pºâ¦@­¼¶ZÂ÷
+				$carpoolDistance;	//重疊路徑距離
+				$match = true;	//共乘1
+				$match2 = true;	//共乘2
+				$match3 = true;	//共乘3
+				$safeDistance;	//紀錄司機與乘客目前距離
+				$onDistance;		//紀錄上車點距離(m)
+				$offDistance;		//紀錄下車點距離(m)
+				$passengerTime;	//乘客到上車點時間(s)
+				$driverTime;		//司機到上車點時間(s)
+				$carpoolTime;	//共乘路徑1時間
+				$carpoolTime2;	//共乘路徑2時間
+
 				//$distRes = getPathDistance($overlap[0][0], $overlap[0][count($overlap[0]) - 1], 'driving');
 				$carpoolDistance = getDistance($overlap);
-				//­pºâ¤W¨®ÂI»P­¼«È°_ÂI¶ZÂ÷(m)»P­¼«È¨«¸ô®É¶¡(s)
+				//計算乘客到上車點距離
 				$distRes = getPathDistance($passengerPath[0][0], $overlap[0], 'walking');
 				$onDistance = $distRes[0];
 				$passengerTime = $distRes[1];
-				//­pºâ¤U¨®ÂI»P­¼«È²×ÂI¶ZÂ÷(m)
+				//計算乘客到下車點距離
 				$offn = count($passengerPath[0]) - 1;
 				$distArr = array();
 				array_push($distArr, $passengerPath[0][$offn], $overlap[count($overlap)-1]);
 				$offDistance = getDistance($distArr);
-				//­pºâ¥q¾÷¦æ¾p®É¶¡(s)
+				//計算司機到上車點距離
 				$distRes = getPathDistance($driverPos[$i], $overlap[0], 'driving');
 				$driverTime = $distRes[1];
-				//­pºâ¥q¾÷¦æ¾p¦@­¼¸ô®|1®É¶¡
+				//計算共乘路徑1總時間
 				$distRes = getPathDistance($overlap[0], $overlap[count($overlap)-1], 'driving');
 				$carpoolTime = $distRes[1];
-				//­pºâ¦w¥þ¶ZÂ÷
+				//計算安全區間
 				$safeArr = array();
 				array_push($safeArr, $driverPos[$i], $passengerPath[0][0]);
 				$safeDistance = getDistance($safeArr);
-				//­pºâ¦@­¼¤ñ¨Ò
+				//計算共乘比例
 				$per = round($carpoolDistance / $totalDistance * 100);
-				//¦]¬°»~®t¡A¦³¥i¯à¶W¹L100%
+				//有誤差，可能會超過100%，需要修正
 				if($per > 100)
 					$per = 100;
 
-				//¿z¿ï¦w¥þ°Ï¶¡¡B¦@­¼¤ñ¨Ò¡B¤W¨®ÂI»P­¼«È°_ÂI¶ZÂ÷¡B¥q¾÷Ä@·Nµ¥«Ý®É¶¡»P­¼«ÈÄ@·Nµ¥«Ý®É¶¡
+				//判斷是否>安全區間，>=共乘比例，<=上車點距離，<=雙方願意等待時間
 				if($safeDistance <= $_SAFE || $per < $percentage || $onDistance > $distance
 				||($driverTime + $driverWait[$i]*60) < $passengerTime ||($passengerTime + $waiting*60) < $driverTime){
 					$match = false;
