@@ -8,20 +8,27 @@ $db = new DB_CONNECT();
 $data = $_GET['data'];
 $data = json_decode($data, true);
 
-$id = $data['id'];
+$id = $data['phone'];		//以電話號碼當作id
 $name = $data['name'];
-$phone = $data['phone'];
 $email = $data['email'];
+$phone = $data['phone'];
 $gender = $data['gender'];
+$password = $data['password'];
 $regid = $data['regid'];
 
 $sql = "SELECT * FROM `account` WHERE `phone` = '$phone'";
 $result = mysql_query($sql);
 $num = mysql_num_rows($result);
 
+//id = Cccddddddd，C=大寫英文字母，c=小寫英文字母，d=0~9
+// $id = chr(rand(65, 90)).chr(rand(97, 122)).chr(rand(97, 122));
+// for($i = 0; $i < 7; $i++){
+// 	$id = $id."".rand(0, 9);
+// }
+
 if ($num == 0) {
 	if (strlen($id) > 0 && strlen($gender) > 0) {
-		$sql = "INSERT INTO `account`(`aid`, `name`, `gender`, `phone`,  `email`,`regid`, `cid`, `friendlist`) VALUES ('$id', '$name', '$gender', '$phone', '$email', '$regid', 'null', '[]')";
+		$sql = "INSERT INTO `account`(`aid`, `name`, `gender`, `phone`, `regid`, `cid`, `friendlist`, `password`, `email`) VALUES ('$id','$name','$gender','$phone','$regid','null', '[]', '$password', '$email')";
 		$result = mysql_query($sql);
 
 		if ($result) {
@@ -43,7 +50,7 @@ if ($num == 0) {
 	}
 
 } else {
-	echo ("手機號碼已註冊");
+	echo ("registered");
 }
 
 ?>

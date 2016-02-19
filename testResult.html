@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Introducing Lollipop, a sweet new take on Android.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jQuery -->
+    <script src="dist/js/jquery-1.9.1.min.js"></script>
+    <!-- google materila lite -->
+    <link rel="stylesheet" href="dist/css/material.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="dist/js/material.min.js"></script>
+    <!-- custom js and css -->
+    <link rel="stylesheet" href="style.css">
+    <!-- [if lt IE 9]>
+        <script src="dist/js/html5shiv.js"></script>
+    <![endif] -->
+    <!-- Uses a header that contracts as the page scrolls down. -->
+    <style>
+    .waterfall-demo-header-nav .mdl-navigation__link:last-of-type {
+        padding-right: 0;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header mdl-layout__header--waterfall">
+            <!-- Top row, always visible -->
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="android-title mdl-layout-title">
+                <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
+              </span>
+                <span class="android-title mdl-layout-title">動態牆</span>
+                <div class="mdl-layout-spacer"></div>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <header class="drawer-header mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+                <!-- <img src="" alt="user" class="avatar"> -->
+                <img id="user_image" src="img/circle.png" alt="user" class="avatar">
+                <div class="avatar-dropdown">
+                    <span id="pname2">姓名</span>
+                    <div class="mdl-layout-spacer"></div>
+                    <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                        <i class="material-icons" role="presentation">&#xE5C6;</i>
+                        <span class="visuallyhidden">Personal Info</span>
+                    </button>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                        <li class="mdl-menu__item" id="pname">姓名</li>
+                        <li class="mdl-menu__item" id="tel">手機</li>
+                        <a href="" id="edit">
+                            <li class="mdl-menu__item"><i class="material-icons">&#xE3C9;</i>編輯</li>
+                        </a>
+                    </ul>
+                </div>
+            </header>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="" id="logo"><i class="material-icons">&#xE88A;</i>主頁</a>
+                <a class="mdl-navigation__link" href="" id="board"><i class="material-icons">&#xE616;</i>公告欄</a>
+                <a class="mdl-navigation__link" href="" id="wall"><i class="material-icons">&#xE0BF;</i>動態牆</a>
+                <a class="mdl-navigation__link" href="" id="friendlist"><i class="material-icons">&#xE7EF;</i>朋友</a>
+                <a class="mdl-navigation__link" href="" id="setting"><i class="material-icons">&#xE8B8;</i>設定</a>
+                <a class="mdl-navigation__link" href="" id="about"><i class="material-icons">&#xE88E;</i>關於</a>
+            </nav>
+        </div>
+        <main class="mdl-layout__content">
+            <center>
+                <div id="table1">
+                    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" style="width:100%">
+                        <tbody>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">司機一</td>
+                                <td class="mdl-data-table__cell--non-numeric"><img src="http://graph.facebook.com/860467000642654/picture?type=large" alt="pic1" class="avatar"></td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">姓名</td>
+                                <td class="mdl-data-table__cell--non-numeric">江啟睿</td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">共乘比例</td>
+                                <td class="mdl-data-table__cell--non-numeric">60%</td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">上車點距離</td>
+                                <td class="mdl-data-table__cell--non-numeric">10公尺</td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">下車點距離</td>
+                                <td class="mdl-data-table__cell--non-numeric">100公尺</td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">等待時間</td>
+                                <td class="mdl-data-table__cell--non-numeric">5分鐘</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" style="width:100%">
+                        <tbody onclick="gen();">
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">司機一</td>
+                                <td class="mdl-data-table__cell--non-numeric"><img src="http://graph.facebook.com/860467000642654/picture?type=large" alt="pic1" class="avatar"></td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">姓名</td>
+                                <td class="mdl-data-table__cell--non-numeric">江啟睿</td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">共乘比例</td>
+                                <td class="mdl-data-table__cell--non-numeric">60%</td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">上車點距離</td>
+                                <td class="mdl-data-table__cell--non-numeric">10公尺</td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">下車點距離</td>
+                                <td class="mdl-data-table__cell--non-numeric">100公尺</td>
+                            </tr>
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">等待時間</td>
+                                <td class="mdl-data-table__cell--non-numeric">5分鐘</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="table2">
+                </div>
+                <div id="table3">
+                </div>
+            </center>
+        </main>
+    </div>
+    <script>
+    function gen() {
+        alert('GG');
+    }
+    </script>
+</body>
+
+</html>

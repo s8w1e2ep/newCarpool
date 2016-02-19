@@ -5,7 +5,7 @@ $(document).ready(function() {
 var data = '';
 var num = 0;
 
-var server = "http://120.114.186.4/carpool/api/";
+var server = "http://120.114.186.4:8080/carpool/api/";
 var local = "file:///android_asset/www/";
 
 function initialization() {

@@ -10,10 +10,14 @@ $data = json_decode($data, true);
 
 $id = $data['id'];
 
-$sql = "SELECT `rating` FROM `account` WHERE `aid` = '$id'";
+$sql = "SELECT `gender` FROM `account` WHERE `aid` = '$id'";
 
 $result = mysql_query($sql);
 $num = mysql_num_rows($result);
 $i = mysql_fetch_array($result);
-echo round($i[0], 2);
+if (strcmp($i[0], "m") == 0) {
+	echo '男';
+} else if (strcmp($i[0], "f") == 0) {
+	echo '女';
+}
 ?>

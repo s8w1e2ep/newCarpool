@@ -16,17 +16,16 @@ $sql = "SELECT `aid` FROM `account` WHERE `aid` = '$id'";
 $result = mysql_query($sql);
 $num = mysql_num_rows($result);
 
-if ($num > 0) {
-	$sql = "SELECT `aid` FROM `account` WHERE `aid` = '$id' and `status` = '1'";
+if ($num == 1) {
+	$sql = "SELECT `regid` FROM `account` WHERE `aid` = '$id' and `status` = '1'";
 
 	$result = mysql_query($sql);
+	$i = mysql_fetch_array($result);
 	$num = mysql_num_rows($result);
 
-	if ($num > 0) {
-		$sql = "SELECT `regid` FROM `account` WHERE `aid` = '$id' and `status` = '1'";
-		$result = mysql_query($sql);
-		$i = mysql_fetch_array($result);
+	if ($num == 1) {
 		$reg = $i[0];
+
 		if ($reg != $regid) {
 			$sql = "UPDATE `account` SET `regid` = '$regid' WHERE `aid` = '$id' and `status` = '1'";
 			$result = mysql_query($sql);

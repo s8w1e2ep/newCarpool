@@ -4,7 +4,7 @@ $(document).ready(function() {
 
 var data = '[{"id":"1","name":"A","phone":"1"}, {"id":"2","name":"B","phone":"2"}]';
 var number;
-var server = "http://120.114.186.4/carpool/api/";
+var server = "http://120.114.186.4:8080/carpool/api/";
 var local = "file:///android_asset/www/";
 
 function initialization() {

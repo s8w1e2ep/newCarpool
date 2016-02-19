@@ -20,29 +20,41 @@ $regid = $i[0];
 //乘客選擇後，傳送訊息給司機，讓司機確認
 if ($mode == "1") {
 	$index = $data['index'];
-	$data = array('message' => '向您發出的共乘邀請',
-		'title' => '共乘邀請',
+	$data = array('message' => '向您發出的共乘請求',
+		'title' => '共乘請求',
 		'tid' => $id,
 		'pindex' => $index,
 		'image' => 'http://120.114.186.4/carpool/assets/logo.png',
 		'mode' => '1');
 } else if ($mode == "2") {
-	$data = array('message' => '接受您的邀請',
-		'title' => '共乘邀請',
+	$data = array('message' => '接受您的請求',
+		'title' => '共乘請求',
 		'tid' => $id,
 		'image' => 'http://120.114.186.4/carpool/assets/logo.png',
 		'mode' => '2');
 } else if ($mode == "3") {
-	$data = array('message' => '非常抱歉, 對方拒絕您的邀請',
-		'title' => '共乘邀請',
+	$data = array('message' => '非常抱歉, 對方拒絕您的請求',
+		'title' => '共乘請求',
 		'image' => 'http://120.114.186.4/carpool/assets/logo.png',
 		'mode' => '3');
 } else if ($mode == "4") {
 	$data = array('message' => '配對成功 開始互相追蹤',
-		'title' => '共乘邀請',
+		'title' => '共乘請求',
 		'tid' => $id,
 		'image' => 'http://120.114.186.4/carpool/assets/logo.png',
 		'mode' => '4');
+} else if ($mode == "5") {
+	$data = array('message' => '司機臨時取消共乘!',
+		'title' => '共乘取消',
+		'tid' => $id,
+		'image' => 'http://120.114.186.4/carpool/assets/logo.png',
+		'mode' => '5');
+} else if ($mode == "6") {
+	$data = array('message' => '乘客臨時取消共乘!',
+		'title' => '共乘取消',
+		'tid' => $id,
+		'image' => 'http://120.114.186.4/carpool/assets/logo.png',
+		'mode' => '6');
 }
 
 $ids = array();

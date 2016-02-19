@@ -15,6 +15,56 @@ $(document).ready(function() {
         $('#info').css("display", "none");
         $('#mbody').attr('style', 'background-color: #FFFFFF;');
     });
+
+    $('#ok2').click(function() {
+        $('#dialog').css("display", "none");
+        $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
+
+        var tempIndex = pid.indexOf(tid);
+
+        //get in point
+        if (passList[tempIndex].Marker.Getin)
+            passList[tempIndex].Marker.Getin.setMap(null);
+
+        // carpoolpath marker
+        if (passList[tempIndex].Marker.CarpoolPath)
+            passList[tempIndex].Marker.CarpoolPath.setMap(null);
+
+        // current point marker
+        if (passList[tempIndex].Marker.Current)
+            passList[tempIndex].Marker.Current.setMap(null);
+
+        // infowindow
+        if (passList[tempIndex].Marker.InfoWindow)
+            passList[tempIndex].Marker.InfoWindow.setMap(null);
+
+        // get out off point
+        if (passList[tempIndex].Marker.Getoutoff)
+            passList[tempIndex].Marker.Getoutoff.setMap(null);
+
+        pid.splice(tempIndex, 1);
+        passList.splice(tempIndex, 1);
+    });
+
+    $('#cancel').click(function() {
+        //cancel carpool
+        var count = 0;
+        for (var i = 0; i < pid.length; i++) {
+            var data = '{"id":"' + did + '","tid":"' + pid[i] + '","mode":"5"}';
+            var xmlhttp = new XMLHttpRequest();
+            url = server + 'gcm_server.php?data=' + data;
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    count++;
+                    if (count == pid.length) {
+                        updateHistory();
+                    }
+                }
+            }
+            xmlhttp.open("GET", url, true);
+            xmlhttp.send();
+        }
+    });
 });
 
 //global variables
@@ -22,15 +72,19 @@ var map;
 
 // var serverDomain = "http://vu6m3lio.ddns.net/";
 var local = "file:///android_asset/www/";
-var serverDomain = "http://120.114.186.4/";
+var serverDomain = "http://120.114.186.4:8080/";
 var server = serverDomain + "carpool/api/";
 var COLOR = ["#176ae6", "#ff0000", "#6a3906", "#800080"];
 
 var global_url = window.location.toString();
 // driver is
 var did = null;
+
+//gcm
+var mode;
 var tid = ""; //confirmCarpool，updateHistory 會用到
 var path_index = ""; //store the index of passenger path
+
 // TEST ID 1046779538684826 1046779538684827 1046779538684828
 // var did = "1046779538684826";
 // passengers' id
@@ -168,7 +222,6 @@ function setURL() {
     $('#edit').attr('href', local + 'edit.html' + temp);
     $('#logo').attr('href', local + 'index.html' + temp);
     $('#dsgr').attr('href', local + 'index.html' + temp);
-    $('#user_image').attr('src', 'http://graph.facebook.com/' + did + '/picture?type=large');
 }
 
 function getName() {
@@ -181,7 +234,6 @@ function getName() {
             name = xmlhttp.responseText;
             $('#pname').html(name);
             $('#pname2').html(name);
-            $('#name').html('Hi, ' + name);
             getPhone();
         }
     }
@@ -195,13 +247,31 @@ function getPhone() {
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            setPic();
             phone = xmlhttp.responseText;
-            $('#image').attr('src', 'http://graph.facebook.com/' + did + '/picture?type=large');
-            $('#state').html('已登入');
             $('#tel').html(phone);
         }
     }
     xmlhttp.send();
+}
+
+//設定大頭貼
+function setPic() {
+    if (id.length == 10 && id.substr(0, 2) === "09") {
+        var url = server + 'get_image.php?data={"id":"' + id + '"}';
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", url, true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var result = "http://120.114.186.4:8080/carpool/" + xmlhttp.responseText.trim();
+                $('#user_image').attr('src', result);
+            }
+        }
+        xmlhttp.send();
+    } else {
+        $('#user_image').attr('src', 'http://graph.facebook.com/' + id + '/picture?type=large');
+    }
 }
 
 function AddPassenger(id, index) {
@@ -300,6 +370,7 @@ function UpdateView(re, pcurpoints) {
             ttsText += '上車點約';
             popInfo(re[0].id, re[0].gdm.distance.val, 1);
         } else {
+            $('#cancel').attr("disabled",true); //if the passenger get on,the driver can't cancel
             ttsText += '下車點約';
             popInfo(re[0].id, re[0].gdm.distance.val, 0);
         }
@@ -428,9 +499,24 @@ function UpdateView(re, pcurpoints) {
     }
 }
 
+function updateHistory() {
+    //finish: 2代表司機取消 3代表乘客取消
+    var data = '{"did":"' + did + '","pid":"' + tid + '","finish":"' + 2 + '"}';
+    var url = server + 'update_history.php?data=' + data;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            window.location = local + 'index.html?data={"id":"' + did + '"}';
+        }
+    }
+    xmlhttp.send();
+}
+
 function addHistory(pindex) {
     var data = '{"did":"' + did + '","pid":"' + tid + '","index":"' + pindex + '"}';
-    var url = server + 'update_history.php?data=' + data;
+    var url = server + 'add_history.php?data=' + data;
     //alert("history: " + url);
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
@@ -640,7 +726,6 @@ function setName(data, mode) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             ttsText2 = '您有一則來自乘客' + xmlhttp.responseText + '的共乘請求!';
-            $('#dialog_image').attr('src', 'http://graph.facebook.com/' + data + '/picture?type=large');
             document.getElementById(mode).innerHTML = xmlhttp.responseText;
             TTS
                 .speak({
@@ -653,6 +738,19 @@ function setName(data, mode) {
                 }, function(reason) {
                     alert('TTS:' + reason);
                 });
+        }
+    }
+    xmlhttp.send();
+}
+
+function setName2(data, mode) {
+    var url = server + 'get_name.php?data={"id":"' + data + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            document.getElementById(mode).innerHTML = xmlhttp.responseText;
         }
     }
     xmlhttp.send();
@@ -671,25 +769,23 @@ function onDeviceReady() {
         });
         //通知設定
         push.on('notification', function(data) {
-            // TTS
-            //     .stop(function() {
-            //         //alert('success');
-            //     }, function(reason) {
-            //         alert(reason);
-            //     });
             var additional = JSON.stringify(data.additionalData);
             additional = JSON.parse(additional);
-            document.getElementById("dialog_message").innerHTML += data.message;
+            mode = additional.mode;
             tid = additional.tid;
             path_index = additional.pindex;
-            //alert("additional.pindex: " + additional.pindex);
-            if (additional.foreground) {
-                setName(tid, 'dialog_name');
-                $('#dialog').css("display", "table");
+
+            if (mode === '6') {
+                document.getElementById("cmsg_message").innerHTML += data.message;
+                setName2(additional.tid, 'cmsg_name');
+                $('#cmsg').css("display", "table");
+                $('#cmsg_image').attr('src', 'http://graph.facebook.com/' + tid + '/picture?type=large');
                 $('.wrapperInside').attr('style', 'background-color: #666666;');
             } else {
+                document.getElementById("dialog_message").innerHTML += data.message;
                 setName(tid, 'dialog_name');
                 $('#dialog').css("display", "table");
+                $('#dialog_image').attr('src', 'http://graph.facebook.com/' + tid + '/picture?type=large');
                 $('.wrapperInside').attr('style', 'background-color: #666666;');
             }
         });

@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="dist/css/material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="dist/js/material.min.js"></script>
-    <!-- custom css and js -->
+    <!-- custom js and css -->
     <link rel="stylesheet" href="style.css">
     <!-- [if lt IE 9]>
         <script src="dist/js/html5shiv.js"></script>
@@ -32,9 +32,9 @@
             <div class="mdl-layout__header-row">
                 <!-- Title -->
                 <span class="android-title mdl-layout-title">
-                <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
-              </span>
-                <span class="android-title mdl-layout-title">編輯</span>
+        <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
+         </span>
+                <span class="android-title mdl-layout-title">會員註冊</span>
                 <div class="mdl-layout-spacer"></div>
             </div>
         </header>
@@ -69,38 +69,59 @@
         </div>
         <main class="mdl-layout__content">
             <div class="page-content">
-                <button id="next" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="position:fixed; bottom:0px; z-index:0; width:100%"><i class="material-icons">done</i>確認</button>
-                <center>
-                    <br/>
-                    <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="lastname" />
-                        <label class="mdl-textfield__label" for="name">姓氏...</label>
+                <div id="registbyphone" style="margin-left:10%; width:80%;">
+                    <div class="mdl-textfield mdl-js-textfield " style="width:32%">
+                        <label class="mdl-textfield__label " for="lastname">姓氏...</label>
+                        <input id="lastname" type="text" class="mdl-textfield__input " style="display:inline;" />
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield " style="width:63%">
+                        <label class="mdl-textfield__label " for="firstname">名字...</label>
+                        <input id="firstname" type="text" class="mdl-textfield__input " style=" display:inline;" />
                     </div>
                     <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="firstname" />
-                        <label class="mdl-textfield__label" for="name">名字...</label>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield" style="text-align: left;">
                         <span>性別</span>
                         <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="male">
-                            <input type="radio" id="male" class="mdl-radio__button" name="options" value="1" checked>
+                            <input type="radio" id="male" class="mdl-radio__button" value="1" name="options" checked>
                             <span class="mdl-radio__label">男</span>
                         </label>
                         <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="female">
-                            <input type="radio" id="female" class="mdl-radio__button" name="options" value="2">
+                            <input type="radio" id="female" class="mdl-radio__button" value="2" name="options">
                             <span class="mdl-radio__label">女</span>
                         </label>
                     </div>
-                    <div class="mdl-textfield mdl-js-textfield">
-                        <input id="phone" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" />
-                        <label class="mdl-textfield__label" for="phone">手機號碼...</label>
-                        <span class="mdl-textfield__error">手機格式錯誤</span>
+                    <div class="mdl-textfield mdl-js-textfield ">
+                        <input id="email" class="mdl-textfield__input " type="email">
+                        <label class="mdl-textfield__label " for="email">電子郵件...</label>
+                        <sapn id="email_state" style="color: red; font-size: 12px; margin-top: 3px;">
+                            </span>
                     </div>
-                </center>
+                    <div class="mdl-textfield mdl-js-textfield ">
+                        <input id="phone" class="mdl-textfield__input " type="tel" maxlength="10">
+                        <label class="mdl-textfield__label " for="phone">手機號碼...</label>
+                        <sapn id="register_state" style="color: red; font-size: 12px; margin-top: 3px;">
+                            </span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield ">
+                        <!-- pattern="^[A-Za-z0-9]+\w{5,11}$" -->
+                        <input id="rpassword" class="mdl-textfield__input " type="text" maxlength="10">
+                        <label class="mdl-textfield__label " for="rpassword">密碼(6~10個字元,由英文與數字組成)</label>
+                        <sapn id="p_error" style="color: red; font-size: 12px; margin-top: 3px;">
+                            </span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield ">
+                        <input id="password2" class="mdl-textfield__input " type="text" maxlength="10">
+                        <label class="mdl-textfield__label " for="password2">確認密碼</label>
+                        <sapn id="p2_error" style="color: red; font-size: 12px; margin-top: 3px;">
+                            </span>
+                    </div>
+                </div>
             </div>
         </main>
+        <button id="regist_member" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored " style="width:100%; position:fixed; bottom:0px; z-index:0; ">
+            下一步
+        </button>
     </div>
-    <script type="text/javascript" src="dist/js/edit.js"></script>
+    <script type="text/javascript " src="dist/js/register.js "></script>
 </body>
 
 </html>

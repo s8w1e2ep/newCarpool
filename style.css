@@ -285,3 +285,26 @@ material design language.
     width: 75%;
     display: table-cell;
 }
+
+
+/*狀態*/
+
+.statewall {
+    text-align: left;
+    padding-left: 5%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 18px;
+    border-bottom-style: solid;
+    border-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+
+/*首頁大頭貼*/
+
+.backwall {
+    padding-top: 16px;
+    padding-bottom: 5px;
+    background-color: #F8F8FF;
+}

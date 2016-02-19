@@ -9,11 +9,14 @@
     <!-- jQuery -->
     <script src="dist/js/jquery-1.9.1.min.js"></script>
     <!-- google material lite -->
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-pink.min.css">
-    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.min.js"></script>
+    <link rel="stylesheet" href="dist/css/material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- custom js and css -->
+    <script src="dist/js/material.min.js"></script>
+    <!-- custom css and js -->
     <link rel="stylesheet" href="style.css">
+    <!-- [if lt IE 9]>
+        <script src="dist/js/html5shiv.js"></script>
+    <![endif] -->
     <!-- Uses a header that contracts as the page scrolls down. -->
     <style>
     .waterfall-demo-header-nav .mdl-navigation__link:last-of-type {
@@ -22,16 +25,16 @@
     </style>
 </head>
 
-<body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
+<body id="mbody">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
         <header class="mdl-layout__header mdl-layout__header--waterfall">
             <!-- Top row, always visible -->
             <div class="mdl-layout__header-row">
                 <!-- Title -->
                 <span class="android-title mdl-layout-title">
-                <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
-              </span>
-                <span class="android-title mdl-layout-title">設定</span>
+                    <a id="dsgr" href="index.html"><img src="assets/logo.png" width="50%"></a>
+                </span>
+                <span class="android-title mdl-layout-title">上傳大頭貼</span>
                 <div class="mdl-layout-spacer"></div>
             </div>
         </header>
@@ -66,21 +69,32 @@
         </div>
         <main class="mdl-layout__content">
             <div class="page-content">
-                <center>
-                    <div id="status" class="friendlist" style="display: none; height: 50px;">
-                        <i class="material-icons" style="font-size: 36px; padding: 7px;">&#xE85E;</i>
-                        <span style="font-size: 16px;">審核</span>
-                    </div>
-                    <div id="logout" class="friendlist" style="height: 50px;">
-                        <i class="material-icons" style="font-size: 36px; padding: 7px;">&#xE890;</i>
-                        <span style="font-size: 16px;">登出</span>
-                    </div>
-                </center>
+                <div class="backwall" style="text-align: center; padding-top: 5px; padding-bottom: 5px;">
+                    <img id="largeImage" src="img/circle.png" alt="image" class="img-circle">
+                </div>
+                <br/>
+                <div style="margin-left:10%; width:80%;">
+                    <button id="addphoto" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 48%; float: left;"><i class="material-icons">&#xE439;</i>選取相片</button>
+                    <button id="camera" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 48%; float:right;"><i class="material-icons">&#xE412;</i>拍照</button>
+                    <br/>
+                    <br/>
+                </div>
+                <div id="countdown" style="display:none;"></div>
+                <div id="show_time"></div>
+                <h4>請在時間內輸入驗證碼</h4>
+                <div class="mdl-textfield mdl-js-textfield ">
+                    <input id="verify" class="mdl-textfield__input " type="text">
+                    <label class="mdl-textfield__label " for="verify">請輸入驗證碼...</label>
+                </div>
+                <button id="send" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">重寄驗證碼</button>
             </div>
         </main>
+        <button id="check" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored " style="width:100%; position:fixed; bottom:0px; z-index:0; ">
+            下一步
+        </button>
     </div>
     <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="dist/js/setting.js"></script>
+    <script type="text/javascript" src="dist/js/uploadimg.js"></script>
 </body>
 
 </html>

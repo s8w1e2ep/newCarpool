@@ -83,7 +83,7 @@ function updateLocation(id, latitude, longitude, role) {
     else if (role == "driver")
         role = 2;
     var data = '{"id":"' + id + '", "role":"' + role + '","curpoint":[{"at":"' + latitude + '","ng":"' + longitude + '"}]}';
-    var server = "http://120.114.186.4/carpool/api/";
+    var server = "http://120.114.186.4:8080/carpool/api/";
     var url = server + 'update_location.php?data=' + data;
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
