@@ -10,49 +10,72 @@ $(document).ready(function() {
     DetectCurPoint();
     setInterval(DetectCurPoint, 6000);
 
+    $('.wrapperInside').attr('style', 'background-color: rgba(0,0,0,0.5);');
+    $('#ahead').click(function(){
+        removeDriver();
+    });
+
     $('#ok2').click(function() {
         $('#dialog').css("display", "none");
-        $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
-
-        var tempIndex = pid.indexOf(tid);
-
-        if (driverList[tempIndex ].Marker.Path)
-        driverList[tempIndex ].Marker.Path.setMap(null);
-
-        // current point marker
-        if (driverList[tempIndex ].Marker.Current)
-            driverList[tempIndex ].Marker.Current.setMap(null);
-
-        // infowindow
-        if (driverList[tempIndex ].Marker.InfoWindow)
-            driverList[tempIndex ].Marker.InfoWindow.setMap(null);
-
-        // get out off point
-        if (driverList[tempIndex ].Marker.Getoutoff)
-            driverList[tempIndex ].Marker.Getoutoff.setMap(null);
-
-        // remove passenger id in pid and passList
-        did.splice(tempIndex, 1);
-        driverList.splice(tempIndex, 1);
-
-        var arr = [];
-        arr.push(tid);
-        var arr_str = JSON.stringify(arr);
-        window.location = local + 'rating.html?data={"id":"' + pid + '","role":"passenger","rid":' + arr_str + '}';
+        updateHistory();
+        if (did.length == 1) {
+            var arr = [];
+            arr.push(tid);
+            var arr_str = JSON.stringify(arr);
+            window.location = local + 'rating.html?data={"id":"' + pid + '","role":"passenger","rid":' + arr_str + '}';
+        } else {
+            for (var i = 0; i < did.length; i++) {
+                if (did[i] != tid) {
+                    var count = 1;
+                    var data2 = [];
+                    data2.push({
+                        'id': pid,
+                        'tid': did[i],
+                        'pnum': pnum,
+                        'mode': 7
+                    });
+                    data2 = JSON.stringify(data2);
+                    data2 = data2.substring(1, data2.length - 1);
+                    var xmlhttp2 = new XMLHttpRequest();
+                    url = server + 'gcm_server.php?data=' + data2;
+                    xmlhttp2.onreadystatechange = function() {
+                        if (xmlhttp2.readyState == 4 && xmlhttp2.status == 200) {
+                            count++;
+                            if (count == did.length) {
+                                var arr = [];
+                                arr.push(tid);
+                                var arr_str = JSON.stringify(arr);
+                                window.location = local + 'rating.html?data={"id":"' + pid + '","role":"passenger","rid":' + arr_str + '}';
+                            }
+                        }
+                    }
+                    xmlhttp2.open("GET", url, true);
+                    xmlhttp2.send();
+                }
+            }
+        }
     });
 
     $('#cancel').click(function() {
         //cancel carpool
         var count = 0;
         for (var i = 0; i < did.length; i++) {
-            var data = '{"id":"' + pid + '","tid":"' + did[i] + '","mode":"6"}';
+            var data = [];
+            data.push({
+                'id': pid,
+                'tid': did[i],
+                'pnum': pnum,
+                'mode': 6
+            });
+            data = JSON.stringify(data);
+            data = data.substring(1, data.length - 1);
             var xmlhttp = new XMLHttpRequest();
             url = server + 'gcm_server.php?data=' + data;
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     count++;
                     if (count == did.length) {
-                        updateHistory();
+                        window.location = local + 'index.html?data={"id":"' + pid + '"}';
                     }
                 }
             }
@@ -60,7 +83,7 @@ $(document).ready(function() {
             xmlhttp.send();
         }
     });
-});
+}).on('deviceready', onDeviceReady);
 
 //global variables
 var map;
@@ -71,6 +94,8 @@ var COLOR = ["#176ae6", "#ff0000", "#6a3906", "#800080"];
 var global_url = window.location.toString();
 // passenger id
 var pid = null;
+var pnum;
+var dnum;
 
 //gcm
 var mode;
@@ -139,6 +164,7 @@ function InitializePassenger() {
     var thestr = global_url.substring(global_url.indexOf("{"), global_url.length);
     var thejson = JSON.parse(decodeURIComponent(thestr)).id;
     pid = thejson[0];
+    pnum = JSON.parse(decodeURIComponent(thestr)).pnum;
 
     // add drivers
     for (var i = 1; i < thejson.length; i++) {
@@ -270,15 +296,13 @@ function setPic() {
 
 function updateHistory() {
     //finish: 2代表司機取消 3代表乘客取消
-    var data = '{"did":"' + tid + '","pid":"' + pid + '","finish":"' + 3 + '"}';
+    var data = '{"dnum":"' + dnum + '","pnum":"' + pnum + '","finish":"' + 2 + '"}';
     var url = server + 'update_history.php?data=' + data;
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            window.location = local + 'index.html?data={"id":"' + pid + '"}';
-        }
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {}
     }
     xmlhttp.send();
 }
@@ -369,7 +393,8 @@ function UpdateView(re, dcurpoints) {
             if (driverList[0].Marker.Getin != null) {
                 driverList[0].Marker.Getin.setMap(null);
                 driverList[0].Marker.Getin = null;
-                $('#cancel').attr("disabled",true); //if the passenger get on,the driver can't cancel
+                $('#ahead').css("display", "inline");
+                $('#cancel').css("display", "none"); //if the passenger get on,the driver can't cancel
             }
             break;
         case 1:
@@ -471,7 +496,7 @@ function DetectCurPoint() {
                 enableHighAccuracy: true
             });
     } else {
-        alert("Not support geolocation");
+        alertify.success("Not support geolocation");
     }
 }
 
@@ -511,7 +536,7 @@ function removeDriver() {
     // redirect to rating page
     if (!did.length) {
         var rid_str = JSON.stringify(rid);
-        alert('{"id":"' + pid + '","role":"passenger","rid":' + rid_str + '}');
+        //alert('{"id":"' + pid + '","role":"passenger","rid":' + rid_str + '}');
         window.location = local + 'rating.html?data={"id":"' + pid + '","role":"passenger","rid":' + rid_str + '}';
     }
 }
@@ -545,8 +570,8 @@ function onDeviceReady() {
     try {
         var push = PushNotification.init({
             "android": {
-                "senderID": "47580372845",
-                "image": "http://120.114.186.4/carpool/assets/logo.png"
+                "senderID": "72965952119", //"47580372845",
+                "image": "http://120.114.186.4:8080/carpool/assets/logo.png"
             },
             "ios": {},
             "windows": {}
@@ -558,13 +583,13 @@ function onDeviceReady() {
             additional = JSON.parse(additional);
             mode = additional.mode;
             tid = additional.tid;
+            document.getElementById("dialog_message").innerHTML += data.message;
 
             if (mode === '5') {
-                document.getElementById("dialog_message").innerHTML += data.message;
+                dnum = additional.dnum;
                 setName(tid, 'dialog_name');
+                $('#dialog_image').attr('src', 'http://graph.facebook.com/' + tid + '/picture?type=normal');
                 $('#dialog').css("display", "table");
-                $('#dialog_image').attr('src', 'http://graph.facebook.com/' + tid + '/picture?type=large');
-                $('.wrapperInside').attr('style', 'background-color: #666666;');
             }
 
         });
@@ -576,7 +601,7 @@ function onDeviceReady() {
     } catch (err) {
         txt = "There was an error on this page.\n\n";
         txt += "Error description: " + err.message + "\n\n";
-        alert(txt);
+        //alert(txt);
     }
 }
 
@@ -606,4 +631,4 @@ function getCid(data) {
     xmlhttp.send();
 }
 
-document.addEventListener('deviceready', onDeviceReady, true);
+//document.addEventListener('deviceready', onDeviceReady, true);

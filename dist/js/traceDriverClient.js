@@ -10,16 +10,13 @@ $(document).ready(function() {
     DetectCurPoint();
     setInterval(DetectCurPoint, 6000);
 
+    $('.wrapperInside').attr('style', 'background-color: rgba(0,0,0,0.5);');
     $('#ok').click(function() {
-        // $('#info').modal('hide');
         $('#info').css("display", "none");
-        $('#mbody').attr('style', 'background-color: #FFFFFF;');
     });
 
     $('#ok2').click(function() {
-        $('#dialog').css("display", "none");
-        $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
-
+        $('#cmsg').css("display", "none");
         var tempIndex = pid.indexOf(tid);
 
         //get in point
@@ -42,22 +39,33 @@ $(document).ready(function() {
         if (passList[tempIndex].Marker.Getoutoff)
             passList[tempIndex].Marker.Getoutoff.setMap(null);
 
+        updateHistory();
         pid.splice(tempIndex, 1);
         passList.splice(tempIndex, 1);
     });
 
     $('#cancel').click(function() {
-        //cancel carpool
         var count = 0;
+        if(pid.length == 0){
+            window.location = local + 'index.html?data={"id":"' + did + '"}';
+        }
         for (var i = 0; i < pid.length; i++) {
-            var data = '{"id":"' + did + '","tid":"' + pid[i] + '","mode":"5"}';
+            var data = [];
+            data.push({
+                'id': did,
+                'tid': pid[i],
+                'dnum': dnum,
+                'mode': 5
+            });
+            data = JSON.stringify(data);
+            data = data.substring(1, data.length - 1);
             var xmlhttp = new XMLHttpRequest();
             url = server + 'gcm_server.php?data=' + data;
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     count++;
                     if (count == pid.length) {
-                        updateHistory();
+                        window.location = local + 'index.html?data={"id":"' + did + '"}';
                     }
                 }
             }
@@ -65,7 +73,7 @@ $(document).ready(function() {
             xmlhttp.send();
         }
     });
-});
+}).on('deviceready', onDeviceReady);
 
 //global variables
 var map;
@@ -79,6 +87,8 @@ var COLOR = ["#176ae6", "#ff0000", "#6a3906", "#800080"];
 var global_url = window.location.toString();
 // driver is
 var did = null;
+var dnum;
+var pnum;
 
 //gcm
 var mode;
@@ -150,6 +160,7 @@ function InitializeDriver() {
     var thestr = global_url.substring(global_url.indexOf("{"), global_url.length);
     var thejson = JSON.parse(decodeURIComponent(thestr));
     did = thejson.id;
+    dnum = thejson.dnum;
     driver = new DriverObj();
 
     var toServerStr = '{"init": 1,"role": 1, "did":"' + did + '"}';
@@ -257,8 +268,8 @@ function getPhone() {
 
 //設定大頭貼
 function setPic() {
-    if (id.length == 10 && id.substr(0, 2) === "09") {
-        var url = server + 'get_image.php?data={"id":"' + id + '"}';
+    if (did.length == 10 && did.substr(0, 2) === "09") {
+        var url = server + 'get_image.php?data={"id":"' + did + '"}';
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("GET", url, true);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -270,7 +281,7 @@ function setPic() {
         }
         xmlhttp.send();
     } else {
-        $('#user_image').attr('src', 'http://graph.facebook.com/' + id + '/picture?type=large');
+        $('#user_image').attr('src', 'http://graph.facebook.com/' + did + '/picture?type=large');
     }
 }
 
@@ -358,6 +369,7 @@ function AddPassenger(id, index) {
 function UpdateView(re, pcurpoints) {
     var reNum = re.length;
     var pIndex;
+    alert(JSON.stringify(re));
     //popInfo(re[0].id, 400, 0);
     // update page bottom text and tts text
     var ttsText = '距離';
@@ -370,7 +382,7 @@ function UpdateView(re, pcurpoints) {
             ttsText += '上車點約';
             popInfo(re[0].id, re[0].gdm.distance.val, 1);
         } else {
-            $('#cancel').attr("disabled",true); //if the passenger get on,the driver can't cancel
+            $('#cancel').css("display", "none"); //if the passenger get on,the driver can't cancel
             ttsText += '下車點約';
             popInfo(re[0].id, re[0].gdm.distance.val, 0);
         }
@@ -379,7 +391,6 @@ function UpdateView(re, pcurpoints) {
         // redirect to rating page
         if (re[0].gdm.distance.val <= 25) {
             var rid_str = JSON.stringify(rid);
-            //alert('{"id":"' + did + '","role":"driver","rid":' + rid_str + '}');
             window.location = local + 'rating.html?data={"id":"' + did + '","role":"driver","rid":' + rid_str + '}';
         }
 
@@ -396,7 +407,7 @@ function UpdateView(re, pcurpoints) {
             }, function() {
                 //alert('success');
             }, function(reason) {
-                alert(reason);
+                //alert(reason);
             });
     }
 
@@ -501,23 +512,20 @@ function UpdateView(re, pcurpoints) {
 
 function updateHistory() {
     //finish: 2代表司機取消 3代表乘客取消
-    var data = '{"did":"' + did + '","pid":"' + tid + '","finish":"' + 2 + '"}';
+    var data = '{"dnum":"' + dnum + '","pnum":"' + pnum + '","finish":"' + 3 + '"}';
     var url = server + 'update_history.php?data=' + data;
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            window.location = local + 'index.html?data={"id":"' + did + '"}';
-        }
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {}
     }
     xmlhttp.send();
 }
 
 function addHistory(pindex) {
-    var data = '{"did":"' + did + '","pid":"' + tid + '","index":"' + pindex + '"}';
+    var data = '{"did":"' + did + '","pid":"' + tid + '","pnum":"' + pnum + '","index":"' + pindex + '"}';
     var url = server + 'add_history.php?data=' + data;
-    //alert("history: " + url);
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url, true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -531,17 +539,13 @@ function addHistory(pindex) {
 
 //同意 GCM msg
 function confirmCarpool() {
-
     $('#dialog').attr('style', 'display:none');
-    $('.wrapperInside').attr('style', 'background-color: #FFFFFF;');
     var data = '{"id":"' + did + '","tid":"' + tid + '","mode":"2"}';
     //{"role":"driver","id":"10467795386484826","tid":"838717559541922","mode":"2"}
     var xmlhttp = new XMLHttpRequest();
-    //alert("data: " + data);
     url = server + 'gcm_server.php?data=' + data;
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            //alert("+乘客&&更新history");
             AddPassenger(tid, path_index);
             addHistory(path_index);
         }
@@ -577,9 +581,8 @@ function popInfo(id, dis, type) {
                     }, function() {
                         //alert('success');
                     }, function(reason) {
-                        alert(reason);
+                        //alert(reason);
                     });
-                $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('抵達乘客上車點');
                 $('#info_name').html(passList[passIndex].Name);
@@ -595,9 +598,8 @@ function popInfo(id, dis, type) {
                     }, function() {
                         //alert('success');
                     }, function(reason) {
-                        alert(reason);
+                        //alert(reason);
                     });
-                $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('即將抵達乘客上車點');
                 $('#info_name').html(passList[passIndex].Name);
@@ -616,9 +618,8 @@ function popInfo(id, dis, type) {
                     }, function() {
                         //alert('success');
                     }, function(reason) {
-                        alert(reason);
+                        //alert(reason);
                     });
-                $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('抵達乘客下車點');
                 $('#info_name').html(passList[passIndex].Name);
@@ -634,9 +635,8 @@ function popInfo(id, dis, type) {
                     }, function() {
                         //alert('success');
                     }, function(reason) {
-                        alert(reason);
+                        //alert(reason);
                     });
-                $('.wrapperInside').attr('style', 'background-color: #666666;');
                 $("#info").css("display", "table");
                 $('#info_message').html('即將抵達乘客下車點');
                 $('#info_name').html(passList[passIndex].Name);
@@ -690,7 +690,7 @@ function DetectCurPoint() {
                 enableHighAccuracy: true
             });
     } else {
-        alert("Not support geolocation");
+        alertify.success("Not support geolocation");
     }
 }
 
@@ -736,7 +736,7 @@ function setName(data, mode) {
                     //alert('success');
                     confirmCarpool();
                 }, function(reason) {
-                    alert('TTS:' + reason);
+                    //alert('TTS:' + reason);
                 });
         }
     }
@@ -751,6 +751,39 @@ function setName2(data, mode) {
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             document.getElementById(mode).innerHTML = xmlhttp.responseText;
+            TTS
+                .speak({
+                    text: ("乘客" + xmlhttp.responseText + "取消共乘"),
+                    locale: 'zh-TW',
+                    rate: 1
+                }, function() {
+                    $("#ok2").click();
+                }, function(reason) {
+                    //alert('TTS:' + reason);
+                });
+        }
+    }
+    xmlhttp.send();
+}
+
+function setName3(data, mode) {
+    var url = server + 'get_name.php?data={"id":"' + data + '"}';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            document.getElementById(mode).innerHTML = xmlhttp.responseText;
+            TTS
+                .speak({
+                    text: ("因其他司機取消共乘，乘客" + xmlhttp.responseText + "必須取消共乘"),
+                    locale: 'zh-TW',
+                    rate: 1
+                }, function() {
+                    $("#ok2").click();
+                }, function(reason) {
+                    //alert('TTS:' + reason);
+                });
         }
     }
     xmlhttp.send();
@@ -761,8 +794,8 @@ function onDeviceReady() {
     try {
         var push = PushNotification.init({
             "android": {
-                "senderID": "47580372845"
-                    // "image": "http://120.114.186.4/carpool/assets/logo.png"
+                "senderID": "72965952119", //"47580372845"
+                "image": "http://120.114.186.4:8080/carpool/assets/logo.png"
             },
             "ios": {},
             "windows": {}
@@ -776,17 +809,22 @@ function onDeviceReady() {
             path_index = additional.pindex;
 
             if (mode === '6') {
+                pnum = additional.pnum;
                 document.getElementById("cmsg_message").innerHTML += data.message;
-                setName2(additional.tid, 'cmsg_name');
+                setName2(tid, 'cmsg_name');
                 $('#cmsg').css("display", "table");
                 $('#cmsg_image').attr('src', 'http://graph.facebook.com/' + tid + '/picture?type=large');
-                $('.wrapperInside').attr('style', 'background-color: #666666;');
-            } else {
+            } else if(mode === '7') {
+                pnum = additional.pnum;
+                document.getElementById("cmsg_message").innerHTML += data.message;
+                setName3(tid, 'cmsg_name');
+                $('#cmsg').css("display", "table");
+                $('#cmsg_image').attr('src', 'http://graph.facebook.com/' + tid + '/picture?type=large');
+            }else {
                 document.getElementById("dialog_message").innerHTML += data.message;
                 setName(tid, 'dialog_name');
                 $('#dialog').css("display", "table");
                 $('#dialog_image').attr('src', 'http://graph.facebook.com/' + tid + '/picture?type=large');
-                $('.wrapperInside').attr('style', 'background-color: #666666;');
             }
         });
 
@@ -797,7 +835,7 @@ function onDeviceReady() {
     } catch (err) {
         txt = "There was an error on this page.\n\n";
         txt += "Error description: " + err.message + "\n\n";
-        alert(txt);
+        //alert(txt);
     }
 }
-document.addEventListener('deviceready', onDeviceReady, true);
+//document.addEventListener('deviceready', onDeviceReady, true);
